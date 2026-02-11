@@ -95,29 +95,61 @@ const supaUploadFile = async (file, folder) => {
   try {
     const ext = file.name.split(".").pop().toLowerCase();
     const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    
+    const formData = new FormData();
+    formData.append("", file);
+    
     const res = await fetch(`${SUPA_URL}/storage/v1/object/media/${fileName}`, {
       method: "POST",
       headers: {
         "apikey": SUPA_KEY,
         "Authorization": `Bearer ${SUPA_KEY}`,
-        "Content-Type": file.type || "application/octet-stream",
         "x-upsert": "true"
       },
-      body: file
+      body: formData
     });
     if (!res.ok) {
       const errText = await res.text();
       console.error("Upload error:", res.status, errText);
-      alert(`Erreur upload: ${errText}`);
-      return null;
+      // Fallback: stocker en base64 dans la base
+      return await fileToBase64(file);
     }
     return `${SUPA_URL}/storage/v1/object/public/media/${fileName}`;
   } catch (e) {
     console.error("Upload error:", e);
-    alert(`Erreur upload: ${e.message}`);
-    return null;
+    // Fallback: stocker en base64
+    return await fileToBase64(file);
   }
 };
+
+const fileToBase64 = (file) => new Promise((resolve) => {
+  // Pour les images, on compresse via canvas
+  if (file.type.startsWith("image/")) {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const maxSize = 800;
+      let w = img.width, h = img.height;
+      if (w > maxSize || h > maxSize) {
+        if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+        else { w = Math.round(w * maxSize / h); h = maxSize; }
+      }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL("image/jpeg", 0.7));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+    img.src = url;
+  } else {
+    // Vidéos : base64 brut (attention taille)
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  }
+});
 
 /* ═══ MEDIA UPLOAD COMPONENT ═══ */
 const MediaUpload = ({ medias = [], onAdd, onRemove, label = "Photos / Vidéos", minRequired = 0, readOnly = false }) => {
