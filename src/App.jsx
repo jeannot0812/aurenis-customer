@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 
 /* ═══════════════════════════════════════════════════════════
    AURENIS CUSTOMER — LOGICIEL COMPLET UNIFIÉ
@@ -63,6 +63,30 @@ const waMessageClient = (inter) => {
 
 const waMessageTech = (inter, tech) => {
   return `Bonjour ${tech ? tech.split(" ")[0] : ""},\n\nNouvelle intervention assignée :\n📋 ${inter.ref}\n📅 ${inter.date} à ${inter.heure}\n🔧 ${inter.type} (${inter.mode})\n👤 Client : ${inter.clientPrenom} ${inter.clientNom}\n📞 ${inter.tel}\n📍 ${inter.adresse}\n\nMerci,\nAURENIS`;
+};
+
+/* ═══ SUPABASE CONFIG ═══ */
+const SUPA_URL = "https://yfroontiqlljzllamvek.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcm9vbnRpcXpsanpsbGFtdmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3OTA0MTgsImV4cCI6MjA4NjM2NjQxOH0.cuk5ZcU_gpdCa77UIQntjlIaK1DRAiJmLJKU5qjIlZg";
+const SUPA_HEADERS = { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json" };
+
+const supaLoad = async (key) => {
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/app_data?key=eq.${key}&select=value`, { headers: SUPA_HEADERS });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.length > 0 && data[0].value && data[0].value.length > 0 ? data[0].value : null;
+  } catch (e) { console.log("Supabase load error:", e); return null; }
+};
+
+const supaSave = async (key, value) => {
+  try {
+    await fetch(`${SUPA_URL}/rest/v1/app_data`, {
+      method: "POST",
+      headers: { ...SUPA_HEADERS, "Prefer": "resolution=merge-duplicates" },
+      body: JSON.stringify({ key, value, updated_at: new Date().toISOString() })
+    });
+  } catch (e) { console.log("Supabase save error:", e); }
 };
 
 /* ═══ STORAGE (localStorage) ═══ */
@@ -1282,10 +1306,39 @@ export default function App() {
   const [account, setAccount] = useState(null);
   const [verifyEmail, setVerifyEmail] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
+  const [loading, setLoading] = useState(true);
+
   const [interventions, setInterventions] = useState(INIT_INTERVENTIONS);
   const [techs, setTechs] = useState(INIT_TECHS);
   const [specialties, setSpecialties] = useState(["Plomberie", "Serrurerie", "Électricité"]);
   const [statuts, setStatuts] = useState(["Planifiée", "En cours", "Terminée", "Validée"]);
+
+  /* ═══ CHARGEMENT INITIAL DEPUIS SUPABASE ═══ */
+  const dataLoaded = useRef(false);
+  useEffect(() => {
+    const load = async () => {
+      const [dbTechs, dbInter, dbSpe, dbStat] = await Promise.all([
+        supaLoad("techs"), supaLoad("interventions"), supaLoad("specialties"), supaLoad("statuts")
+      ]);
+      if (dbTechs) setTechs(dbTechs);
+      else supaSave("techs", INIT_TECHS);
+      if (dbInter) setInterventions(dbInter);
+      else supaSave("interventions", INIT_INTERVENTIONS);
+      if (dbSpe) setSpecialties(dbSpe);
+      else supaSave("specialties", ["Plomberie", "Serrurerie", "Électricité"]);
+      if (dbStat) setStatuts(dbStat);
+      else supaSave("statuts", ["Planifiée", "En cours", "Terminée", "Validée"]);
+      dataLoaded.current = true;
+      setLoading(false);
+    };
+    load();
+  }, []);
+
+  /* ═══ SAUVEGARDE AUTO DANS SUPABASE À CHAQUE CHANGEMENT ═══ */
+  useEffect(() => { if (dataLoaded.current) supaSave("techs", techs); }, [techs]);
+  useEffect(() => { if (dataLoaded.current) supaSave("interventions", interventions); }, [interventions]);
+  useEffect(() => { if (dataLoaded.current) supaSave("specialties", specialties); }, [specialties]);
+  useEffect(() => { if (dataLoaded.current) supaSave("statuts", statuts); }, [statuts]);
 
   useEffect(() => {
     if (!document.querySelector('meta[name="viewport"]')) {
@@ -1297,6 +1350,15 @@ export default function App() {
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+      {/* Loading screen */}
+      {loading && (
+        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)` }}>
+          <AurenisLogo />
+          <div style={{ marginTop: 24, width: 32, height: 32, border: "3px solid rgba(200,164,78,0.2)", borderTopColor: T.gold, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+          <div style={{ marginTop: 14, fontSize: 13, color: T.textMuted }}>Chargement des données...</div>
+        </div>
+      )}
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}*{box-sizing:border-box}::placeholder{color:rgba(255,255,255,0.25)}input[type="date"]{color-scheme:dark}input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}input[type="time"]{color-scheme:dark}input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
 /* ═══ RESPONSIVE ═══ */
 .aurenis-tabs{display:flex;gap:6px;background:rgba(255,255,255,0.04);border-radius:14px;padding:4px;border:1px solid rgba(255,255,255,0.06);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -1337,14 +1399,14 @@ export default function App() {
 }
 `}</style>
 
-      {page === "login" && <LoginPage onLogin={a => { setAccount(a); setPage("dashboard"); }} onGoRegister={() => setPage("register")} onGoForgot={() => setPage("forgot")} />}
-      {page === "register" && <RegisterPage onGoLogin={() => setPage("login")} onRegistered={(e, c) => { setVerifyEmail(e); setVerifyCode(c); setPage("verify"); }} />}
-      {page === "verify" && <VerifyPage email={verifyEmail} code={verifyCode} onVerified={() => setPage("verified")} onGoLogin={() => setPage("login")} />}
-      {page === "verified" && <VerifiedPage onGoLogin={() => setPage("login")} />}
-      {page === "forgot" && <ForgotPage onGoLogin={() => setPage("login")} />}
-      {page === "dashboard" && account?.role === "admin" && <AdminDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} setTechs={setTechs} specialties={specialties} setSpecialties={setSpecialties} statuts={statuts} setStatuts={setStatuts} />}
-      {page === "dashboard" && account?.role === "tech" && <TechDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} specialties={specialties} />}
-      {page === "dashboard" && account?.role === "poseur" && <PoseurDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} />}
+      {!loading && page === "login" && <LoginPage onLogin={a => { setAccount(a); setPage("dashboard"); }} onGoRegister={() => setPage("register")} onGoForgot={() => setPage("forgot")} />}
+      {!loading && page === "register" && <RegisterPage onGoLogin={() => setPage("login")} onRegistered={(e, c) => { setVerifyEmail(e); setVerifyCode(c); setPage("verify"); }} />}
+      {!loading && page === "verify" && <VerifyPage email={verifyEmail} code={verifyCode} onVerified={() => setPage("verified")} onGoLogin={() => setPage("login")} />}
+      {!loading && page === "verified" && <VerifiedPage onGoLogin={() => setPage("login")} />}
+      {!loading && page === "forgot" && <ForgotPage onGoLogin={() => setPage("login")} />}
+      {!loading && page === "dashboard" && account?.role === "admin" && <AdminDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} setTechs={setTechs} specialties={specialties} setSpecialties={setSpecialties} statuts={statuts} setStatuts={setStatuts} />}
+      {!loading && page === "dashboard" && account?.role === "tech" && <TechDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} specialties={specialties} />}
+      {!loading && page === "dashboard" && account?.role === "poseur" && <PoseurDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} />}
     </div>
   );
 }
