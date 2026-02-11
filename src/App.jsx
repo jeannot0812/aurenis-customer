@@ -608,7 +608,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                   <Btn onClick={() => {
                     const msg = `📋 *${inter.ref}*\n📅 ${inter.date} ${inter.heure}\n🔧 ${inter.type}\n👤 ${inter.clientNom} ${inter.clientPrenom}\n📞 ${inter.tel}\n📍 ${inter.adresse}${inter.ville ? ` — ${inter.ville}` : ""}`;
                     const phone = inter.tel.replace(/\D/g, "").replace(/^0/, "33");
-                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+                    window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, "_blank");
                   }} variant="ghost" style={{ padding: "3px 6px", fontSize: 10, color: "#25D366" }} title="WhatsApp">💬</Btn>
                   <Btn onClick={() => duplicateIntervention(inter.ref)} variant="ghost" style={{ padding: "3px 6px", fontSize: 10 }} title="Dupliquer">📋</Btn>
                   {inter.statut === "Terminée" && <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "3px 8px", fontSize: 10, background: "linear-gradient(135deg, #F97316, #FB923C)" }}>✅</Btn>}
@@ -897,7 +897,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                 <Btn onClick={() => {
                   const msg = `📋 *${inter.ref}*\n📅 ${inter.date} à ${inter.heure}\n🔧 ${inter.type}\n\n👤 *${inter.clientNom} ${inter.clientPrenom}*\n📞 ${inter.tel}\n📍 ${inter.adresse}${inter.ville ? ` — ${inter.ville}` : ""}`;
                   const phone = inter.tel.replace(/\D/g, "").replace(/^0/, "33");
-                  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+                  window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, "_blank");
                 }} variant="ghost" style={{ flex: 1, border: "1.5px solid rgba(37,211,102,0.3)", background: "rgba(37,211,102,0.08)", color: "#25D366", fontWeight: 700 }}>💬 WhatsApp</Btn>
                 {inter.statut === "Terminée" && (() => {
                   const valid = inter.clientNom?.trim() && inter.clientPrenom?.trim() && inter.adresse?.trim() && inter.tel && inter.tel.replace(/\D/g, "").length >= 8 && inter.ttc > 0 && inter.date && inter.heure;
