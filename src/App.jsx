@@ -386,6 +386,8 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
   const [editModal, setEditModal] = useState(null);
   const [commModal, setCommModal] = useState(null);
   const [newRate, setNewRate] = useState("");
+  const [telModal, setTelModal] = useState(null);
+  const [newTel, setNewTel] = useState("");
   const [time, setTime] = useState(new Date());
 
   useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearTimeout(t); }, []);
@@ -406,6 +408,12 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
     if (isNaN(rate) || rate < 0 || rate > 1) return;
     setTechs(prev => prev.map(t => t.id === techId ? { ...t, commission: rate } : t));
     setNewRate(""); setCommModal(null);
+  };
+
+  const changeTechTel = (techId) => {
+    if (!newTel.trim()) return;
+    setTechs(prev => prev.map(t => t.id === techId ? { ...t, tel: newTel.trim() } : t));
+    setNewTel(""); setTelModal(null);
   };
 
   const tabs = [{ id: "dashboard", label: "Dashboard", icon: "📊" }, { id: "interventions", label: "Interventions", icon: "📞" }, { id: "equipe", label: "Équipe", icon: "👥" }, { id: "journal", label: "Journal", icon: "💰" }, { id: "params", label: "Paramètres", icon: "⚙️" }];
@@ -502,6 +510,12 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                         <span style={{ fontSize: 12, color: T.textMuted }}>{myInter.length} validées · CA {ca.toLocaleString("fr-FR")} €</span>
                       </div>
+                      {/* Téléphone */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "10px 14px", marginBottom: 8 }}>
+                        <div><span style={{ fontSize: 11, color: T.textMuted }}>Téléphone</span><div style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginTop: 2 }}>{tech.tel}</div></div>
+                        <Btn onClick={() => { setTelModal(tech.id); setNewTel(tech.tel); }} variant="ghost" style={{ padding: "6px 12px", fontSize: 11 }}>✏️</Btn>
+                      </div>
+                      {/* Commission */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "10px 14px" }}>
                         <div><span style={{ fontSize: 11, color: T.textMuted }}>Taux commission</span><div style={{ fontSize: 20, fontWeight: 800, color: T.gold }}>{(tech.commission * 100)}%</div></div>
                         <Btn onClick={() => { setCommModal(tech.id); setNewRate(String(tech.commission * 100)); }} variant="ghost" style={{ padding: "6px 12px", fontSize: 11 }}>✏️ Modifier</Btn>
@@ -977,13 +991,30 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
           );
         })()}
       </Modal>
+
+      {/* TELEPHONE MODAL */}
+      <Modal open={!!telModal} onClose={() => setTelModal(null)} title="Modifier le téléphone">
+        {telModal && (() => {
+          const tech = techs.find(t => t.id === telModal);
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div style={{ fontSize: 14, color: "#fff", fontWeight: 600 }}>{tech?.name}</div>
+              <div style={{ fontSize: 13, color: T.textMuted }}>Numéro actuel : <strong style={{ color: T.gold }}>{tech?.tel}</strong></div>
+              <div><label style={{ fontSize: 12, color: T.textMuted, display: "block", marginBottom: 4 }}>Nouveau numéro</label><Inp icon="📞" placeholder="+33 6 12 34 56 78" value={newTel} onChange={e => setNewTel(e.target.value)} onKeyDown={e => e.key === "Enter" && changeTechTel(telModal)} /></div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <Btn onClick={() => setTelModal(null)} variant="ghost" style={{ flex: 1 }}>Annuler</Btn>
+                <Btn onClick={() => changeTechTel(telModal)} style={{ flex: 1 }}>✅ Enregistrer</Btn>
+              </div>
+            </div>
+          );
+        })()}
+      </Modal>
     </div>
   );
 };
 
 /* ═══════════════════════════════════════════════════════════
-   TECH DASHBOARD
-   ═══════════════════════════════════════════════════════════ */
+   TECH DASHBOARD   ═══════════════════════════════════════════════════════════ */
 const TechDash = ({ account, onLogout, interventions, setInterventions, techs, specialties }) => {
   const [time, setTime] = useState(new Date());
   const [statusTab, setStatusTab] = useState("all");
