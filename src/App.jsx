@@ -50,6 +50,44 @@ const calcNetPatron = (inter) => {
   return inter.ttc - comm - inter.poseurCost;
 };
 
+/* ═══ SOUND EFFECTS (Web Audio API) ═══ */
+const playKaching = () => {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // Coin sound 1
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(1200, ctx.currentTime);
+    osc1.frequency.exponentialRampToValueAtTime(1800, ctx.currentTime + 0.08);
+    gain1.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+    osc1.connect(gain1); gain1.connect(ctx.destination);
+    osc1.start(ctx.currentTime); osc1.stop(ctx.currentTime + 0.25);
+    // Coin sound 2 (delayed)
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(1500, ctx.currentTime + 0.12);
+    osc2.frequency.exponentialRampToValueAtTime(2200, ctx.currentTime + 0.2);
+    gain2.gain.setValueAtTime(0, ctx.currentTime);
+    gain2.gain.setValueAtTime(0.3, ctx.currentTime + 0.12);
+    gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+    osc2.connect(gain2); gain2.connect(ctx.destination);
+    osc2.start(ctx.currentTime + 0.12); osc2.stop(ctx.currentTime + 0.4);
+    // Shimmer
+    const osc3 = ctx.createOscillator();
+    const gain3 = ctx.createGain();
+    osc3.type = "triangle";
+    osc3.frequency.setValueAtTime(2400, ctx.currentTime + 0.15);
+    gain3.gain.setValueAtTime(0.08, ctx.currentTime + 0.15);
+    gain3.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc3.connect(gain3); gain3.connect(ctx.destination);
+    osc3.start(ctx.currentTime + 0.15); osc3.stop(ctx.currentTime + 0.6);
+    setTimeout(() => ctx.close(), 800);
+  } catch (e) { /* silent */ }
+};
+
 /* ═══ WHATSAPP HELPER ═══ */
 const WaIcon = ({ size = 16 }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>;
 const sendWhatsApp = (phone, message) => {
@@ -258,7 +296,7 @@ const Inp = ({ icon, type = "text", placeholder, value, onChange, error, onKeyDo
   <div style={{ position: "relative", marginBottom: error ? 4 : 0, ...sx }}>
     {icon && <div style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", fontSize: 18, opacity: 0.5, pointerEvents: "none" }}>{icon}</div>}
     <input type={type} placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeyDown}
-      style={{ width: "100%", padding: icon ? "14px 16px 14px 48px" : "14px 16px", fontSize: 14, fontWeight: 500, background: "rgba(255,255,255,0.06)", border: error ? "1.5px solid #EF476F" : "1.5px solid rgba(255,255,255,0.08)", borderRadius: T.radiusSm, color: "#fff", outline: "none", boxSizing: "border-box", transition: "all 0.2s", fontFamily: "inherit" }}
+      style={{ width: "100%", padding: icon ? "14px 16px 14px 48px" : "14px 16px", fontSize: 16, fontWeight: 500, background: "rgba(255,255,255,0.06)", border: error ? "1.5px solid #EF476F" : "1.5px solid rgba(255,255,255,0.08)", borderRadius: T.radiusSm, color: "#fff", outline: "none", boxSizing: "border-box", transition: "all 0.2s", fontFamily: "inherit" }}
       onFocus={e => { e.target.style.borderColor = T.gold; }} onBlur={e => { e.target.style.borderColor = error ? "#EF476F" : "rgba(255,255,255,0.08)"; }} />
     {error && <div style={{ fontSize: 12, color: "#EF476F", marginTop: 4, fontWeight: 500, paddingLeft: 4 }}>{error}</div>}
   </div>
@@ -266,7 +304,7 @@ const Inp = ({ icon, type = "text", placeholder, value, onChange, error, onKeyDo
 
 const Btn = ({ children, onClick, loading, variant = "primary", disabled, style: sx }) => {
   const p = variant === "primary";
-  return <button onClick={onClick} disabled={disabled || loading} style={{ padding: "12px 24px", fontSize: 14, fontWeight: 700, border: "none", borderRadius: T.radiusSm, cursor: disabled || loading ? "not-allowed" : "pointer", background: p ? "linear-gradient(135deg, #C8A44E, #E8C96A)" : variant === "danger" ? "rgba(239,71,111,0.15)" : "rgba(255,255,255,0.06)", color: p ? "#1B1F3B" : variant === "danger" ? "#EF476F" : "#fff", opacity: disabled || loading ? 0.5 : 1, transition: "all 0.2s", fontFamily: "inherit", boxShadow: p ? "0 4px 20px rgba(200,164,78,0.3)" : "none", width: sx?.width || "auto", ...sx }}>{loading ? "..." : children}</button>;
+  return <button onClick={onClick} disabled={disabled || loading} style={{ padding: "12px 20px", fontSize: 14, fontWeight: 700, border: "none", borderRadius: T.radiusSm, cursor: disabled || loading ? "not-allowed" : "pointer", background: p ? "linear-gradient(135deg, #C8A44E, #E8C96A)" : variant === "danger" ? "rgba(239,71,111,0.15)" : "rgba(255,255,255,0.06)", color: p ? "#1B1F3B" : variant === "danger" ? "#EF476F" : "#fff", opacity: disabled || loading ? 0.5 : 1, transition: "all 0.2s", fontFamily: "inherit", boxShadow: p ? "0 4px 20px rgba(200,164,78,0.3)" : "none", minHeight: 44, width: sx?.width || "auto", ...sx }}>{loading ? "..." : children}</button>;
 };
 
 const Badge = ({ status }) => { const s = statutColors[status] || { bg: "rgba(148,163,184,0.15)", c: "#94A3B8" }; return <span style={{ background: s.bg, color: s.c, padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>{status}</span>; };
@@ -274,25 +312,26 @@ const ModeBadge = ({ mode }) => <span style={{ background: mode === "Urgence" ? 
 const TypeBadge = ({ type }) => { const c = typeColors[type] || T.blue; return <span style={{ background: `${c}22`, color: c, padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 700 }}>{type}</span>; };
 
 const KPI = ({ label, value, color, icon }) => (
-  <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: T.radius, padding: "20px 22px", border: "1px solid rgba(255,255,255,0.06)", borderTop: `3px solid ${color}`, flex: 1, minWidth: 150 }}>
-    <div style={{ fontSize: 22, marginBottom: 6 }}>{icon}</div>
-    <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>{label}</div>
-    <div style={{ fontSize: 22, fontWeight: 800, color: "#fff" }}>{value}</div>
+  <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: T.radius, padding: "16px 14px", border: "1px solid rgba(255,255,255,0.06)", borderTop: `3px solid ${color}`, flex: 1, minWidth: 140 }}>
+    <div style={{ fontSize: 20, marginBottom: 4 }}>{icon}</div>
+    <div style={{ fontSize: 10, color: T.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 }}>{label}</div>
+    <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", wordBreak: "break-word" }}>{value}</div>
   </div>
 );
 
-const Card = ({ children, style: sx }) => <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: T.radius, border: "1px solid rgba(255,255,255,0.06)", padding: 24, ...sx }}>{children}</div>;
+const Card = ({ children, style: sx }) => <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: T.radius, border: "1px solid rgba(255,255,255,0.06)", padding: 20, ...sx }}>{children}</div>;
 const SectionTitle = ({ children, right }) => <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}><h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#fff" }}>{children}</h2>{right}</div>;
 
 /* ═══ MODAL ═══ */
 const Modal = ({ open, onClose, title, children, width = 480 }) => {
   if (!open) return null;
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 12, backdropFilter: "blur(4px)" }} onClick={onClose}>
-      <div style={{ background: "#1E2243", borderRadius: 24, padding: "24px 20px", width: "100%", maxWidth: width, border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 24px 64px rgba(0,0,0,0.5)", maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#fff" }}>{title}</h3>
-          <button onClick={onClose} style={{ background: "rgba(255,255,255,0.06)", border: "none", borderRadius: 10, width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1000, padding: 0, backdropFilter: "blur(4px)" }} onClick={onClose}>
+      <div style={{ background: "#1E2243", borderRadius: "20px 20px 0 0", padding: "20px 16px", width: "100%", maxWidth: width, border: "1px solid rgba(255,255,255,0.08)", borderBottom: "none", boxShadow: "0 -24px 64px rgba(0,0,0,0.5)", maxHeight: "92vh", overflowY: "auto", WebkitOverflowScrolling: "touch" }} onClick={e => e.stopPropagation()}>
+        <div style={{ width: 40, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.15)", margin: "0 auto 16px" }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "#fff" }}>{title}</h3>
+          <button onClick={onClose} style={{ background: "rgba(255,255,255,0.06)", border: "none", borderRadius: 10, width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>✕</button>
         </div>
         {children}
       </div>
@@ -302,14 +341,14 @@ const Modal = ({ open, onClose, title, children, width = 480 }) => {
 
 /* ═══ AUTH SHELL ═══ */
 const AuthShell = ({ children }) => (
-  <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, padding: 20 }}>
+  <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, padding: 16 }}>
     <div style={{ position: "fixed", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(200,164,78,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
     <div style={{ width: "100%", maxWidth: 420, animation: "fadeUp 0.6s cubic-bezier(0.16,1,0.3,1)" }}>{children}</div>
   </div>
 );
 const AuthCard = ({ children, title, subtitle }) => (
-  <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 24, padding: "36px 32px", border: "1px solid rgba(255,255,255,0.06)", backdropFilter: "blur(20px)", boxShadow: "0 24px 64px rgba(0,0,0,0.4)" }}>
-    <div style={{ textAlign: "center", marginBottom: 28 }}><div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}><AurenisLogo /></div><h1 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 800, color: "#fff" }}>{title}</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted, lineHeight: 1.5 }}>{subtitle}</p></div>{children}
+  <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 24, padding: "28px 20px", border: "1px solid rgba(255,255,255,0.06)", backdropFilter: "blur(20px)", boxShadow: "0 24px 64px rgba(0,0,0,0.4)" }}>
+    <div style={{ textAlign: "center", marginBottom: 24 }}><div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}><AurenisLogo /></div><h1 style={{ margin: "0 0 6px", fontSize: 20, fontWeight: 800, color: "#fff" }}>{title}</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted, lineHeight: 1.5 }}>{subtitle}</p></div>{children}
   </div>
 );
 
@@ -424,7 +463,7 @@ const Header = ({ account, onLogout, roleBadge }) => {
   const color = member?.color || T.gold;
   const initials = account.name?.split(" ").map(n => n[0]).join("") || "A";
   return (
-    <div style={{ background: "rgba(27,31,59,0.95)", borderBottom: "1px solid rgba(200,164,78,0.12)", padding: "14px 28px", backdropFilter: "blur(20px)", position: "sticky", top: 0, zIndex: 50 }}>
+    <div style={{ background: "rgba(27,31,59,0.95)", borderBottom: "1px solid rgba(200,164,78,0.12)", padding: "12px 16px", backdropFilter: "blur(20px)", position: "sticky", top: 0, zIndex: 50 }}>
       <div className="aurenis-header-inner">
         <AurenisLogo size="sm" />
         <div className="aurenis-header-right">
@@ -586,7 +625,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
   const attente = terminees.length;
 
   const updateIntervention = (ref, updates) => { setInterventions(prev => prev.map(i => i.ref === ref ? { ...i, ...updates } : i)); };
-  const validerIntervention = (ref) => { updateIntervention(ref, { statut: "Validée" }); };
+  const validerIntervention = (ref) => { updateIntervention(ref, { statut: "Validée" }); playKaching(); };
 
   const changeTechRate = (techId) => {
     const rate = parseFloat(newRate) / 100;
@@ -1289,6 +1328,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
     const val = parseFloat(editTTC);
     if (!isNaN(val) && val >= 0) {
       setInterventions(prev => prev.map(i => i.ref === ref ? { ...i, ttc: val } : i));
+      if (val > 0) playKaching();
     }
     setEditRef(null); setEditTTC("");
   };
@@ -1357,33 +1397,38 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
             const isEditing = editRef === inter.ref;
             const canEdit = inter.statut !== "Validée";
             return (
-              <div key={inter.ref} style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.04)", background: idx % 2 ? "rgba(255,255,255,0.02)" : "transparent" }}>
+              <div key={inter.ref} style={{ padding: "14px 14px", borderBottom: "1px solid rgba(255,255,255,0.04)", background: idx % 2 ? "rgba(255,255,255,0.02)" : "transparent" }}>
                 {/* Row 1: main info */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: inter.poseur ? 10 : 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: inter.poseur ? 10 : 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", flex: 1, minWidth: 0 }}>
                     <span style={{ fontWeight: 700, color: T.gold, fontSize: 13 }}>{inter.ref}</span>
-                    <span style={{ color: T.textSoft, fontSize: 12 }}>{inter.date} {inter.heure}</span>
+                    <span style={{ color: T.textSoft, fontSize: 11 }}>{inter.date} {inter.heure}</span>
                     <TypeBadge type={inter.type} />
                     <ModeBadge mode={inter.mode} />
-                    <span style={{ fontSize: 13, color: T.textSoft }}>{inter.clientNom} {inter.clientPrenom}</span>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                     <Badge status={inter.statut} />
                     {isEditing ? (
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <input type="number" value={editTTC} onChange={e => setEditTTC(e.target.value)} onKeyDown={e => e.key === "Enter" && saveTTC(inter.ref)} style={{ width: 80, padding: "6px 10px", fontSize: 14, fontWeight: 700, background: "rgba(255,255,255,0.1)", border: "1px solid " + T.gold, borderRadius: 8, color: "#06D6A0", outline: "none", fontFamily: "inherit", textAlign: "right" }} autoFocus />
+                        <input type="number" inputMode="decimal" value={editTTC} onChange={e => setEditTTC(e.target.value)} onKeyDown={e => e.key === "Enter" && saveTTC(inter.ref)} style={{ width: 90, padding: "8px 10px", fontSize: 16, fontWeight: 700, background: "rgba(255,255,255,0.1)", border: "1px solid " + T.gold, borderRadius: 8, color: "#06D6A0", outline: "none", fontFamily: "inherit", textAlign: "right" }} autoFocus />
                         <span style={{ color: T.textMuted, fontSize: 14 }}>€</span>
-                        <Btn onClick={() => saveTTC(inter.ref)} style={{ padding: "4px 10px", fontSize: 11 }}>✓</Btn>
-                        <button onClick={() => { setEditRef(null); setEditTTC(""); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, color: T.textMuted }}>✕</button>
+                        <Btn onClick={() => saveTTC(inter.ref)} style={{ padding: "6px 12px", fontSize: 13, minHeight: 36 }}>✓</Btn>
+                        <button onClick={() => { setEditRef(null); setEditTTC(""); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, color: T.textMuted, padding: 6, minWidth: 30, minHeight: 30 }}>✕</button>
                       </div>
                     ) : (
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <span style={{ fontWeight: 800, fontSize: 15, color: inter.ttc > 0 ? "#06D6A0" : "rgba(255,255,255,0.15)" }}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
-                        {canEdit && <button onClick={() => { setEditRef(inter.ref); setEditTTC(String(inter.ttc || "")); }} style={{ background: "rgba(255,255,255,0.06)", border: "none", borderRadius: 6, padding: "3px 8px", cursor: "pointer", fontSize: 11, color: T.textMuted }}>✏️</button>}
+                        {canEdit && <button onClick={() => { setEditRef(inter.ref); setEditTTC(String(inter.ttc || "")); }} style={{ background: "rgba(255,255,255,0.06)", border: "none", borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 13, color: T.textMuted, minWidth: 36, minHeight: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>✏️</button>}
                         {inter.statut === "Validée" && <span style={{ fontSize: 10, color: "#06D6A0" }}>🔒</span>}
                       </div>
                     )}
                   </div>
+                </div>
+                {/* Client info line */}
+                <div style={{ fontSize: 12, color: T.textMuted, marginTop: 4, marginBottom: 4, display: "flex", flexWrap: "wrap", gap: 4 }}>
+                  <span>👤 {inter.clientNom} {inter.clientPrenom}</span>
+                  <span style={{ color: "rgba(255,255,255,0.15)" }}>·</span>
+                  <span style={{ fontSize: 11 }}>{inter.adresse}</span>
                 </div>
 
                 {/* Row 2: commission breakdown if poseur */}
@@ -1476,7 +1521,7 @@ const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
             return (
               <div key={inter.ref} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", background: idx % 2 ? "rgba(255,255,255,0.02)" : "transparent" }}>
                 {/* Header row — click to expand */}
-                <div onClick={() => setExpandedRef(isExpanded ? null : inter.ref)} style={{ padding: "16px 20px", cursor: "pointer", transition: "background 0.15s" }}
+                <div onClick={() => setExpandedRef(isExpanded ? null : inter.ref)} style={{ padding: "14px 14px", cursor: "pointer", transition: "background 0.15s" }}
                   onMouseEnter={e => e.currentTarget.style.background = "rgba(200,164,78,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
@@ -1508,7 +1553,7 @@ const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
 
                 {/* Expanded details */}
                 {isExpanded && (
-                  <div style={{ padding: "0 20px 20px", borderTop: "1px solid rgba(200,164,78,0.08)" }}>
+                  <div style={{ padding: "0 14px 16px", borderTop: "1px solid rgba(200,164,78,0.08)" }}>
                     {/* Vidéo/photos du technicien */}
                     {(inter.techMedias || []).length > 0 && (
                       <div style={{ background: "rgba(200,164,78,0.06)", borderRadius: 12, padding: 14, marginTop: 14, border: "1px solid rgba(200,164,78,0.12)" }}>
@@ -1529,7 +1574,7 @@ const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
                     )}
 
                     {/* Prix de la pose */}
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 14 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 12, marginTop: 14 }}>
                       <div>
                         <label style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, display: "block", marginBottom: 6 }}>💰 Prix de ma pose (€)</label>
                         <input type="number" value={inter.poseurPrixPose || ""} placeholder="0" disabled={isLocked}
@@ -1643,43 +1688,56 @@ export default function App() {
           <div style={{ marginTop: 14, fontSize: 13, color: T.textMuted }}>Chargement des données...</div>
         </div>
       )}
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}*{box-sizing:border-box}::placeholder{color:rgba(255,255,255,0.25)}input[type="date"]{color-scheme:dark}input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}input[type="time"]{color-scheme:dark}input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
-/* ═══ RESPONSIVE ═══ */
-.aurenis-tabs{display:flex;gap:6px;background:rgba(255,255,255,0.04);border-radius:14px;padding:4px;border:1px solid rgba(255,255,255,0.06);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}::placeholder{color:rgba(255,255,255,0.25)}html{-webkit-text-size-adjust:100%}body{overscroll-behavior:none}input,textarea,select,button{font-size:16px!important}input[type="date"]{color-scheme:dark}input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer;padding:4px}input[type="time"]{color-scheme:dark}input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer;padding:4px}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+
+/* ═══ RESPONSIVE BASE ═══ */
+.aurenis-tabs{display:flex;gap:4px;background:rgba(255,255,255,0.04);border-radius:14px;padding:4px;border:1px solid rgba(255,255,255,0.06);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .aurenis-tabs::-webkit-scrollbar{display:none}
-.aurenis-tabs button{padding:8px 18px;border:none;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;background:transparent;color:rgba(255,255,255,0.4);transition:all 0.2s;white-space:nowrap;flex-shrink:0}
+.aurenis-tabs button{padding:8px 18px;border:none;border-radius:10px;cursor:pointer;font-size:13px!important;font-weight:600;font-family:inherit;background:transparent;color:rgba(255,255,255,0.4);transition:all 0.2s;white-space:nowrap;flex-shrink:0;min-height:40px}
 .aurenis-tabs button.active{background:rgba(255,255,255,0.1);color:#fff}
-.aurenis-kpis{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px}
+.aurenis-kpis{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
 .aurenis-kpis>div{flex:1;min-width:150px}
 .aurenis-header-inner{display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
-.aurenis-header-right{display:flex;align-items:center;gap:14px}
+.aurenis-header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .aurenis-inter-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);flex-wrap:wrap;gap:8px}
-.aurenis-journal-grid{display:grid;grid-template-columns:80px 85px 1fr 75px 85px 80px 100px 90px;padding:10px 14px;font-size:13px;align-items:center}
+.aurenis-journal-grid{display:grid;grid-template-columns:80px 85px 1fr 75px 85px 80px 100px 90px;padding:10px 14px;font-size:13px!important;align-items:center}
 .aurenis-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .aurenis-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
-.wa-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.25);color:#25D366;border-radius:10px;padding:6px 8px;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;white-space:nowrap;transition:all 0.2s;line-height:1}
-.wa-btn:hover{background:rgba(37,211,102,0.25);transform:scale(1.05)}
+.wa-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.25);color:#25D366;border-radius:10px;padding:8px 10px;cursor:pointer;font-size:12px!important;font-weight:600;font-family:inherit;white-space:nowrap;transition:all 0.2s;line-height:1;min-height:44px}
+.wa-btn:hover{background:rgba(37,211,102,0.25);transform:scale(1.02)}
+
+/* ═══ TABLET (768px) ═══ */
 @media(max-width:768px){
-.aurenis-header-inner{flex-direction:column;gap:10px;padding:10px 16px!important}
-.aurenis-header-right{flex-wrap:wrap;justify-content:center;gap:8px}
-.aurenis-header-right>span,.aurenis-header-right>div,.aurenis-header-right>button{font-size:11px!important}
-.aurenis-tabs{padding:3px}
-.aurenis-tabs button{padding:6px 12px;font-size:11px}
-.aurenis-kpis>div{min-width:calc(50% - 8px);flex:unset}
-.aurenis-inter-row{flex-direction:column;align-items:flex-start;gap:10px}
-.aurenis-journal-grid{grid-template-columns:1fr 1fr!important;gap:6px 10px;font-size:12px}
-.aurenis-journal-grid>div:nth-child(3){grid-column:span 2}
-.aurenis-journal-grid>div:nth-child(4){display:none}
-.aurenis-journal-head{display:none!important}
-.aurenis-stats-grid{grid-template-columns:1fr}
-.aurenis-filter-row>div{flex:1 1 100%!important;min-width:0!important}
-.aurenis-filter-row>div:nth-child(2),.aurenis-filter-row>div:nth-child(3){flex:1 1 calc(50% - 5px)!important}
+  .aurenis-header-inner{flex-direction:column;gap:8px;padding:10px 12px!important}
+  .aurenis-header-right{justify-content:center;gap:8px}
+  .aurenis-header-right>span{font-size:10px!important}
+  .aurenis-header-right>div>div{font-size:12px!important}
+  .aurenis-tabs{padding:3px}
+  .aurenis-tabs button{padding:8px 14px;font-size:12px!important;min-height:38px}
+  .aurenis-kpis>div{min-width:calc(50% - 7px);flex:unset}
+  .aurenis-inter-row{flex-direction:column;align-items:flex-start;gap:10px}
+  .aurenis-journal-grid{grid-template-columns:1fr 1fr!important;gap:6px 10px;font-size:12px!important}
+  .aurenis-journal-grid>div:nth-child(3){grid-column:span 2}
+  .aurenis-journal-grid>div:nth-child(4){display:none}
+  .aurenis-journal-head{display:none!important}
+  .aurenis-stats-grid{grid-template-columns:1fr}
+  .aurenis-filter-row>div{flex:1 1 100%!important;min-width:0!important}
+  .aurenis-filter-row>div:nth-child(2),.aurenis-filter-row>div:nth-child(3){flex:1 1 calc(50% - 5px)!important}
 }
+
+/* ═══ MOBILE (480px) ═══ */
 @media(max-width:480px){
-.aurenis-kpis>div{min-width:100%}
-.aurenis-journal-grid{grid-template-columns:1fr!important;gap:4px}
-.aurenis-journal-grid>div:nth-child(3){grid-column:span 1}
-.aurenis-journal-grid>div{text-align:left!important}
+  .aurenis-kpis{gap:8px}
+  .aurenis-kpis>div{min-width:calc(50% - 4px)}
+  .aurenis-journal-grid{grid-template-columns:1fr!important;gap:4px}
+  .aurenis-journal-grid>div:nth-child(3){grid-column:span 1}
+  .aurenis-journal-grid>div{text-align:left!important}
+  .aurenis-tabs button{padding:8px 10px;font-size:11px!important}
+}
+
+/* ═══ MOBILE SMALL (380px) ═══ */
+@media(max-width:380px){
+  .aurenis-kpis>div{min-width:100%}
 }
 `}</style>
 
