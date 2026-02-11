@@ -50,6 +50,21 @@ const calcNetPatron = (inter) => {
   return inter.ttc - comm - inter.poseurCost;
 };
 
+/* ═══ WHATSAPP HELPER ═══ */
+const sendWhatsApp = (phone, message) => {
+  const clean = phone.replace(/[\s\-\.\(\)]/g, "").replace(/^\+/, "");
+  const url = `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+};
+
+const waMessageClient = (inter) => {
+  return `Bonjour ${inter.clientPrenom} ${inter.clientNom},\n\nNous vous confirmons votre intervention :\n📋 Réf : ${inter.ref}\n📅 ${inter.date} à ${inter.heure}\n🔧 Type : ${inter.type} (${inter.mode})\n👨‍🔧 Technicien : ${inter.tech}\n📍 ${inter.adresse}\n\nCordialement,\nAURENIS - AquaTech Services`;
+};
+
+const waMessageTech = (inter, tech) => {
+  return `Bonjour ${tech ? tech.split(" ")[0] : ""},\n\nNouvelle intervention assignée :\n📋 ${inter.ref}\n📅 ${inter.date} à ${inter.heure}\n🔧 ${inter.type} (${inter.mode})\n👤 Client : ${inter.clientPrenom} ${inter.clientNom}\n📞 ${inter.tel}\n📍 ${inter.adresse}\n\nMerci,\nAURENIS`;
+};
+
 /* ═══ STORAGE (localStorage) ═══ */
 const ST = {
   async get(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } },
@@ -108,8 +123,8 @@ const SectionTitle = ({ children, right }) => <div style={{ display: "flex", jus
 const Modal = ({ open, onClose, title, children, width = 480 }) => {
   if (!open) return null;
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20, backdropFilter: "blur(4px)" }} onClick={onClose}>
-      <div style={{ background: "#1E2243", borderRadius: 24, padding: "28px 32px", width: "100%", maxWidth: width, border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 24px 64px rgba(0,0,0,0.5)", maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 12, backdropFilter: "blur(4px)" }} onClick={onClose}>
+      <div style={{ background: "#1E2243", borderRadius: 24, padding: "24px 20px", width: "100%", maxWidth: width, border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 24px 64px rgba(0,0,0,0.5)", maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#fff" }}>{title}</h3>
           <button onClick={onClose} style={{ background: "rgba(255,255,255,0.06)", border: "none", borderRadius: 10, width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
@@ -241,9 +256,9 @@ const Header = ({ account, onLogout, roleBadge }) => {
   const initials = account.name?.split(" ").map(n => n[0]).join("") || "A";
   return (
     <div style={{ background: "rgba(27,31,59,0.95)", borderBottom: "1px solid rgba(200,164,78,0.12)", padding: "14px 28px", backdropFilter: "blur(20px)", position: "sticky", top: 0, zIndex: 50 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 1100, margin: "0 auto" }}>
+      <div className="aurenis-header-inner">
         <AurenisLogo size="sm" />
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <div className="aurenis-header-right">
           <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 8, background: account.role === "admin" ? "rgba(200,164,78,0.15)" : account.role === "tech" ? "rgba(14,165,233,0.15)" : "rgba(236,72,153,0.15)", color: account.role === "admin" ? T.gold : account.role === "tech" ? "#0EA5E9" : "#EC4899", textTransform: "uppercase", letterSpacing: 1 }}>{account.role === "admin" ? "Admin" : account.role === "tech" ? "Technicien" : "Poseur"}</span>
           <div style={{ textAlign: "right" }}><div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{account.name}</div></div>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${color}, ${color}88)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 800, fontSize: 13 }}>{initials}</div>
@@ -421,11 +436,11 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, minHeight: "100vh" }}>
       <Header account={account} onLogout={onLogout} />
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 28px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 16px" }}>
         {/* Time + Nav */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <div style={{ display: "flex", gap: 6, background: "rgba(255,255,255,0.04)", borderRadius: 14, padding: 4, border: "1px solid rgba(255,255,255,0.06)" }}>
-            {tabs.map(t => <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 18px", border: "none", borderRadius: 10, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", background: tab === t.id ? "rgba(255,255,255,0.1)" : "transparent", color: tab === t.id ? "#fff" : T.textMuted, transition: "all 0.2s" }}>{t.icon} {t.label}</button>)}
+          <div style={{ display: "flex", gap: 6, background: "rgba(255,255,255,0.04)", borderRadius: 14, padding: 4, border: "1px solid rgba(255,255,255,0.06)", overflowX: "auto", WebkitOverflowScrolling: "touch" }} className="aurenis-tabs">
+            {tabs.map(t => <button key={t.id} onClick={() => setTab(t.id)} className={tab === t.id ? "active" : ""}>{t.icon} {t.label}</button>)}
           </div>
           <div style={{ fontSize: 13, fontWeight: 600, color: T.textMuted }}>{time.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })} · <span style={{ color: T.gold }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span></div>
         </div>
@@ -433,7 +448,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {/* ═══ DASHBOARD ═══ */}
         {tab === "dashboard" && (
           <div>
-            <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 24 }}>
+            <div className="aurenis-kpis">
               <KPI label="Interventions" value={interventions.length} color={T.gold} icon="📋" />
               <KPI label="Validées" value={validees.length} color="#06D6A0" icon="✅" />
               <KPI label="En attente" value={attente} color="#FFD166" icon="⏳" />
@@ -445,7 +460,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
               <Card style={{ marginBottom: 20, borderLeft: "3px solid #FFD166" }}>
                 <SectionTitle right={<span style={{ fontSize: 12, color: "#FFD166", fontWeight: 700 }}>⏳ {terminees.length} en attente</span>}>Interventions à valider</SectionTitle>
                 {terminees.map(inter => (
-                  <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", flexWrap: "wrap", gap: 10 }}>
+                  <div key={inter.ref} className="aurenis-inter-row" style={{ padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                       <span style={{ fontWeight: 700, color: T.gold, fontSize: 13 }}>{inter.ref}</span>
                       <span style={{ color: T.textSoft, fontSize: 13 }}>{inter.date}</span>
@@ -453,8 +468,9 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                       <TypeBadge type={inter.type} />
                       {inter.poseur && <span style={{ fontSize: 11, color: "#EC4899", background: "rgba(236,72,153,0.1)", padding: "2px 8px", borderRadius: 6 }}>👷 {inter.poseur}</span>}
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                       <span style={{ fontWeight: 800, color: "#06D6A0", fontSize: 15 }}>{inter.ttc} €</span>
+                      <button className="wa-btn" onClick={() => sendWhatsApp(inter.tel, waMessageClient(inter))}>📱 Client</button>
                       <Btn onClick={() => setEditModal(inter.ref)} variant="ghost" style={{ padding: "6px 12px", fontSize: 12 }}>✏️ Modifier</Btn>
                       <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "6px 16px", fontSize: 12 }}>✅ Valider</Btn>
                     </div>
@@ -470,7 +486,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
           <Card>
             <SectionTitle right={<span style={{ fontSize: 12, color: T.textMuted }}>{interventions.length} interventions</span>}>Toutes les interventions</SectionTitle>
             {interventions.map((inter, idx) => (
-              <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", flexWrap: "wrap", gap: 8 }}
+              <div key={inter.ref} className="aurenis-inter-row"
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(200,164,78,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                   <span style={{ fontWeight: 700, color: T.gold, fontSize: 13, minWidth: 68 }}>{inter.ref}</span>
@@ -480,10 +496,12 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                   <span style={{ fontSize: 13, color: "#fff", fontWeight: 600 }}>{inter.tech}</span>
                   {inter.poseur && <span style={{ fontSize: 11, color: "#EC4899", background: "rgba(236,72,153,0.1)", padding: "2px 8px", borderRadius: 6 }}>👷 {inter.poseur} ({inter.poseurCost}€ · {inter.poseurMode === "divise2" ? "÷2" : "gratuit"})</span>}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <span style={{ fontSize: 13, color: T.textMuted }}>{inter.clientNom} {inter.clientPrenom}</span>
                   <Badge status={inter.statut} />
                   <span style={{ fontWeight: 800, fontSize: 14, color: inter.ttc > 0 ? "#06D6A0" : "rgba(255,255,255,0.15)" }}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
+                  <button className="wa-btn" onClick={() => sendWhatsApp(inter.tel, waMessageClient(inter))} title="WhatsApp client">📱 Client</button>
+                  {(() => { const t = techs.find(tc => tc.name === inter.tech); return t ? <button className="wa-btn" onClick={() => sendWhatsApp(t.tel, waMessageTech(inter, t.name))} title="WhatsApp tech">📱 Tech</button> : null; })()}
                   <Btn onClick={() => setEditModal(inter.ref)} variant="ghost" style={{ padding: "4px 10px", fontSize: 11 }}>✏️</Btn>
                   {inter.statut === "Terminée" && <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "4px 12px", fontSize: 11 }}>✅ Valider</Btn>}
                 </div>
@@ -513,7 +531,10 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                       {/* Téléphone */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "10px 14px", marginBottom: 8 }}>
                         <div><span style={{ fontSize: 11, color: T.textMuted }}>Téléphone</span><div style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginTop: 2 }}>{tech.tel}</div></div>
-                        <Btn onClick={() => { setTelModal(tech.id); setNewTel(tech.tel); }} variant="ghost" style={{ padding: "6px 12px", fontSize: 11 }}>✏️</Btn>
+                        <div style={{ display: "flex", gap: 6 }}>
+                          <button className="wa-btn" onClick={() => sendWhatsApp(tech.tel, `Bonjour ${tech.name.split(" ")[0]},\n\n`)} style={{ padding: "6px 10px" }}>📱 WhatsApp</button>
+                          <Btn onClick={() => { setTelModal(tech.id); setNewTel(tech.tel); }} variant="ghost" style={{ padding: "6px 12px", fontSize: 11 }}>✏️</Btn>
+                        </div>
                       </div>
                       {/* Commission */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "10px 14px" }}>
@@ -674,7 +695,7 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
 
                 {/* Filters */}
                 <Card style={{ padding: 16, marginBottom: 14 }}>
-                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "end" }}>
+                  <div className="aurenis-filter-row" style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "end" }}>
                     <div style={{ flex: "1 1 180px" }}><label style={fLabel}>🔍 Recherche</label><input type="text" placeholder="Réf, client, tech, adresse..." value={jSearch} onChange={e => setJSearch(e.target.value)} style={fInp} /></div>
                     <div style={{ flex: "0 0 135px" }}><label style={fLabel}>📅 Du</label><input type="date" value={jDateFrom} onChange={e => { setJDateFrom(e.target.value); setJQuickPeriod(""); }} style={fInp} /></div>
                     <div style={{ flex: "0 0 135px" }}><label style={fLabel}>📅 Au</label><input type="date" value={jDateTo} onChange={e => { setJDateTo(e.target.value); setJQuickPeriod(""); }} style={fInp} /></div>
@@ -703,7 +724,7 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                         { label: "Moy / inter", value: `${fmt(jStats.avg)} €`, color: "#818CF8", icon: "📈" },
                       ].map((s, i) => <KPI key={i} label={s.label} value={s.value} color={s.color} icon={s.icon} />)}
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    <div className="aurenis-stats-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                       <Card style={{ padding: 14 }}>
                         <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>👨‍🔧 Par technicien</div>
                         {Object.entries(jStats.byTech).map(([name, d]) => (
@@ -730,7 +751,7 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                 {/* Table */}
                 <Card style={{ padding: 0, overflow: "hidden" }}>
                   {/* Table header */}
-                  <div style={{ display: "grid", gridTemplateColumns: "80px 85px 1fr 75px 85px 80px 100px 90px", padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.08)", fontSize: 10, color: T.textMuted, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 700 }}>
+                  <div className="aurenis-journal-grid aurenis-journal-head" style={{ display: "grid", gridTemplateColumns: "80px 85px 1fr 75px 85px 80px 100px 90px", padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.08)", fontSize: 10, color: T.textMuted, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 700 }}>
                     <div onClick={() => toggleSort("ref")} style={{ cursor: "pointer" }}>Réf <SortIcon field="ref" /></div>
                     <div onClick={() => toggleSort("date")} style={{ cursor: "pointer" }}>Date <SortIcon field="date" /></div>
                     <div>Client / Tech</div>
@@ -749,7 +770,7 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                     const isExpanded = jExpandedRow === inter.ref;
                     return (
                       <div key={inter.ref}>
-                        <div onClick={() => setJExpandedRow(isExpanded ? null : inter.ref)} style={{
+                        <div onClick={() => setJExpandedRow(isExpanded ? null : inter.ref)} className="aurenis-journal-grid" style={{
                           display: "grid", gridTemplateColumns: "80px 85px 1fr 75px 85px 80px 100px 90px",
                           padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.03)",
                           fontSize: 13, alignItems: "center", cursor: "pointer",
@@ -773,7 +794,7 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                           <div style={{ textAlign: "right", fontWeight: 800, color: T.gold }}>{fmt(net)} €</div>
                         </div>
                         {isExpanded && (
-                          <div style={{ padding: "10px 14px 10px 94px", background: "rgba(200,164,78,0.03)", borderBottom: "1px solid rgba(200,164,78,0.08)", fontSize: 12, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+                          <div style={{ padding: "10px 14px 10px 14px", background: "rgba(200,164,78,0.03)", borderBottom: "1px solid rgba(200,164,78,0.08)", fontSize: 12, display: "flex", flexWrap: "wrap", gap: 14 }}>
                             <div><div style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", marginBottom: 2 }}>📞 Téléphone</div><div style={{ color: "#fff" }}>{inter.tel}</div></div>
                             <div><div style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", marginBottom: 2 }}>📍 Adresse</div><div style={{ color: "#fff" }}>{inter.adresse}</div></div>
                             <div><div style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", marginBottom: 2 }}>⚡ Mode</div><div><ModeBadge mode={inter.mode} /></div></div>
@@ -786,7 +807,7 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
 
                   {/* Total row */}
                   {jFiltered.length > 0 && (
-                    <div style={{ display: "grid", gridTemplateColumns: "80px 85px 1fr 75px 85px 80px 100px 90px", padding: "12px 14px", borderTop: "2px solid rgba(200,164,78,0.2)", fontSize: 13, fontWeight: 700, alignItems: "center", background: "rgba(200,164,78,0.04)" }}>
+                    <div className="aurenis-journal-grid" style={{ display: "grid", gridTemplateColumns: "80px 85px 1fr 75px 85px 80px 100px 90px", padding: "12px 14px", borderTop: "2px solid rgba(200,164,78,0.2)", fontSize: 13, fontWeight: 700, alignItems: "center", background: "rgba(200,164,78,0.04)" }}>
                       <div style={{ color: T.gold, gridColumn: "span 4" }}>TOTAL — {jStats.count} intervention{jStats.count > 1 ? "s" : ""}</div>
                       <div style={{ textAlign: "right", color: "#06D6A0" }}>{fmt(jStats.total)} €</div>
                       <div style={{ textAlign: "right", color: "#EF476F" }}>-{fmt(jStats.totalC)} €</div>
@@ -964,7 +985,9 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
               )}
 
               {/* Actions */}
-              <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+              <div style={{ display: "flex", gap: 8, marginTop: 4, flexWrap: "wrap" }}>
+                <button className="wa-btn" onClick={() => sendWhatsApp(inter.tel, waMessageClient(inter))} style={{ padding: "10px 14px", fontSize: 12, flex: 1 }}>📱 WhatsApp Client</button>
+                {(() => { const t = techs.find(tc => tc.name === inter.tech); return t ? <button className="wa-btn" onClick={() => sendWhatsApp(t.tel, waMessageTech(inter, t.name))} style={{ padding: "10px 14px", fontSize: 12, flex: 1 }}>📱 WhatsApp Tech</button> : null; })()}
                 <Btn onClick={() => setEditModal(null)} variant="ghost" style={{ flex: 1 }}>Fermer</Btn>
                 {inter.statut === "Terminée" && <Btn onClick={() => { validerIntervention(inter.ref); setEditModal(null); }} style={{ flex: 1 }}>✅ Valider</Btn>}
               </div>
@@ -1062,13 +1085,13 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, minHeight: "100vh" }}>
       <Header account={account} onLogout={onLogout} />
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "24px 28px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "24px 16px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
           <div><h1 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 800, color: "#fff" }}>Bonjour {tech?.name.split(" ")[0]} 👋</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted }}>Votre activité</p></div>
           <div style={{ textAlign: "right" }}><div style={{ fontSize: 20, fontWeight: 700, background: "linear-gradient(135deg, #C8A44E, #E8C96A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div></div>
         </div>
 
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 20 }}>
+        <div className="aurenis-kpis">
           <KPI label="Interventions" value={myInter.length} color={T.gold} icon="📋" />
           <KPI label="Validées" value={validees.length} color="#06D6A0" icon="✅" />
           <KPI label="Mon CA" value={`${totalCA.toLocaleString("fr-FR")} €`} color="#059669" icon="💰" />
@@ -1205,10 +1228,10 @@ const PoseurDash = ({ account, onLogout, interventions }) => {
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, minHeight: "100vh" }}>
       <Header account={account} onLogout={onLogout} />
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 28px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 16px" }}>
         <div style={{ marginBottom: 24 }}><h1 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 800, color: "#fff" }}>Bonjour {poseur?.name.split(" ")[0]} 👋</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted }}>Vos interventions en tant que poseur</p></div>
 
-        <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 24 }}>
+        <div className="aurenis-kpis">
           <KPI label="Mes poses" value={myInter.length} color="#EC4899" icon="👷" />
           <KPI label="Validées" value={validees.length} color="#06D6A0" icon="✅" />
           <KPI label="Total prestations" value={`${totalPose.toLocaleString("fr-FR")} €`} color="#EC4899" icon="💰" />
@@ -1264,10 +1287,55 @@ export default function App() {
   const [specialties, setSpecialties] = useState(["Plomberie", "Serrurerie", "Électricité"]);
   const [statuts, setStatuts] = useState(["Planifiée", "En cours", "Terminée", "Validée"]);
 
+  useEffect(() => {
+    if (!document.querySelector('meta[name="viewport"]')) {
+      const meta = document.createElement("meta"); meta.name = "viewport"; meta.content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
+      document.head.appendChild(meta);
+    }
+  }, []);
+
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}*{box-sizing:border-box}::placeholder{color:rgba(255,255,255,0.25)}input[type="date"]{color-scheme:dark}input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}input[type="time"]{color-scheme:dark}input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}`}</style>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}*{box-sizing:border-box}::placeholder{color:rgba(255,255,255,0.25)}input[type="date"]{color-scheme:dark}input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}input[type="time"]{color-scheme:dark}input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+/* ═══ RESPONSIVE ═══ */
+.aurenis-tabs{display:flex;gap:6px;background:rgba(255,255,255,0.04);border-radius:14px;padding:4px;border:1px solid rgba(255,255,255,0.06);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.aurenis-tabs::-webkit-scrollbar{display:none}
+.aurenis-tabs button{padding:8px 18px;border:none;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;background:transparent;color:rgba(255,255,255,0.4);transition:all 0.2s;white-space:nowrap;flex-shrink:0}
+.aurenis-tabs button.active{background:rgba(255,255,255,0.1);color:#fff}
+.aurenis-kpis{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px}
+.aurenis-kpis>div{flex:1;min-width:150px}
+.aurenis-header-inner{display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
+.aurenis-header-right{display:flex;align-items:center;gap:14px}
+.aurenis-inter-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);flex-wrap:wrap;gap:8px}
+.aurenis-journal-grid{display:grid;grid-template-columns:80px 85px 1fr 75px 85px 80px 100px 90px;padding:10px 14px;font-size:13px;align-items:center}
+.aurenis-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.aurenis-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.wa-btn{display:inline-flex;align-items:center;gap:4px;background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.25);color:#25D366;border-radius:8px;padding:4px 10px;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;white-space:nowrap;transition:all 0.2s}
+.wa-btn:hover{background:rgba(37,211,102,0.22)}
+@media(max-width:768px){
+.aurenis-header-inner{flex-direction:column;gap:10px;padding:10px 16px!important}
+.aurenis-header-right{flex-wrap:wrap;justify-content:center;gap:8px}
+.aurenis-header-right>span,.aurenis-header-right>div,.aurenis-header-right>button{font-size:11px!important}
+.aurenis-tabs{padding:3px}
+.aurenis-tabs button{padding:6px 12px;font-size:11px}
+.aurenis-kpis>div{min-width:calc(50% - 8px);flex:unset}
+.aurenis-inter-row{flex-direction:column;align-items:flex-start;gap:10px}
+.aurenis-journal-grid{grid-template-columns:1fr 1fr!important;gap:6px 10px;font-size:12px}
+.aurenis-journal-grid>div:nth-child(3){grid-column:span 2}
+.aurenis-journal-grid>div:nth-child(4){display:none}
+.aurenis-journal-head{display:none!important}
+.aurenis-stats-grid{grid-template-columns:1fr}
+.aurenis-filter-row>div{flex:1 1 100%!important;min-width:0!important}
+.aurenis-filter-row>div:nth-child(2),.aurenis-filter-row>div:nth-child(3){flex:1 1 calc(50% - 5px)!important}
+}
+@media(max-width:480px){
+.aurenis-kpis>div{min-width:100%}
+.aurenis-journal-grid{grid-template-columns:1fr!important;gap:4px}
+.aurenis-journal-grid>div:nth-child(3){grid-column:span 1}
+.aurenis-journal-grid>div{text-align:left!important}
+}
+`}</style>
 
       {page === "login" && <LoginPage onLogin={a => { setAccount(a); setPage("dashboard"); }} onGoRegister={() => setPage("register")} onGoForgot={() => setPage("forgot")} />}
       {page === "register" && <RegisterPage onGoLogin={() => setPage("login")} onRegistered={(e, c) => { setVerifyEmail(e); setVerifyCode(c); setPage("verify"); }} />}
