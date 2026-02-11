@@ -22,18 +22,18 @@ const INIT_POSEURS = [
 const ADMIN_EMAIL = "admin@aquatech.fr";
 
 const INIT_INTERVENTIONS = [
-  { ref: "INT-001", date: "2026-02-11", heure: "09:00", type: "Plomberie", mode: "Urgence", clientNom: "Dupont", clientPrenom: "Marie", tel: "+33 6 11 22 33 44", adresse: "12 rue de la Paix, 75002", tech: "Ahmed Benali", statut: "Validée", ttc: 350, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null },
-  { ref: "INT-002", date: "2026-02-11", heure: "10:30", type: "Serrurerie", mode: "RDV", clientNom: "Martin", clientPrenom: "Pierre", tel: "+33 6 22 33 44 55", adresse: "5 av. des Champs, 75008", tech: "Lucas Martin", statut: "Validée", ttc: 280, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null },
-  { ref: "INT-003", date: "2026-02-11", heure: "14:00", type: "Plomberie", mode: "RDV", clientNom: "Leroy", clientPrenom: "Jean", tel: "+33 6 33 44 55 66", adresse: "8 bd Voltaire, 75011", tech: "Karim Dupont", statut: "En cours", ttc: 0, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null },
-  { ref: "INT-004", date: "2026-02-11", heure: "16:00", type: "Électricité", mode: "RDV", clientNom: "Petit", clientPrenom: "Sophie", tel: "+33 6 44 55 66 77", adresse: "22 rue Rivoli, 75004", tech: "David Lefebvre", statut: "Planifiée", ttc: 0, commRate: 0.25, poseur: null, poseurCost: 0, poseurMode: null },
-  { ref: "INT-005", date: "2026-02-12", heure: "08:30", type: "Plomberie", mode: "Urgence", clientNom: "Garcia", clientPrenom: "Luis", tel: "+33 6 55 66 77 88", adresse: "15 rue Monge, 75005", tech: "Ahmed Benali", statut: "Terminée", ttc: 420, commRate: 0.20, poseur: "Rachid Amrani", poseurCost: 150, poseurMode: "divise2" },
-  { ref: "INT-006", date: "2026-02-12", heure: "11:00", type: "Serrurerie", mode: "Urgence", clientNom: "Bernard", clientPrenom: "Chloé", tel: "+33 6 66 77 88 99", adresse: "3 rue de Sèze, 75009", tech: "Lucas Martin", statut: "Terminée", ttc: 195, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null },
-  { ref: "INT-007", date: "2026-02-12", heure: "15:00", type: "Plomberie", mode: "RDV", clientNom: "Moreau", clientPrenom: "Alice", tel: "+33 6 77 88 99 00", adresse: "41 rue Oberkampf, 75011", tech: "Karim Dupont", statut: "Validée", ttc: 310, commRate: 0.20, poseur: "Rachid Amrani", poseurCost: 120, poseurMode: "gratuit" },
-  { ref: "INT-008", date: "2026-02-13", heure: "09:30", type: "Électricité", mode: "Urgence", clientNom: "Roux", clientPrenom: "Thomas", tel: "+33 6 88 99 00 11", adresse: "7 rue de Turbigo, 75003", tech: "David Lefebvre", statut: "Validée", ttc: 475, commRate: 0.25, poseur: null, poseurCost: 0, poseurMode: null },
-  { ref: "INT-009", date: "2026-02-13", heure: "14:00", type: "Plomberie", mode: "RDV", clientNom: "Blanc", clientPrenom: "Emma", tel: "+33 6 99 00 11 22", adresse: "18 rue de Rivoli, 75001", tech: "Ahmed Benali", statut: "Terminée", ttc: 290, commRate: 0.20, poseur: "Sofiane Belkacem", poseurCost: 100, poseurMode: "divise2" },
-  { ref: "INT-010", date: "2026-02-14", heure: "10:00", type: "Serrurerie", mode: "Urgence", clientNom: "Faure", clientPrenom: "Marc", tel: "+33 6 10 20 30 40", adresse: "9 rue du Bac, 75007", tech: "Lucas Martin", statut: "Terminée", ttc: 365, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null },
-  { ref: "INT-011", date: "2026-02-14", heure: "15:30", type: "Électricité", mode: "RDV", clientNom: "Robin", clientPrenom: "Julie", tel: "+33 6 20 30 40 50", adresse: "27 av. Parmentier, 75011", tech: "David Lefebvre", statut: "En cours", ttc: 0, commRate: 0.25, poseur: null, poseurCost: 0, poseurMode: null },
-  { ref: "INT-012", date: "2026-02-15", heure: "09:00", type: "Plomberie", mode: "Urgence", clientNom: "Simon", clientPrenom: "Paul", tel: "+33 6 30 40 50 60", adresse: "4 rue de la Roquette, 75011", tech: "Karim Dupont", statut: "Planifiée", ttc: 0, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null },
+  { ref: "INT-001", date: "2026-02-11", heure: "09:00", type: "Plomberie", mode: "Urgence", clientNom: "Dupont", clientPrenom: "Marie", tel: "+33 6 11 22 33 44", adresse: "12 rue de la Paix, 75002", tech: "Ahmed Benali", statut: "Validée", ttc: 350, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-002", date: "2026-02-11", heure: "10:30", type: "Serrurerie", mode: "RDV", clientNom: "Martin", clientPrenom: "Pierre", tel: "+33 6 22 33 44 55", adresse: "5 av. des Champs, 75008", tech: "Lucas Martin", statut: "Validée", ttc: 280, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-003", date: "2026-02-11", heure: "14:00", type: "Plomberie", mode: "RDV", clientNom: "Leroy", clientPrenom: "Jean", tel: "+33 6 33 44 55 66", adresse: "8 bd Voltaire, 75011", tech: "Karim Dupont", statut: "En cours", ttc: 0, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-004", date: "2026-02-11", heure: "16:00", type: "Électricité", mode: "RDV", clientNom: "Petit", clientPrenom: "Sophie", tel: "+33 6 44 55 66 77", adresse: "22 rue Rivoli, 75004", tech: "David Lefebvre", statut: "Planifiée", ttc: 0, commRate: 0.25, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-005", date: "2026-02-12", heure: "08:30", type: "Plomberie", mode: "Urgence", clientNom: "Garcia", clientPrenom: "Luis", tel: "+33 6 55 66 77 88", adresse: "15 rue Monge, 75005", tech: "Ahmed Benali", statut: "Terminée", ttc: 420, commRate: 0.20, poseur: "Rachid Amrani", poseurCost: 150, poseurMode: "divise2", techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-006", date: "2026-02-12", heure: "11:00", type: "Serrurerie", mode: "Urgence", clientNom: "Bernard", clientPrenom: "Chloé", tel: "+33 6 66 77 88 99", adresse: "3 rue de Sèze, 75009", tech: "Lucas Martin", statut: "Terminée", ttc: 195, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-007", date: "2026-02-12", heure: "15:00", type: "Plomberie", mode: "RDV", clientNom: "Moreau", clientPrenom: "Alice", tel: "+33 6 77 88 99 00", adresse: "41 rue Oberkampf, 75011", tech: "Karim Dupont", statut: "Validée", ttc: 310, commRate: 0.20, poseur: "Rachid Amrani", poseurCost: 120, poseurMode: "gratuit", techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-008", date: "2026-02-13", heure: "09:30", type: "Électricité", mode: "Urgence", clientNom: "Roux", clientPrenom: "Thomas", tel: "+33 6 88 99 00 11", adresse: "7 rue de Turbigo, 75003", tech: "David Lefebvre", statut: "Validée", ttc: 475, commRate: 0.25, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-009", date: "2026-02-13", heure: "14:00", type: "Plomberie", mode: "RDV", clientNom: "Blanc", clientPrenom: "Emma", tel: "+33 6 99 00 11 22", adresse: "18 rue de Rivoli, 75001", tech: "Ahmed Benali", statut: "Terminée", ttc: 290, commRate: 0.20, poseur: "Sofiane Belkacem", poseurCost: 100, poseurMode: "divise2", techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-010", date: "2026-02-14", heure: "10:00", type: "Serrurerie", mode: "Urgence", clientNom: "Faure", clientPrenom: "Marc", tel: "+33 6 10 20 30 40", adresse: "9 rue du Bac, 75007", tech: "Lucas Martin", statut: "Terminée", ttc: 365, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-011", date: "2026-02-14", heure: "15:30", type: "Électricité", mode: "RDV", clientNom: "Robin", clientPrenom: "Julie", tel: "+33 6 20 30 40 50", adresse: "27 av. Parmentier, 75011", tech: "David Lefebvre", statut: "En cours", ttc: 0, commRate: 0.25, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
+  { ref: "INT-012", date: "2026-02-15", heure: "09:00", type: "Plomberie", mode: "Urgence", clientNom: "Simon", clientPrenom: "Paul", tel: "+33 6 30 40 50 60", adresse: "4 rue de la Roquette, 75011", tech: "Karim Dupont", statut: "Planifiée", ttc: 0, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
 ];
 
 /* ═══ FINANCE HELPERS ═══ */
@@ -88,6 +88,73 @@ const supaSave = async (key, value) => {
       body: JSON.stringify({ key, value, updated_at: new Date().toISOString() })
     });
   } catch (e) { console.log("Supabase save error:", e); }
+};
+
+/* ═══ SUPABASE STORAGE (photos/vidéos) ═══ */
+const supaUploadFile = async (file, folder) => {
+  try {
+    const ext = file.name.split(".").pop().toLowerCase();
+    const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const res = await fetch(`${SUPA_URL}/storage/v1/object/media/${fileName}`, {
+      method: "POST",
+      headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": file.type },
+      body: file
+    });
+    if (!res.ok) { console.log("Upload error:", await res.text()); return null; }
+    return `${SUPA_URL}/storage/v1/object/public/media/${fileName}`;
+  } catch (e) { console.log("Upload error:", e); return null; }
+};
+
+/* ═══ MEDIA UPLOAD COMPONENT ═══ */
+const MediaUpload = ({ medias = [], onAdd, onRemove, label = "Photos / Vidéos", minRequired = 0, readOnly = false }) => {
+  const fileRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFiles = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    setUploading(true);
+    for (const file of files) {
+      const url = await supaUploadFile(file, "chantier");
+      if (url) onAdd({ url, type: file.type.startsWith("video") ? "video" : "image", name: file.name });
+    }
+    setUploading(false);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  return (
+    <div style={{ marginTop: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+        <span style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>📸 {label}</span>
+        {minRequired > 0 && medias.length < minRequired && <span style={{ fontSize: 10, color: "#EF476F", fontWeight: 600 }}>Min. {minRequired} requis</span>}
+      </div>
+      {/* Media grid */}
+      {medias.length > 0 && (
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
+          {medias.map((m, idx) => (
+            <div key={idx} style={{ position: "relative", width: 90, height: 90, borderRadius: 10, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)" }}>
+              {m.type === "video" ? (
+                <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover" }} onClick={() => window.open(m.url, "_blank")} />
+              ) : (
+                <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => window.open(m.url, "_blank")} />
+              )}
+              {m.type === "video" && <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 24, pointerEvents: "none", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}>▶️</div>}
+              {!readOnly && <button onClick={() => onRemove(idx)} style={{ position: "absolute", top: 2, right: 2, background: "rgba(0,0,0,0.7)", border: "none", borderRadius: "50%", width: 20, height: 20, cursor: "pointer", color: "#EF476F", fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>}
+            </div>
+          ))}
+        </div>
+      )}
+      {/* Upload button */}
+      {!readOnly && (
+        <div>
+          <input ref={fileRef} type="file" accept="image/*,video/*" multiple onChange={handleFiles} style={{ display: "none" }} />
+          <button onClick={() => fileRef.current?.click()} disabled={uploading} style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 16px", background: "rgba(255,255,255,0.06)", border: "1px dashed rgba(255,255,255,0.15)", borderRadius: 10, cursor: uploading ? "wait" : "pointer", color: T.textSoft, fontSize: 12, fontWeight: 600, fontFamily: "inherit", width: "100%" }}>
+            {uploading ? <><span style={{ width: 14, height: 14, border: "2px solid rgba(200,164,78,0.3)", borderTopColor: T.gold, borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> Envoi en cours...</> : <>📷 Ajouter photo / vidéo</>}
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 /* ═══ STORAGE (localStorage) ═══ */
@@ -1013,6 +1080,46 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                 </div>
               )}
 
+              {/* POSEUR DETAILS */}
+              {inter.poseur && (inter.poseurPrixPose > 0 || inter.poseurAchats > 0) && (
+                <div style={{ background: "rgba(236,72,153,0.06)", borderRadius: 12, padding: 14, border: "1px solid rgba(236,72,153,0.12)" }}>
+                  <div style={{ fontSize: 11, color: "#EC4899", marginBottom: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>👷 Détails poseur — {inter.poseur}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Prix de pose déclaré</span><span style={{ fontWeight: 700, color: "#EC4899" }}>{(inter.poseurPrixPose || 0).toLocaleString("fr-FR")} €</span></div>
+                  {inter.poseurAchats > 0 && <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Achats avancés</span><span style={{ fontWeight: 700, color: "#F97316" }}>{inter.poseurAchats.toLocaleString("fr-FR")} €</span></div>}
+                  {inter.poseurNote && <div style={{ fontSize: 12, color: T.textSoft, marginTop: 6, fontStyle: "italic", background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 8 }}>📝 {inter.poseurNote}</div>}
+                </div>
+              )}
+
+              {/* MEDIAS TECH */}
+              {(inter.techMedias || []).length > 0 && (
+                <div>
+                  <div style={{ fontSize: 11, color: T.gold, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>📸 Photos/vidéos technicien ({(inter.techMedias || []).length})</div>
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                    {(inter.techMedias || []).map((m, i) => (
+                      <div key={i} style={{ position: "relative", width: 70, height: 70, borderRadius: 8, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", cursor: "pointer" }} onClick={() => window.open(m.url, "_blank")}>
+                        {m.type === "video" ? <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                        {m.type === "video" && <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, textShadow: "0 2px 6px rgba(0,0,0,0.6)" }}>▶️</div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* MEDIAS POSEUR */}
+              {(inter.poseurMedias || []).length > 0 && (
+                <div>
+                  <div style={{ fontSize: 11, color: "#EC4899", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>📸 Photos/vidéos poseur ({(inter.poseurMedias || []).length})</div>
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                    {(inter.poseurMedias || []).map((m, i) => (
+                      <div key={i} style={{ position: "relative", width: 70, height: 70, borderRadius: 8, overflow: "hidden", border: "1px solid rgba(236,72,153,0.2)", cursor: "pointer" }} onClick={() => window.open(m.url, "_blank")}>
+                        {m.type === "video" ? <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                        {m.type === "video" && <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, textShadow: "0 2px 6px rgba(0,0,0,0.6)" }}>▶️</div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Actions */}
               <div style={{ display: "flex", gap: 8, marginTop: 4, flexWrap: "wrap" }}>
                 <button className="wa-btn" onClick={() => sendWhatsApp(inter.tel, waMessageClient(inter))} style={{ padding: "10px 14px", fontSize: 12, flex: 1 }}><WaIcon size={14} /> Client</button>
@@ -1224,6 +1331,14 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
                 {!inter.poseur && inter.ttc > 0 && inter.statut === "Validée" && (
                   <div style={{ marginTop: 6, fontSize: 12, color: "#06D6A0" }}>💰 Commission ({(inter.commRate * 100)}%) : <strong>{commNette.toLocaleString("fr-FR")} €</strong></div>
                 )}
+                {/* Media upload section */}
+                <MediaUpload
+                  medias={inter.techMedias || []}
+                  readOnly={inter.statut === "Validée"}
+                  label="Mes photos / vidéos chantier"
+                  onAdd={(media) => setInterventions(prev => prev.map(i => i.ref === inter.ref ? { ...i, techMedias: [...(i.techMedias || []), media] } : i))}
+                  onRemove={(idx) => setInterventions(prev => prev.map(i => i.ref === inter.ref ? { ...i, techMedias: (i.techMedias || []).filter((_, j) => j !== idx) } : i))}
+                />
               </div>
             );
           })}
@@ -1245,14 +1360,22 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
 /* ═══════════════════════════════════════════════════════════
    POSEUR DASHBOARD
    ═══════════════════════════════════════════════════════════ */
-const PoseurDash = ({ account, onLogout, interventions }) => {
+const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
   const [time, setTime] = useState(new Date());
+  const [expandedRef, setExpandedRef] = useState(null);
   useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearTimeout(t); }, []);
 
   const poseur = INIT_POSEURS.find(p => p.id === account.memberId);
   const myInter = interventions.filter(i => i.poseur === poseur?.name);
   const validees = myInter.filter(i => i.statut === "Validée");
-  const totalPose = myInter.reduce((s, i) => s + i.poseurCost, 0);
+  const totalPose = myInter.reduce((s, i) => s + (i.poseurPrixPose || i.poseurCost || 0), 0);
+  const totalAchats = myInter.reduce((s, i) => s + (i.poseurAchats || 0), 0);
+
+  const updateInter = (ref, updates) => {
+    setInterventions(prev => prev.map(i => i.ref === ref ? { ...i, ...updates } : i));
+  };
+
+  const inputStyle = { padding: "10px 12px", fontSize: 14, fontWeight: 700, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#fff", outline: "none", fontFamily: "inherit", width: "100%", boxSizing: "border-box" };
 
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, minHeight: "100vh" }}>
@@ -1263,40 +1386,119 @@ const PoseurDash = ({ account, onLogout, interventions }) => {
         <div className="aurenis-kpis">
           <KPI label="Mes poses" value={myInter.length} color="#EC4899" icon="👷" />
           <KPI label="Validées" value={validees.length} color="#06D6A0" icon="✅" />
-          <KPI label="Total prestations" value={`${totalPose.toLocaleString("fr-FR")} €`} color="#EC4899" icon="💰" />
+          <KPI label="Total poses" value={`${totalPose.toLocaleString("fr-FR")} €`} color="#EC4899" icon="💰" />
+          <KPI label="Total achats avancés" value={`${totalAchats.toLocaleString("fr-FR")} €`} color="#F97316" icon="🧾" />
         </div>
 
         <Card style={{ padding: 0, overflow: "hidden" }}>
           {myInter.length === 0 ? (
             <div style={{ padding: 48, textAlign: "center" }}><div style={{ fontSize: 40, opacity: 0.3, marginBottom: 8 }}>👷</div><div style={{ fontSize: 14, color: T.textSoft }}>Aucune intervention assignée</div></div>
-          ) : myInter.map((inter, idx) => (
-            <div key={inter.ref} style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.04)", background: idx % 2 ? "rgba(255,255,255,0.02)" : "transparent" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                  <span style={{ fontWeight: 700, color: "#EC4899", fontSize: 13 }}>{inter.ref}</span>
-                  <span style={{ color: T.textSoft, fontSize: 12 }}>{inter.date} {inter.heure}</span>
-                  <TypeBadge type={inter.type} />
-                  <ModeBadge mode={inter.mode} />
+          ) : myInter.map((inter, idx) => {
+            const isExpanded = expandedRef === inter.ref;
+            const isLocked = inter.statut === "Validée";
+            return (
+              <div key={inter.ref} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", background: idx % 2 ? "rgba(255,255,255,0.02)" : "transparent" }}>
+                {/* Header row — click to expand */}
+                <div onClick={() => setExpandedRef(isExpanded ? null : inter.ref)} style={{ padding: "16px 20px", cursor: "pointer", transition: "background 0.15s" }}
+                  onMouseEnter={e => e.currentTarget.style.background = "rgba(200,164,78,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                      <span style={{ fontWeight: 700, color: "#EC4899", fontSize: 13 }}>{inter.ref}</span>
+                      <span style={{ color: T.textSoft, fontSize: 12 }}>{inter.date} {inter.heure}</span>
+                      <TypeBadge type={inter.type} />
+                      <ModeBadge mode={inter.mode} />
+                      <span style={{ fontSize: 12, color: isExpanded ? T.gold : T.textMuted }}>{isExpanded ? "▾" : "▸"}</span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <Badge status={inter.statut} />
+                      <span style={{ fontWeight: 800, color: "#EC4899", fontSize: 15 }}>{(inter.poseurPrixPose || inter.poseurCost || 0)} €</span>
+                      {(inter.poseurMedias || []).length > 0 && <span style={{ fontSize: 11, color: "#06D6A0" }}>📸 {(inter.poseurMedias || []).length}</span>}
+                    </div>
+                  </div>
+                  <div style={{ marginTop: 6, fontSize: 12, color: T.textMuted, display: "flex", flexWrap: "wrap", gap: 4 }}>
+                    <span>Dépanneur : <strong style={{ color: "#fff" }}>{inter.tech}</strong></span>
+                    <span style={{ margin: "0 6px" }}>·</span>
+                    <span>Client : {inter.clientNom} {inter.clientPrenom}</span>
+                    <span style={{ margin: "0 6px" }}>·</span>
+                    <span>{inter.adresse}</span>
+                  </div>
+                  <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 6, background: inter.poseurMode === "divise2" ? "rgba(255,210,80,0.12)" : "rgba(6,214,160,0.12)", color: inter.poseurMode === "divise2" ? "#FFD166" : "#06D6A0", fontWeight: 600 }}>
+                      {inter.poseurMode === "divise2" ? "Mode ÷ 2 (partagé)" : "Mode gratuit"}
+                    </span>
+                  </div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <Badge status={inter.statut} />
-                  <span style={{ fontWeight: 800, color: "#EC4899", fontSize: 15 }}>{inter.poseurCost} €</span>
-                </div>
+
+                {/* Expanded details */}
+                {isExpanded && (
+                  <div style={{ padding: "0 20px 20px", borderTop: "1px solid rgba(200,164,78,0.08)" }}>
+                    {/* Vidéo/photos du technicien */}
+                    {(inter.techMedias || []).length > 0 && (
+                      <div style={{ background: "rgba(200,164,78,0.06)", borderRadius: 12, padding: 14, marginTop: 14, border: "1px solid rgba(200,164,78,0.12)" }}>
+                        <div style={{ fontSize: 11, color: T.gold, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>🎬 Médias du technicien — À faire</div>
+                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                          {(inter.techMedias || []).map((m, i) => (
+                            <div key={i} style={{ position: "relative", width: 110, height: 110, borderRadius: 10, overflow: "hidden", border: "1px solid rgba(200,164,78,0.2)" }}>
+                              {m.type === "video" ? (
+                                <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => window.open(m.url, "_blank")} />
+                              ) : (
+                                <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => window.open(m.url, "_blank")} />
+                              )}
+                              {m.type === "video" && <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 28, pointerEvents: "none", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}>▶️</div>}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Prix de la pose */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 14 }}>
+                      <div>
+                        <label style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, display: "block", marginBottom: 6 }}>💰 Prix de ma pose (€)</label>
+                        <input type="number" value={inter.poseurPrixPose || ""} placeholder="0" disabled={isLocked}
+                          onChange={e => updateInter(inter.ref, { poseurPrixPose: parseFloat(e.target.value) || 0 })}
+                          style={{ ...inputStyle, color: "#EC4899", opacity: isLocked ? 0.5 : 1 }} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, display: "block", marginBottom: 6 }}>🧾 Achats avancés (€)</label>
+                        <input type="number" value={inter.poseurAchats || ""} placeholder="0" disabled={isLocked}
+                          onChange={e => updateInter(inter.ref, { poseurAchats: parseFloat(e.target.value) || 0 })}
+                          style={{ ...inputStyle, color: "#F97316", opacity: isLocked ? 0.5 : 1 }} />
+                      </div>
+                    </div>
+
+                    {/* Note */}
+                    <div style={{ marginTop: 12 }}>
+                      <label style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, display: "block", marginBottom: 6 }}>📝 Note / commentaire</label>
+                      <textarea value={inter.poseurNote || ""} placeholder="Détails sur le chantier..." disabled={isLocked}
+                        onChange={e => updateInter(inter.ref, { poseurNote: e.target.value })}
+                        style={{ ...inputStyle, minHeight: 60, resize: "vertical", opacity: isLocked ? 0.5 : 1 }} />
+                    </div>
+
+                    {/* Photos/vidéos chantier fini */}
+                    <MediaUpload
+                      medias={inter.poseurMedias || []}
+                      readOnly={isLocked}
+                      label="Mes photos / vidéos chantier fini"
+                      minRequired={2}
+                      onAdd={(media) => updateInter(inter.ref, { poseurMedias: [...(inter.poseurMedias || []), media] })}
+                      onRemove={(idx) => updateInter(inter.ref, { poseurMedias: (inter.poseurMedias || []).filter((_, j) => j !== idx) })}
+                    />
+
+                    {/* Récapitulatif */}
+                    {(inter.poseurPrixPose > 0 || inter.poseurAchats > 0) && (
+                      <div style={{ background: "rgba(236,72,153,0.06)", borderRadius: 12, padding: 14, marginTop: 14, border: "1px solid rgba(236,72,153,0.12)" }}>
+                        <div style={{ fontSize: 11, color: "#EC4899", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>📊 Récapitulatif</div>
+                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Prix de la pose</span><span style={{ fontWeight: 700, color: "#EC4899" }}>{(inter.poseurPrixPose || 0).toLocaleString("fr-FR")} €</span></div>
+                        {inter.poseurAchats > 0 && <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Achats avancés</span><span style={{ fontWeight: 700, color: "#F97316" }}>{inter.poseurAchats.toLocaleString("fr-FR")} €</span></div>}
+                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, fontWeight: 800, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 6, marginTop: 4 }}><span style={{ color: "#fff" }}>Total à percevoir</span><span style={{ color: "#EC4899" }}>{((inter.poseurPrixPose || 0) + (inter.poseurAchats || 0)).toLocaleString("fr-FR")} €</span></div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              <div style={{ marginTop: 8, fontSize: 12, color: T.textMuted }}>
-                <span>Dépanneur : <strong style={{ color: "#fff" }}>{inter.tech}</strong></span>
-                <span style={{ margin: "0 10px" }}>·</span>
-                <span>Client : {inter.clientNom} {inter.clientPrenom}</span>
-                <span style={{ margin: "0 10px" }}>·</span>
-                <span>{inter.adresse}</span>
-              </div>
-              <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 6, background: inter.poseurMode === "divise2" ? "rgba(255,210,80,0.12)" : "rgba(6,214,160,0.12)", color: inter.poseurMode === "divise2" ? "#FFD166" : "#06D6A0", fontWeight: 600 }}>
-                  {inter.poseurMode === "divise2" ? "Mode ÷ 2 (partagé avec dépanneur)" : "Mode gratuit (pris en charge par l'entreprise)"}
-                </span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </Card>
       </div>
     </div>
@@ -1411,7 +1613,7 @@ export default function App() {
       {!loading && page === "forgot" && <ForgotPage onGoLogin={() => setPage("login")} />}
       {!loading && page === "dashboard" && account?.role === "admin" && <AdminDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} setTechs={setTechs} specialties={specialties} setSpecialties={setSpecialties} statuts={statuts} setStatuts={setStatuts} />}
       {!loading && page === "dashboard" && account?.role === "tech" && <TechDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} specialties={specialties} />}
-      {!loading && page === "dashboard" && account?.role === "poseur" && <PoseurDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} />}
+      {!loading && page === "dashboard" && account?.role === "poseur" && <PoseurDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} />}
     </div>
   );
 }
