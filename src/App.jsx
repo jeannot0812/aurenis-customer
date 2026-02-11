@@ -208,6 +208,7 @@ const LoginPage = ({ onLogin, onGoRegister, onGoForgot }) => {
 /* ═══ REGISTER ═══ */
 const RegisterPage = ({ onGoLogin, onRegistered }) => {
   const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [confirm, setConfirm] = useState(""); const [errors, setErrors] = useState({}); const [loading, setLoading] = useState(false);
+  const [showPw, setShowPw] = useState(false); const [showCf, setShowCf] = useState(false);
   const allMembers = [...INIT_TECHS, ...INIT_POSEURS];
   const validate = () => {
     const e = {}; const em = email.toLowerCase().trim();
@@ -223,12 +224,13 @@ const RegisterPage = ({ onGoLogin, onRegistered }) => {
     setLoading(false); onRegistered(em, code);
   };
   const strength = (() => { if (!password) return { pct: 0, label: "", color: "#333" }; let s = 0; if (password.length >= 6) s++; if (password.length >= 10) s++; if (/[A-Z]/.test(password)) s++; if (/[0-9]/.test(password)) s++; if (/[^a-zA-Z0-9]/.test(password)) s++; return [{ pct: 20, label: "Très faible", color: "#EF476F" }, { pct: 40, label: "Faible", color: "#F97316" }, { pct: 60, label: "Moyen", color: "#FFD166" }, { pct: 80, label: "Fort", color: "#06D6A0" }, { pct: 100, label: "Excellent", color: "#059669" }][Math.min(s, 4)]; })();
+  const eyeBtn = (visible, toggle) => <button onClick={toggle} style={{ position: "absolute", right: 14, top: 14, background: "none", border: "none", cursor: "pointer", fontSize: 14, color: T.textMuted }}>{visible ? "🙈" : "👁️"}</button>;
   return (
     <AuthShell><AuthCard title="Créer un compte" subtitle="Email professionnel fourni par l'entreprise">
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <Inp icon="✉️" type="email" placeholder="Email professionnel" value={email} onChange={e => setEmail(e.target.value)} error={errors.email} />
-        <div><Inp icon="🔒" type="password" placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} error={errors.password} />{password && <div style={{ marginTop: 8 }}><div style={{ display: "flex", gap: 4, marginBottom: 4 }}>{[0,1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i < strength.pct / 20 ? strength.color : "rgba(255,255,255,0.08)" }} />)}</div><span style={{ fontSize: 11, color: strength.color, fontWeight: 600 }}>{strength.label}</span></div>}</div>
-        <Inp icon="🔒" type="password" placeholder="Confirmer" value={confirm} onChange={e => setConfirm(e.target.value)} error={errors.confirm} />
+        <div><div style={{ position: "relative" }}><Inp icon="🔒" type={showPw ? "text" : "password"} placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} error={errors.password} />{eyeBtn(showPw, () => setShowPw(!showPw))}</div>{password && <div style={{ marginTop: 8 }}><div style={{ display: "flex", gap: 4, marginBottom: 4 }}>{[0,1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i < strength.pct / 20 ? strength.color : "rgba(255,255,255,0.08)" }} />)}</div><span style={{ fontSize: 11, color: strength.color, fontWeight: 600 }}>{strength.label}</span></div>}</div>
+        <div style={{ position: "relative" }}><Inp icon="🔒" type={showCf ? "text" : "password"} placeholder="Confirmer" value={confirm} onChange={e => setConfirm(e.target.value)} error={errors.confirm} />{eyeBtn(showCf, () => setShowCf(!showCf))}</div>
         <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Créer mon compte</Btn>
       </div>
       <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.gold, fontWeight: 700, fontFamily: "inherit" }}>← Se connecter</button></div>
@@ -256,14 +258,16 @@ const VerifyPage = ({ email, code, onVerified, onGoLogin }) => {
 /* ═══ FORGOT ═══ */
 const ForgotPage = ({ onGoLogin }) => {
   const [step, setStep] = useState("email"); const [email, setEmail] = useState(""); const [rc, setRc] = useState(""); const [gc, setGc] = useState(""); const [np, setNp] = useState(""); const [cp, setCp] = useState(""); const [err, setErr] = useState(""); const [ld, setLd] = useState(false);
+  const [showNp, setShowNp] = useState(false); const [showCp, setShowCp] = useState(false);
   const send = async () => { setErr(""); if (!email.trim()) return setErr("Email requis"); setLd(true); await new Promise(r => setTimeout(r, 600)); const a = await ST.get(`account:${email.toLowerCase().trim()}`); if (!a) { setLd(false); return setErr("Aucun compte"); } const c = String(Math.floor(100000 + Math.random() * 900000)); a.resetCode = c; await ST.set(`account:${email.toLowerCase().trim()}`, a); setGc(c); setLd(false); setStep("code"); };
   const verify = () => { setErr(""); if (rc !== gc) return setErr("Code incorrect"); setStep("newpass"); };
   const reset = async () => { setErr(""); if (np.length < 6) return setErr("Min. 6 car."); if (np !== cp) return setErr("Non identiques"); setLd(true); const a = await ST.get(`account:${email.toLowerCase().trim()}`); if (a) { a.password = np; await ST.set(`account:${email.toLowerCase().trim()}`, a); } setLd(false); setStep("done"); };
+  const eyeBtn = (visible, toggle) => <button onClick={toggle} style={{ position: "absolute", right: 14, top: 14, background: "none", border: "none", cursor: "pointer", fontSize: 14, color: T.textMuted }}>{visible ? "🙈" : "👁️"}</button>;
   return (
     <AuthShell><AuthCard title={step === "done" ? "Réinitialisé ✓" : "Récupération"} subtitle={step === "done" ? "Connectez-vous" : "Récupérez votre accès"}>
       {step === "email" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><Inp icon="✉️" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={send} loading={ld} style={{ width: "100%" }}>Envoyer</Btn></div>}
       {step === "code" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><div style={{ background: "rgba(200,164,78,0.08)", borderRadius: T.radiusXs, padding: "10px", fontSize: 12, color: T.gold, textAlign: "center", fontWeight: 600 }}>Code : <strong>{gc}</strong></div><Inp icon="🔑" placeholder="Code 6 chiffres" value={rc} onChange={e => setRc(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={verify} style={{ width: "100%" }}>Vérifier</Btn></div>}
-      {step === "newpass" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><Inp icon="🔒" type="password" placeholder="Nouveau" value={np} onChange={e => setNp(e.target.value)} /><Inp icon="🔒" type="password" placeholder="Confirmer" value={cp} onChange={e => setCp(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={reset} loading={ld} style={{ width: "100%" }}>Réinitialiser</Btn></div>}
+      {step === "newpass" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><div style={{ position: "relative" }}><Inp icon="🔒" type={showNp ? "text" : "password"} placeholder="Nouveau" value={np} onChange={e => setNp(e.target.value)} />{eyeBtn(showNp, () => setShowNp(!showNp))}</div><div style={{ position: "relative" }}><Inp icon="🔒" type={showCp ? "text" : "password"} placeholder="Confirmer" value={cp} onChange={e => setCp(e.target.value)} />{eyeBtn(showCp, () => setShowCp(!showCp))}</div>{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={reset} loading={ld} style={{ width: "100%" }}>Réinitialiser</Btn></div>}
       {step === "done" && <div style={{ textAlign: "center" }}><div style={{ fontSize: 48, marginBottom: 16 }}>✅</div><Btn onClick={onGoLogin} style={{ width: "100%" }}>Se connecter</Btn></div>}
       {step !== "done" && <div style={{ marginTop: 16, textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.textMuted, fontFamily: "inherit" }}>← Retour</button></div>}
     </AuthCard></AuthShell>
