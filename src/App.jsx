@@ -138,7 +138,7 @@ const PhoneInput = ({ value, onChange }) => {
             type="text" placeholder={`${currentInd.digits} chiffres`} value={number}
             onChange={handleNumberChange}
             onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-            style={{ width: "100%", padding: "10px 16px", fontSize: 14, fontWeight: 500, fontFamily: "inherit", background: isFull ? "rgba(6,214,160,0.06)" : "rgba(0,0,0,0.06)", border: focused ? "1.5px solid " + (isFull ? "#06D6A0" : "#B8860B") : "1.5px solid " + (isFull ? "rgba(6,214,160,0.2)" : "rgba(0,0,0,0.1)"), borderRadius: 10, color: "#1E1E3C", outline: "none", boxSizing: "border-box", letterSpacing: "1px" }}
+            style={{ width: "100%", padding: "10px 16px", fontSize: 14, fontWeight: 500, fontFamily: "inherit", background: isFull ? "rgba(249,115,22,0.06)" : "rgba(0,0,0,0.06)", border: focused ? "1.5px solid " + (isFull ? "#06D6A0" : "#2563EB") : "1.5px solid " + (isFull ? "rgba(249,115,22,0.25)" : "rgba(0,0,0,0.1)"), borderRadius: 10, color: "#1E1E3C", outline: "none", boxSizing: "border-box", letterSpacing: "1px" }}
           />
           <div style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", fontSize: 11, fontWeight: 700, color: isFull ? "#06D6A0" : "rgba(0,0,0,0.25)" }}>
             {isFull ? "✓" : `${rawDigits.length}/${currentInd.digits}`}
@@ -156,19 +156,19 @@ const ST = {
 };
 
 /* ═══ TOKENS ═══ */
-const T = { dark: "#F2F4F8", bg: "#FFFFFF", gold: "#B8860B", goldLight: "#DAA520", green: "#059669", red: "#EF476F", blue: "#4361EE", violet: "#7209B7", textMuted: "rgba(30,30,60,0.4)", textSoft: "rgba(30,30,60,0.6)", textDark: "#1E1E3C", radius: 20, radiusSm: 14, radiusXs: 10 };
+const T = { dark: "#F0F4F8", bg: "#FFFFFF", accent: "#2563EB", accentLight: "#3B82F6", orange: "#F97316", orangeLight: "#FB923C", green: "#059669", red: "#EF476F", blue: "#2563EB", violet: "#7C3AED", textMuted: "rgba(30,40,60,0.45)", textSoft: "rgba(30,40,60,0.65)", textDark: "#1E293B", radius: 16, radiusSm: 12, radiusXs: 8 };
 const typeColors = { "Plomberie": "#0EA5E9", "Serrurerie": "#8B5CF6", "Électricité": "#F59E0B" };
-const statutColors = { "Planifiée": { bg: "rgba(67,97,238,0.15)", c: "#818CF8" }, "En cours": { bg: "rgba(249,115,22,0.15)", c: "#F97316" }, "Terminée": { bg: "rgba(255,210,80,0.15)", c: "#FFD166" }, "Validée": { bg: "rgba(6,214,160,0.15)", c: "#06D6A0" } };
+const statutColors = { "Planifiée": { bg: "rgba(67,97,238,0.15)", c: "#818CF8" }, "En cours": { bg: "rgba(249,115,22,0.15)", c: "#F97316" }, "Terminée": { bg: "rgba(249,115,22,0.12)", c: "#F97316" }, "Validée": { bg: "rgba(6,214,160,0.15)", c: "#06D6A0" } };
 
 /* ═══ SHARED COMPONENTS ═══ */
 const AurenisLogo = ({ size = "lg" }) => {
   const s = size === "lg" ? 44 : 32; const fs = size === "lg" ? 24 : 18; const sub = size === "lg" ? 13 : 10;
   return (
     <div style={{ display: "flex", alignItems: "center", gap: size === "lg" ? 14 : 10 }}>
-      <div style={{ width: s, height: s, borderRadius: s * 0.32, background: "linear-gradient(135deg, #B8860B, #DAA520, #A07828)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 16px rgba(184,134,11,0.2)" }}>
-        <svg width={s * 0.55} height={s * 0.55} viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 10 5 15C5 18.87 8.13 22 12 22C15.87 22 19 18.87 19 15C19 10 12 2 12 2Z" fill="#B8860B" /><path d="M12 6C12 6 8 11 8 14C8 16.21 9.79 18 12 18C14.21 18 16 16.21 16 14C16 11 12 6 12 6Z" fill="rgba(184,134,11,0.3)" /></svg>
+      <div style={{ width: s, height: s, borderRadius: s * 0.32, background: "linear-gradient(135deg, #2563EB, #3B82F6, #1D4ED8)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 16px rgba(37,99,235,0.15)" }}>
+        <svg width={s * 0.55} height={s * 0.55} viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 10 5 15C5 18.87 8.13 22 12 22C15.87 22 19 18.87 19 15C19 10 12 2 12 2Z" fill="#fff" /><path d="M12 6C12 6 8 11 8 14C8 16.21 9.79 18 12 18C14.21 18 16 16.21 16 14C16 11 12 6 12 6Z" fill="rgba(37,99,235,0.2)" /></svg>
       </div>
-      <div><div style={{ display: "flex", alignItems: "baseline", gap: 4 }}><span style={{ fontSize: fs, fontWeight: 800, letterSpacing: -0.5, background: "linear-gradient(135deg, #B8860B, #DAA520)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AURENIS</span><span style={{ fontSize: sub, fontWeight: 500, color: T.textMuted, letterSpacing: 2, textTransform: "uppercase" }}>customer</span></div></div>
+      <div><div style={{ display: "flex", alignItems: "baseline", gap: 4 }}><span style={{ fontSize: fs, fontWeight: 800, letterSpacing: -0.5, background: "linear-gradient(135deg, #2563EB, #3B82F6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AURENIS</span><span style={{ fontSize: sub, fontWeight: 500, color: T.textMuted, letterSpacing: 2, textTransform: "uppercase" }}>customer</span></div></div>
     </div>
   );
 };
@@ -178,18 +178,18 @@ const Inp = ({ icon, type = "text", placeholder, value, onChange, error, onKeyDo
     {icon && <div style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", fontSize: 18, opacity: 0.5, pointerEvents: "none" }}>{icon}</div>}
     <input type={type} placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeyDown}
       style={{ width: "100%", padding: icon ? "14px 16px 14px 48px" : "14px 16px", fontSize: 14, fontWeight: 500, background: "rgba(0,0,0,0.03)", border: error ? "1.5px solid #EF476F" : "1.5px solid rgba(0,0,0,0.1)", borderRadius: T.radiusSm, color: "#1E1E3C", outline: "none", boxSizing: "border-box", transition: "all 0.2s", fontFamily: "inherit" }}
-      onFocus={e => { e.target.style.borderColor = T.gold; }} onBlur={e => { e.target.style.borderColor = error ? "#EF476F" : "rgba(0,0,0,0.1)"; }} />
+      onFocus={e => { e.target.style.borderColor = T.accent; }} onBlur={e => { e.target.style.borderColor = error ? "#EF476F" : "rgba(0,0,0,0.1)"; }} />
     {error && <div style={{ fontSize: 12, color: "#EF476F", marginTop: 4, fontWeight: 500, paddingLeft: 4 }}>{error}</div>}
   </div>
 );
 
 const Btn = ({ children, onClick, loading, variant = "primary", disabled, style: sx }) => {
   const p = variant === "primary";
-  return <button onClick={onClick} disabled={disabled || loading} style={{ padding: "12px 24px", fontSize: 14, fontWeight: 700, border: "none", borderRadius: T.radiusSm, cursor: disabled || loading ? "not-allowed" : "pointer", background: p ? "linear-gradient(135deg, #B8860B, #DAA520)" : variant === "danger" ? "rgba(239,71,111,0.15)" : "rgba(0,0,0,0.06)", color: p ? "#fff" : variant === "danger" ? "#EF476F" : "#fff", opacity: disabled || loading ? 0.5 : 1, transition: "all 0.2s", fontFamily: "inherit", boxShadow: p ? "0 4px 20px rgba(184,134,11,0.25)" : "none", width: sx?.width || "auto", ...sx }}>{loading ? "..." : children}</button>;
+  return <button onClick={onClick} disabled={disabled || loading} style={{ padding: "12px 24px", fontSize: 14, fontWeight: 700, border: "none", borderRadius: T.radiusSm, cursor: disabled || loading ? "not-allowed" : "pointer", background: p ? "linear-gradient(135deg, #2563EB, #3B82F6)" : variant === "danger" ? "rgba(239,71,111,0.15)" : "rgba(0,0,0,0.06)", color: p ? "#fff" : variant === "danger" ? "#EF476F" : "#fff", opacity: disabled || loading ? 0.5 : 1, transition: "all 0.2s", fontFamily: "inherit", boxShadow: p ? "0 4px 20px rgba(184,134,11,0.25)" : "none", width: sx?.width || "auto", ...sx }}>{loading ? "..." : children}</button>;
 };
 
 const Badge = ({ status }) => { const s = statutColors[status] || { bg: "rgba(148,163,184,0.15)", c: "#94A3B8" }; return <span style={{ background: s.bg, color: s.c, padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>{status}</span>; };
-const ModeBadge = ({ mode }) => <span style={{ background: mode === "Urgence" ? "linear-gradient(135deg, #EF476F, #F97316)" : "linear-gradient(135deg, #4361EE, #7209B7)", color: T.textDark, padding: "3px 10px", borderRadius: 16, fontSize: 11, fontWeight: 700, whiteSpace: "nowrap" }}>{mode === "Urgence" ? "⚡ URG" : "📅 RDV"}</span>;
+const ModeBadge = ({ mode }) => <span style={{ background: mode === "Urgence" ? "linear-gradient(135deg, #EF476F, #F97316)" : "linear-gradient(135deg, #2563EB, #3B82F6)", color: T.textDark, padding: "3px 10px", borderRadius: 16, fontSize: 11, fontWeight: 700, whiteSpace: "nowrap" }}>{mode === "Urgence" ? "⚡ URG" : "📅 RDV"}</span>;
 const TypeBadge = ({ type }) => { const c = typeColors[type] || T.blue; return <span style={{ background: `${c}22`, color: c, padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 700 }}>{type}</span>; };
 
 const KPI = ({ label, value, color, icon }) => (
@@ -222,7 +222,7 @@ const Modal = ({ open, onClose, title, children, width = 480 }) => {
 /* ═══ AUTH SHELL ═══ */
 const AuthShell = ({ children }) => (
   <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: T.dark, padding: 20 }}>
-    <div style={{ position: "fixed", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(184,134,11,0.04) 0%, transparent 70%)", pointerEvents: "none" }} />
+    <div style={{ position: "fixed", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(37,99,235,0.03) 0%, transparent 70%)", pointerEvents: "none" }} />
     <div style={{ width: "100%", maxWidth: 420, animation: "fadeUp 0.6s cubic-bezier(0.16,1,0.3,1)" }}>{children}</div>
   </div>
 );
@@ -248,7 +248,7 @@ const LoginPage = ({ onLogin, onGoRegister, onGoForgot }) => {
   return (
     <AuthShell><AuthCard title="Connexion" subtitle="Accédez à votre espace Aurenis">
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ background: "rgba(184,134,11,0.05)", border: "1px solid rgba(184,134,11,0.08)", borderRadius: T.radiusXs, padding: "8px 12px", fontSize: 11, color: T.gold, lineHeight: 1.6 }}>
+        <div style={{ background: "rgba(37,99,235,0.05)", border: "1px solid rgba(37,99,235,0.08)", borderRadius: T.radiusXs, padding: "8px 12px", fontSize: 11, color: T.accent, lineHeight: 1.6 }}>
           <strong>Démo Admin :</strong> admin@aquatech.fr / Admin123<br/>
           <strong>Créer un compte tech :</strong> ahmed@aquatech.fr, lucas@aquatech.fr...<br/>
           <strong>Créer un compte poseur :</strong> rachid@aquatech.fr, sofiane@aquatech.fr
@@ -257,9 +257,9 @@ const LoginPage = ({ onLogin, onGoRegister, onGoForgot }) => {
         <div style={{ position: "relative" }}><Inp icon="🔒" type={show ? "text" : "password"} placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} /><button onClick={() => setShow(!show)} style={{ position: "absolute", right: 14, top: 14, background: "none", border: "none", cursor: "pointer", fontSize: 14, color: T.textMuted }}>{show ? "🙈" : "👁️"}</button></div>
         {error && <div style={{ background: "rgba(239,71,111,0.1)", borderRadius: T.radiusXs, padding: "10px 14px", fontSize: 13, color: "#EF476F", fontWeight: 500 }}>{error}</div>}
         <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Se connecter</Btn>
-        <button onClick={onGoForgot} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.gold, fontWeight: 600, padding: 8, fontFamily: "inherit" }}>Mot de passe oublié ?</button>
+        <button onClick={onGoForgot} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.accent, fontWeight: 600, padding: 8, fontFamily: "inherit" }}>Mot de passe oublié ?</button>
       </div>
-      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(0,0,0,0.06)", textAlign: "center" }}><span style={{ fontSize: 13, color: T.textMuted }}>Pas de compte ? </span><button onClick={onGoRegister} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.gold, fontWeight: 700, fontFamily: "inherit" }}>Créer un compte</button></div>
+      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(0,0,0,0.06)", textAlign: "center" }}><span style={{ fontSize: 13, color: T.textMuted }}>Pas de compte ? </span><button onClick={onGoRegister} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.accent, fontWeight: 700, fontFamily: "inherit" }}>Créer un compte</button></div>
     </AuthCard></AuthShell>
   );
 };
@@ -281,7 +281,7 @@ const RegisterPage = ({ onGoLogin, onRegistered }) => {
     await ST.set(`account:${em}`, { email: em, password, name: member.name, memberId: member.id, role: member.role, verified: false, verifyCode: code });
     setLoading(false); onRegistered(em, code);
   };
-  const strength = (() => { if (!password) return { pct: 0, label: "", color: "#333" }; let s = 0; if (password.length >= 6) s++; if (password.length >= 10) s++; if (/[A-Z]/.test(password)) s++; if (/[0-9]/.test(password)) s++; if (/[^a-zA-Z0-9]/.test(password)) s++; return [{ pct: 20, label: "Très faible", color: "#EF476F" }, { pct: 40, label: "Faible", color: "#F97316" }, { pct: 60, label: "Moyen", color: "#FFD166" }, { pct: 80, label: "Fort", color: "#06D6A0" }, { pct: 100, label: "Excellent", color: "#059669" }][Math.min(s, 4)]; })();
+  const strength = (() => { if (!password) return { pct: 0, label: "", color: "#333" }; let s = 0; if (password.length >= 6) s++; if (password.length >= 10) s++; if (/[A-Z]/.test(password)) s++; if (/[0-9]/.test(password)) s++; if (/[^a-zA-Z0-9]/.test(password)) s++; return [{ pct: 20, label: "Très faible", color: "#EF476F" }, { pct: 40, label: "Faible", color: "#F97316" }, { pct: 60, label: "Moyen", color: T.orange }, { pct: 80, label: "Fort", color: "#06D6A0" }, { pct: 100, label: "Excellent", color: "#059669" }][Math.min(s, 4)]; })();
   return (
     <AuthShell><AuthCard title="Créer un compte" subtitle="Email professionnel fourni par l'entreprise">
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -290,7 +290,7 @@ const RegisterPage = ({ onGoLogin, onRegistered }) => {
         <Inp icon="🔒" type="password" placeholder="Confirmer" value={confirm} onChange={e => setConfirm(e.target.value)} error={errors.confirm} />
         <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Créer mon compte</Btn>
       </div>
-      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(0,0,0,0.06)", textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.gold, fontWeight: 700, fontFamily: "inherit" }}>← Se connecter</button></div>
+      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(0,0,0,0.06)", textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.accent, fontWeight: 700, fontFamily: "inherit" }}>← Se connecter</button></div>
     </AuthCard></AuthShell>
   );
 };
@@ -302,9 +302,9 @@ const VerifyPage = ({ email, code, onVerified, onGoLogin }) => {
   const hk = (i, e) => { if (e.key === "Backspace" && !input[i] && i > 0) document.getElementById(`otp-${i-1}`)?.focus(); };
   const handle = async () => { const c = input.join(""); if (c.length !== 6) return setError("6 chiffres requis"); setLoading(true); await new Promise(r => setTimeout(r, 500)); if (c !== code) { setLoading(false); return setError("Code incorrect"); } const a = await ST.get(`account:${email}`); if (a) { a.verified = true; await ST.set(`account:${email}`, a); } setLoading(false); onVerified(); };
   return (
-    <AuthShell><AuthCard title="Vérification" subtitle={<>Code envoyé à <strong style={{ color: T.gold }}>{email}</strong></>}>
-      <div style={{ background: "rgba(184,134,11,0.06)", border: "1px solid rgba(184,134,11,0.1)", borderRadius: T.radiusXs, padding: "10px 14px", fontSize: 12, color: T.gold, textAlign: "center", marginBottom: 20, fontWeight: 600 }}>📧 Démo — Code : <span style={{ fontSize: 16, letterSpacing: 3, fontWeight: 800 }}>{code}</span></div>
-      <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 20 }}>{input.map((v, i) => <input key={i} id={`otp-${i}`} type="text" inputMode="numeric" maxLength={1} value={v} onChange={e => hc(i, e.target.value)} onKeyDown={e => hk(i, e)} style={{ width: 48, height: 56, textAlign: "center", fontSize: 22, fontWeight: 800, background: v ? "rgba(184,134,11,0.06)" : "rgba(0,0,0,0.06)", border: "1.5px solid " + (v ? "rgba(184,134,11,0.2)" : "rgba(0,0,0,0.1)"), borderRadius: T.radiusXs, color: T.textDark, outline: "none", fontFamily: "inherit" }} />)}</div>
+    <AuthShell><AuthCard title="Vérification" subtitle={<>Code envoyé à <strong style={{ color: T.accent }}>{email}</strong></>}>
+      <div style={{ background: "rgba(37,99,235,0.06)", border: "1px solid rgba(37,99,235,0.08)", borderRadius: T.radiusXs, padding: "10px 14px", fontSize: 12, color: T.accent, textAlign: "center", marginBottom: 20, fontWeight: 600 }}>📧 Démo — Code : <span style={{ fontSize: 16, letterSpacing: 3, fontWeight: 800 }}>{code}</span></div>
+      <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 20 }}>{input.map((v, i) => <input key={i} id={`otp-${i}`} type="text" inputMode="numeric" maxLength={1} value={v} onChange={e => hc(i, e.target.value)} onKeyDown={e => hk(i, e)} style={{ width: 48, height: 56, textAlign: "center", fontSize: 22, fontWeight: 800, background: v ? "rgba(37,99,235,0.06)" : "rgba(0,0,0,0.06)", border: "1.5px solid " + (v ? "rgba(37,99,235,0.15)" : "rgba(0,0,0,0.1)"), borderRadius: T.radiusXs, color: T.textDark, outline: "none", fontFamily: "inherit" }} />)}</div>
       {error && <div style={{ background: "rgba(239,71,111,0.1)", borderRadius: T.radiusXs, padding: "10px", fontSize: 13, color: "#EF476F", textAlign: "center", marginBottom: 14 }}>{error}</div>}
       <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Vérifier</Btn>
       <div style={{ marginTop: 16, textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.textMuted, fontFamily: "inherit" }}>← Retour</button></div>
@@ -321,7 +321,7 @@ const ForgotPage = ({ onGoLogin }) => {
   return (
     <AuthShell><AuthCard title={step === "done" ? "Réinitialisé ✓" : "Récupération"} subtitle={step === "done" ? "Connectez-vous" : "Récupérez votre accès"}>
       {step === "email" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><Inp icon="✉️" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={send} loading={ld} style={{ width: "100%" }}>Envoyer</Btn></div>}
-      {step === "code" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><div style={{ background: "rgba(184,134,11,0.06)", borderRadius: T.radiusXs, padding: "10px", fontSize: 12, color: T.gold, textAlign: "center", fontWeight: 600 }}>Code : <strong>{gc}</strong></div><Inp icon="🔑" placeholder="Code 6 chiffres" value={rc} onChange={e => setRc(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={verify} style={{ width: "100%" }}>Vérifier</Btn></div>}
+      {step === "code" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><div style={{ background: "rgba(37,99,235,0.06)", borderRadius: T.radiusXs, padding: "10px", fontSize: 12, color: T.accent, textAlign: "center", fontWeight: 600 }}>Code : <strong>{gc}</strong></div><Inp icon="🔑" placeholder="Code 6 chiffres" value={rc} onChange={e => setRc(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={verify} style={{ width: "100%" }}>Vérifier</Btn></div>}
       {step === "newpass" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><Inp icon="🔒" type="password" placeholder="Nouveau" value={np} onChange={e => setNp(e.target.value)} /><Inp icon="🔒" type="password" placeholder="Confirmer" value={cp} onChange={e => setCp(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={reset} loading={ld} style={{ width: "100%" }}>Réinitialiser</Btn></div>}
       {step === "done" && <div style={{ textAlign: "center" }}><div style={{ fontSize: 48, marginBottom: 16 }}>✅</div><Btn onClick={onGoLogin} style={{ width: "100%" }}>Se connecter</Btn></div>}
       {step !== "done" && <div style={{ marginTop: 16, textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.textMuted, fontFamily: "inherit" }}>← Retour</button></div>}
@@ -336,14 +336,14 @@ const VerifiedPage = ({ onGoLogin }) => (
 /* ═══ APP HEADER ═══ */
 const Header = ({ account, onLogout, roleBadge }) => {
   const member = [...INIT_TECHS, ...INIT_POSEURS].find(m => m.id === account.memberId);
-  const color = member?.color || T.gold;
+  const color = member?.color || T.accent;
   const initials = account.name?.split(" ").map(n => n[0]).join("") || "A";
   return (
     <div style={{ background: "#FFFFFF", borderBottom: "1px solid rgba(0,0,0,0.08)", padding: "14px 28px", boxShadow: "0 1px 4px rgba(0,0,0,0.04)", position: "sticky", top: 0, zIndex: 50 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 1100, margin: "0 auto" }}>
         <AurenisLogo size="sm" />
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 8, background: account.role === "admin" ? "rgba(184,134,11,0.1)" : account.role === "tech" ? "rgba(14,165,233,0.1)" : "rgba(236,72,153,0.1)", color: account.role === "admin" ? T.gold : account.role === "tech" ? "#0EA5E9" : "#EC4899", textTransform: "uppercase", letterSpacing: 1 }}>{account.role === "admin" ? "Admin" : account.role === "tech" ? "Technicien" : "Poseur"}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 8, background: account.role === "admin" ? "rgba(37,99,235,0.08)" : account.role === "tech" ? "rgba(14,165,233,0.1)" : "rgba(236,72,153,0.1)", color: account.role === "admin" ? T.accent : account.role === "tech" ? "#0EA5E9" : "#EC4899", textTransform: "uppercase", letterSpacing: 1 }}>{account.role === "admin" ? "Admin" : account.role === "tech" ? "Technicien" : "Poseur"}</span>
           <div style={{ textAlign: "right" }}><div style={{ fontSize: 13, fontWeight: 700, color: T.textDark }}>{account.name}</div></div>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${color}, ${color}88)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 800, fontSize: 13 }}>{initials}</div>
           <button onClick={onLogout} style={{ background: "rgba(239,71,111,0.08)", border: "1px solid rgba(239,71,111,0.15)", borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontSize: 11, color: "#EF476F", fontWeight: 600, fontFamily: "inherit" }}>Déconnexion</button>
@@ -427,18 +427,18 @@ const AddressAutocomplete = ({ value, onChange }) => {
         onChange={e => { setQuery(e.target.value); onChange(e.target.value); setShowSugg(true); }}
         onFocus={() => { setFocused(true); setShowSugg(true); }}
         onBlur={() => setTimeout(() => { setFocused(false); setShowSugg(false); }, 250)}
-        style={{ width: "100%", padding: "12px 16px 12px 42px", fontSize: 14, fontWeight: 500, background: "rgba(0,0,0,0.03)", border: focused ? "1.5px solid " + T.gold : "1.5px solid rgba(0,0,0,0.1)", borderRadius: T.radiusSm, color: T.textDark, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
+        style={{ width: "100%", padding: "12px 16px 12px 42px", fontSize: 14, fontWeight: 500, background: "rgba(0,0,0,0.03)", border: focused ? "1.5px solid " + T.accent : "1.5px solid rgba(0,0,0,0.1)", borderRadius: T.radiusSm, color: T.textDark, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
       />
-      {loading && <div style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, border: "2px solid rgba(184,134,11,0.15)", borderTopColor: T.gold, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />}
+      {loading && <div style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, border: "2px solid rgba(37,99,235,0.12)", borderTopColor: T.accent, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />}
       {showSugg && suggestions.length > 0 && (
-        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 100, marginTop: 4, background: "#FFFFFF", border: "1px solid rgba(184,134,11,0.12)", borderRadius: 12, overflow: "hidden", boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }}>
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 100, marginTop: 4, background: "#FFFFFF", border: "1px solid rgba(37,99,235,0.1)", borderRadius: 12, overflow: "hidden", boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }}>
           {suggestions.map((s, i) => (
             <div key={i} onMouseDown={e => e.preventDefault()} onClick={() => { setQuery(s.full); onChange(s.full); setShowSugg(false); setSuggestions([]); }}
               style={{ padding: "10px 16px", fontSize: 13, color: T.textDark, cursor: "pointer", borderBottom: i < suggestions.length - 1 ? "1px solid rgba(0,0,0,0.06)" : "none" }}
-              onMouseEnter={e => e.currentTarget.style.background = "rgba(184,134,11,0.06)"}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(37,99,235,0.06)"}
               onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ color: T.gold, fontSize: 14 }}>📍</span>
+                <span style={{ color: T.accent, fontSize: 14 }}>📍</span>
                 <div>
                   <div style={{ fontWeight: 600, color: "#1E1E3C", fontSize: 13 }}>{s.main}</div>
                   <div style={{ fontSize: 11, color: T.textMuted }}>{s.secondary}</div>
@@ -470,8 +470,8 @@ const ConfigList = ({ items, onAdd, onRemove, label, icon, color }) => {
       <div style={{ display: "flex", gap: 8 }}>
         <input type="text" placeholder={`Ajouter ${label.toLowerCase()}...`} value={newItem} onChange={e => setNewItem(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && newItem.trim()) { onAdd(newItem.trim()); setNewItem(""); } }}
           style={{ flex: 1, padding: "10px 14px", fontSize: 13, background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 10, color: T.textDark, outline: "none", fontFamily: "inherit" }}
-          onFocus={e => e.target.style.borderColor = T.gold} onBlur={e => e.target.style.borderColor = "rgba(0,0,0,0.1)"} />
-        <button onClick={() => { if (newItem.trim()) { onAdd(newItem.trim()); setNewItem(""); } }} style={{ padding: "10px 18px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #B8860B, #DAA520)", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: "inherit" }}>+ Ajouter</button>
+          onFocus={e => e.target.style.borderColor = T.accent} onBlur={e => e.target.style.borderColor = "rgba(0,0,0,0.1)"} />
+        <button onClick={() => { if (newItem.trim()) { onAdd(newItem.trim()); setNewItem(""); } }} style={{ padding: "10px 18px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #2563EB, #3B82F6)", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: "inherit" }}>+ Ajouter</button>
       </div>
     </div>
   );
@@ -541,32 +541,32 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {/* Time + Nav */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <div style={{ display: "flex", gap: 6, background: "#FFFFFF", borderRadius: 14, padding: 4, border: "1px solid rgba(0,0,0,0.08)", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-            {tabs.map(t => <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 18px", border: "none", borderRadius: 10, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", background: tab === t.id ? "rgba(0,0,0,0.06)" : "transparent", color: tab === t.id ? T.gold : T.textMuted, transition: "all 0.2s" }}>{t.icon} {t.label}</button>)}
+            {tabs.map(t => <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 18px", border: "none", borderRadius: 10, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", background: tab === t.id ? "rgba(0,0,0,0.06)" : "transparent", color: tab === t.id ? T.accent : T.textMuted, transition: "all 0.2s" }}>{t.icon} {t.label}</button>)}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: T.textMuted }}>{time.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })} · <span style={{ color: T.gold }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span></div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: T.textMuted }}>{time.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })} · <span style={{ color: T.accent }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span></div>
         </div>
 
         {/* ═══ DASHBOARD ═══ */}
         {tab === "dashboard" && (
           <div>
             <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 24 }}>
-              <KPI label="Interventions" value={interventions.length} color={T.gold} icon="📋" />
+              <KPI label="Interventions" value={interventions.length} color={T.accent} icon="📋" />
               <KPI label="Validées" value={validees.length} color="#06D6A0" icon="✅" />
-              <KPI label="En attente" value={attente} color="#FFD166" icon="⏳" />
-              <KPI label="CA Validé TTC" value={`${totalTTC.toLocaleString("fr-FR")} €`} color="#059669" icon="💰" />
-              <KPI label="Commissions" value={`${totalComm.toLocaleString("fr-FR")} €`} color="#EF476F" icon="💸" />
-              <KPI label="CA Net Patron" value={`${caNet.toLocaleString("fr-FR")} €`} color={T.gold} icon="🏢" />
+              <KPI label="En attente" value={attente} color={T.orange} icon="⏳" />
+              <KPI label="CA Validé TTC" value={`${totalTTC.toLocaleString("fr-FR")} €`} color={T.green} icon="💰" />
+              <KPI label="Commissions" value={`${totalComm.toLocaleString("fr-FR")} €`} color={T.orange} icon="💸" />
+              <KPI label="CA Net Patron" value={`${caNet.toLocaleString("fr-FR")} €`} color={T.accent} icon="🏢" />
             </div>
             <div style={{ marginBottom: 20 }}>
-              <Btn onClick={createIntervention} style={{ padding: "10px 24px", fontSize: 14 }}>➕ Nouvelle intervention</Btn>
+              <Btn onClick={createIntervention} style={{ padding: "10px 24px", fontSize: 14, background: "linear-gradient(135deg, #F97316, #FB923C)", boxShadow: "0 3px 12px rgba(249,115,22,0.3)" }}>➕ Nouvelle intervention</Btn>
             </div>
             {terminees.length > 0 && (
               <Card style={{ marginBottom: 20, borderLeft: "3px solid #FFD166" }}>
-                <SectionTitle right={<span style={{ fontSize: 12, color: "#FFD166", fontWeight: 700 }}>⏳ {terminees.length} en attente</span>}>Interventions à valider</SectionTitle>
+                <SectionTitle right={<span style={{ fontSize: 12, color: T.orange, fontWeight: 700 }}>⏳ {terminees.length} en attente</span>}>Interventions à valider</SectionTitle>
                 {terminees.map(inter => (
                   <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid rgba(0,0,0,0.06)", flexWrap: "wrap", gap: 10 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                      <span style={{ fontWeight: 700, color: T.gold, fontSize: 13 }}>{inter.ref}</span>
+                      <span style={{ fontWeight: 700, color: T.accent, fontSize: 13 }}>{inter.ref}</span>
                       <span style={{ color: T.textSoft, fontSize: 13 }}>{inter.date}</span>
                       <span style={{ color: T.textDark, fontWeight: 600, fontSize: 13 }}>{inter.tech}</span>
                       <TypeBadge type={inter.type} />
@@ -575,7 +575,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <span style={{ fontWeight: 800, color: "#06D6A0", fontSize: 15 }}>{inter.ttc} €</span>
                       <Btn onClick={() => setEditModal(inter.ref)} variant="ghost" style={{ padding: "6px 12px", fontSize: 12 }}>✏️ Modifier</Btn>
-                      <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "6px 16px", fontSize: 12 }}>✅ Valider</Btn>
+                      <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "6px 16px", fontSize: 12, background: "linear-gradient(135deg, #F97316, #FB923C)", boxShadow: "0 2px 8px rgba(249,115,22,0.3)" }}>✅ Valider</Btn>
                     </div>
                   </div>
                 ))}
@@ -587,12 +587,12 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {/* ═══ INTERVENTIONS ═══ */}
         {tab === "interventions" && (
           <Card>
-            <SectionTitle right={<div style={{ display: "flex", alignItems: "center", gap: 12 }}><span style={{ fontSize: 12, color: T.textMuted }}>{interventions.length} interventions</span><Btn onClick={createIntervention} style={{ padding: "6px 16px", fontSize: 12 }}>➕ Nouvelle</Btn></div>}>Toutes les interventions</SectionTitle>
+            <SectionTitle right={<div style={{ display: "flex", alignItems: "center", gap: 12 }}><span style={{ fontSize: 12, color: T.textMuted }}>{interventions.length} interventions</span><Btn onClick={createIntervention} style={{ padding: "6px 16px", fontSize: 12, background: "linear-gradient(135deg, #F97316, #FB923C)", boxShadow: "0 2px 8px rgba(249,115,22,0.3)" }}>➕ Nouvelle</Btn></div>}>Toutes les interventions</SectionTitle>
             {interventions.map((inter, idx) => (
               <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: "1px solid rgba(0,0,0,0.06)", flexWrap: "wrap", gap: 8 }}
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(184,134,11,0.04)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(37,99,235,0.04)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                  <span style={{ fontWeight: 700, color: T.gold, fontSize: 13, minWidth: 68 }}>{inter.ref}</span>
+                  <span style={{ fontWeight: 700, color: T.accent, fontSize: 13, minWidth: 68 }}>{inter.ref}</span>
                   <span style={{ color: T.textSoft, fontSize: 12 }}>{inter.date} {inter.heure}</span>
                   <TypeBadge type={inter.type} />
                   <ModeBadge mode={inter.mode} />
@@ -605,7 +605,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                   <span style={{ fontWeight: 800, fontSize: 14, color: inter.ttc > 0 ? "#06D6A0" : "rgba(0,0,0,0.15)" }}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
                   <Btn onClick={() => duplicateIntervention(inter.ref)} variant="ghost" style={{ padding: "4px 10px", fontSize: 11 }} title="Dupliquer">📋</Btn>
                   <Btn onClick={() => setEditModal(inter.ref)} variant="ghost" style={{ padding: "4px 10px", fontSize: 11 }}>✏️</Btn>
-                  {inter.statut === "Terminée" && <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "4px 12px", fontSize: 11 }}>✅ Valider</Btn>}
+                  {inter.statut === "Terminée" && <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "4px 12px", fontSize: 11, background: "linear-gradient(135deg, #F97316, #FB923C)", boxShadow: "0 2px 8px rgba(249,115,22,0.3)" }}>✅ Valider</Btn>}
                 </div>
               </div>
             ))}
@@ -631,7 +631,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                         <span style={{ fontSize: 12, color: T.textMuted }}>{myInter.length} validées · CA {ca.toLocaleString("fr-FR")} €</span>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(0,0,0,0.02)", borderRadius: 10, padding: "10px 14px" }}>
-                        <div><span style={{ fontSize: 11, color: T.textMuted }}>Taux commission</span><div style={{ fontSize: 20, fontWeight: 800, color: T.gold }}>{(tech.commission * 100)}%</div></div>
+                        <div><span style={{ fontSize: 11, color: T.textMuted }}>Taux commission</span><div style={{ fontSize: 20, fontWeight: 800, color: T.accent }}>{(tech.commission * 100)}%</div></div>
                         <Btn onClick={() => { setCommModal(tech.id); setNewRate(String(tech.commission * 100)); }} variant="ghost" style={{ padding: "6px 12px", fontSize: 11 }}>✏️ Modifier</Btn>
                       </div>
                     </div>
@@ -660,14 +660,14 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {/* ═══ JOURNAL ═══ */}
         {tab === "journal" && (
           <Card>
-            <SectionTitle right={<span style={{ fontSize: 11, color: T.gold, fontWeight: 700, background: "rgba(184,134,11,0.06)", padding: "4px 12px", borderRadius: 8 }}>AURENIS FINANCE</span>}>Journal de compte</SectionTitle>
+            <SectionTitle right={<span style={{ fontSize: 11, color: T.accent, fontWeight: 700, background: "rgba(37,99,235,0.06)", padding: "4px 12px", borderRadius: 8 }}>AURENIS FINANCE</span>}>Journal de compte</SectionTitle>
             {validees.map((inter, idx) => {
               const comm = calcCommission(inter);
               const net = calcNetPatron(inter);
               return (
                 <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid rgba(0,0,0,0.06)", flexWrap: "wrap", gap: 8 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                    <span style={{ fontWeight: 700, color: T.gold, fontSize: 12 }}>{inter.ref}</span>
+                    <span style={{ fontWeight: 700, color: T.accent, fontSize: 12 }}>{inter.ref}</span>
                     <span style={{ fontSize: 12, color: T.textMuted }}>{inter.date}</span>
                     <span style={{ fontSize: 13, color: T.textDark, fontWeight: 600 }}>{inter.tech}</span>
                     {inter.poseur && <span style={{ fontSize: 11, color: "#EC4899" }}>👷 {inter.poseur} ({inter.poseurCost}€)</span>}
@@ -676,18 +676,18 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                     <span style={{ fontWeight: 700, color: "#06D6A0", fontSize: 13 }}>{inter.ttc} €</span>
                     <span style={{ fontWeight: 600, color: "#EF476F", fontSize: 12 }}>-{comm.toLocaleString("fr-FR")} €</span>
                     {inter.poseurCost > 0 && <span style={{ fontWeight: 600, color: "#EC4899", fontSize: 12 }}>-{inter.poseurCost} € poseur</span>}
-                    <span style={{ fontWeight: 800, color: T.gold, fontSize: 13 }}>{net.toLocaleString("fr-FR")} € net</span>
+                    <span style={{ fontWeight: 800, color: T.accent, fontSize: 13 }}>{net.toLocaleString("fr-FR")} € net</span>
                   </div>
                 </div>
               );
             })}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0", marginTop: 8, borderTop: "2px solid rgba(184,134,11,0.12)" }}>
-              <span style={{ fontWeight: 700, color: T.gold, fontSize: 14 }}>TOTAL</span>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0", marginTop: 8, borderTop: "2px solid rgba(37,99,235,0.1)" }}>
+              <span style={{ fontWeight: 700, color: T.accent, fontSize: 14 }}>TOTAL</span>
               <div style={{ display: "flex", gap: 20 }}>
                 <span style={{ fontWeight: 800, color: "#06D6A0", fontSize: 16 }}>{totalTTC.toLocaleString("fr-FR")} €</span>
                 <span style={{ fontWeight: 800, color: "#EF476F", fontSize: 16 }}>-{totalComm.toLocaleString("fr-FR")} €</span>
                 {totalPoseur > 0 && <span style={{ fontWeight: 800, color: "#EC4899", fontSize: 16 }}>-{totalPoseur.toLocaleString("fr-FR")} €</span>}
-                <span style={{ fontWeight: 800, color: T.gold, fontSize: 16 }}>{caNet.toLocaleString("fr-FR")} € net</span>
+                <span style={{ fontWeight: 800, color: T.accent, fontSize: 16 }}>{caNet.toLocaleString("fr-FR")} € net</span>
               </div>
             </div>
           </Card>
@@ -697,7 +697,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {tab === "params" && (
           <div>
             <Card style={{ marginBottom: 20 }}>
-              <SectionTitle right={<span style={{ fontSize: 11, color: T.gold, background: "rgba(184,134,11,0.06)", padding: "4px 12px", borderRadius: 8, fontWeight: 700 }}>CONFIGURATION</span>}>Paramètres du système</SectionTitle>
+              <SectionTitle right={<span style={{ fontSize: 11, color: T.accent, background: "rgba(37,99,235,0.06)", padding: "4px 12px", borderRadius: 8, fontWeight: 700 }}>CONFIGURATION</span>}>Paramètres du système</SectionTitle>
 
               <ConfigList
                 items={specialties}
@@ -728,7 +728,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
 
             <Card>
               <SectionTitle>📍 Autocomplétion d'adresse</SectionTitle>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(6,214,160,0.06)", borderRadius: 12, padding: 16, border: "1px solid rgba(6,214,160,0.12)", marginBottom: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(249,115,22,0.06)", borderRadius: 12, padding: 16, border: "1px solid rgba(6,214,160,0.12)", marginBottom: 12 }}>
                 <span style={{ fontSize: 28 }}>🌍</span>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: "#06D6A0", marginBottom: 2 }}>Google Places API + Base Adresse Nationale</div>
@@ -751,7 +751,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {/* REF Header */}
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ fontWeight: 800, color: T.gold, fontSize: 16 }}>{inter.ref}</span>
+                <span style={{ fontWeight: 800, color: T.accent, fontSize: 16 }}>{inter.ref}</span>
                 <Badge status={inter.statut} />
               </div>
 
@@ -834,7 +834,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                       <label style={lbl()}>Mode poseur</label>
                       <div style={{ display: "flex", gap: 10 }}>
                         {[{ v: "divise2", l: "÷ 2 (partagé)" }, { v: "gratuit", l: "Gratuit (patron)" }].map(o => (
-                          <button key={o.v} onClick={() => updateIntervention(inter.ref, { poseurMode: o.v })} style={{ flex: 1, padding: "10px 14px", borderRadius: 10, border: inter.poseurMode === o.v ? "1.5px solid " + T.gold : "1.5px solid rgba(0,0,0,0.1)", background: inter.poseurMode === o.v ? "rgba(184,134,11,0.06)" : "rgba(0,0,0,0.05)", color: inter.poseurMode === o.v ? T.gold : T.textMuted, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit" }}>{o.l}</button>
+                          <button key={o.v} onClick={() => updateIntervention(inter.ref, { poseurMode: o.v })} style={{ flex: 1, padding: "10px 14px", borderRadius: 10, border: inter.poseurMode === o.v ? "1.5px solid " + T.accent : "1.5px solid rgba(0,0,0,0.1)", background: inter.poseurMode === o.v ? "rgba(37,99,235,0.06)" : "rgba(0,0,0,0.05)", color: inter.poseurMode === o.v ? T.accent : T.textMuted, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit" }}>{o.l}</button>
                         ))}
                       </div>
                     </div>
@@ -844,14 +844,14 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
 
               {/* APERÇU CALCUL */}
               {inter.ttc > 0 && (
-                <div style={{ background: "rgba(184,134,11,0.05)", borderRadius: 12, padding: 14, border: "1px solid rgba(184,134,11,0.08)" }}>
-                  <div style={{ fontSize: 11, color: T.gold, marginBottom: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>📊 Aperçu financier</div>
+                <div style={{ background: "rgba(37,99,235,0.05)", borderRadius: 12, padding: 14, border: "1px solid rgba(37,99,235,0.08)" }}>
+                  <div style={{ fontSize: 11, color: T.accent, marginBottom: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>📊 Aperçu financier</div>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Montant TTC</span><span style={{ fontWeight: 700, color: T.textDark }}>{inter.ttc.toLocaleString("fr-FR")} €</span></div>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Commission brute ({(inter.commRate * 100)}%)</span><span>{(inter.ttc * inter.commRate).toLocaleString("fr-FR")} €</span></div>
                   {inter.poseur && inter.poseurMode === "divise2" && <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#EF476F", marginBottom: 4 }}><span>Part poseur déduite tech (÷2)</span><span>-{(inter.poseurCost / 2).toLocaleString("fr-FR")} €</span></div>}
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#06D6A0", fontWeight: 700, borderTop: "1px solid rgba(0,0,0,0.06)", paddingTop: 6, marginTop: 4 }}><span>Commission nette tech</span><span>{calcCommission(inter).toLocaleString("fr-FR")} €</span></div>
                   {inter.poseur && <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#EC4899", marginTop: 4 }}><span>Coût poseur total</span><span>-{inter.poseurCost.toLocaleString("fr-FR")} €</span></div>}
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: T.gold, fontWeight: 800, borderTop: "1px solid rgba(0,0,0,0.06)", paddingTop: 6, marginTop: 6 }}><span>Net patron</span><span>{calcNetPatron(inter).toLocaleString("fr-FR")} €</span></div>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: T.accent, fontWeight: 800, borderTop: "1px solid rgba(0,0,0,0.06)", paddingTop: 6, marginTop: 6 }}><span>Net patron</span><span>{calcNetPatron(inter).toLocaleString("fr-FR")} €</span></div>
                 </div>
               )}
 
@@ -878,7 +878,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                 <Btn onClick={() => { duplicateIntervention(inter.ref); }} variant="ghost" style={{ flex: 1 }}>📋 Dupliquer</Btn>
                 {inter.statut === "Terminée" && (() => {
                   const valid = inter.clientNom?.trim() && inter.clientPrenom?.trim() && inter.adresse?.trim() && inter.tel && inter.tel.replace(/\D/g, "").length >= 8 && inter.ttc > 0 && inter.date && inter.heure;
-                  return <Btn onClick={() => { if (valid) { validerIntervention(inter.ref); setEditModal(null); } }} style={{ flex: 1, opacity: valid ? 1 : 0.4, cursor: valid ? "pointer" : "not-allowed" }}>✅ Valider</Btn>;
+                  return <Btn onClick={() => { if (valid) { validerIntervention(inter.ref); setEditModal(null); } }} style={{ flex: 1, opacity: valid ? 1 : 0.4, cursor: valid ? "pointer" : "not-allowed", background: "linear-gradient(135deg, #F97316, #FB923C)" }}>✅ Valider</Btn>;
                 })()}
               </div>
             </div>
@@ -893,7 +893,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
           return (
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div style={{ fontSize: 14, color: T.textDark, fontWeight: 600 }}>{tech?.name}</div>
-              <div style={{ fontSize: 13, color: T.textMuted }}>Taux actuel : <strong style={{ color: T.gold }}>{(tech?.commission * 100)}%</strong></div>
+              <div style={{ fontSize: 13, color: T.textMuted }}>Taux actuel : <strong style={{ color: T.accent }}>{(tech?.commission * 100)}%</strong></div>
               <div><label style={{ fontSize: 12, color: T.textMuted, display: "block", marginBottom: 4 }}>Nouveau taux (%)</label><Inp placeholder="Ex: 25" type="number" value={newRate} onChange={e => setNewRate(e.target.value)} /></div>
               <div style={{ background: "rgba(67,97,238,0.08)", borderRadius: T.radiusXs, padding: "10px 14px", fontSize: 12, color: T.textSoft, lineHeight: 1.6 }}>⚠️ Le nouveau taux s'appliquera uniquement aux <strong>futures interventions</strong>. Les interventions passées gardent leur taux d'origine.</div>
               <div style={{ display: "flex", gap: 10 }}>
@@ -961,14 +961,14 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "24px 28px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
           <div><h1 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 800, color: T.textDark }}>Bonjour {tech?.name.split(" ")[0]} 👋</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted }}>Votre activité</p></div>
-          <div style={{ textAlign: "right" }}><div style={{ fontSize: 20, fontWeight: 700, background: "linear-gradient(135deg, #B8860B, #DAA520)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div></div>
+          <div style={{ textAlign: "right" }}><div style={{ fontSize: 20, fontWeight: 700, background: "linear-gradient(135deg, #2563EB, #3B82F6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div></div>
         </div>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 20 }}>
-          <KPI label="Interventions" value={myInter.length} color={T.gold} icon="📋" />
+          <KPI label="Interventions" value={myInter.length} color={T.accent} icon="📋" />
           <KPI label="Validées" value={validees.length} color="#06D6A0" icon="✅" />
-          <KPI label="Mon CA" value={`${totalCA.toLocaleString("fr-FR")} €`} color="#059669" icon="💰" />
-          <KPI label="Mes commissions" value={`${totalComm.toLocaleString("fr-FR")} €`} color="#EF476F" icon="💸" />
+          <KPI label="Mon CA" value={`${totalCA.toLocaleString("fr-FR")} €`} color={T.green} icon="💰" />
+          <KPI label="Mes commissions" value={`${totalComm.toLocaleString("fr-FR")} €`} color={T.orange} icon="💸" />
           <KPI label="Mon taux" value={`${(tech?.commission * 100)}%`} color={tech?.color} icon="📊" />
         </div>
 
@@ -979,7 +979,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
               <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 14, opacity: 0.4, pointerEvents: "none" }}>🔍</div>
               <input type="text" placeholder="Rechercher..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: "100%", padding: "10px 14px 10px 38px", fontSize: 13, background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 12, color: T.textDark, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
             </div>
-            <button onClick={() => setShowFilters(!showFilters)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 16px", borderRadius: 12, background: showFilters ? "rgba(184,134,11,0.1)" : "rgba(0,0,0,0.06)", border: showFilters ? "1px solid rgba(184,134,11,0.15)" : "1px solid rgba(0,0,0,0.08)", color: showFilters ? T.gold : T.textSoft, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>⚙️ Filtres {activeFilters > 0 && <span style={{ background: T.gold, color: T.dark, width: 18, height: 18, borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800 }}>{activeFilters}</span>}</button>
+            <button onClick={() => setShowFilters(!showFilters)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 16px", borderRadius: 12, background: showFilters ? "rgba(37,99,235,0.08)" : "rgba(0,0,0,0.06)", border: showFilters ? "1px solid rgba(37,99,235,0.12)" : "1px solid rgba(0,0,0,0.08)", color: showFilters ? T.accent : T.textSoft, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>⚙️ Filtres {activeFilters > 0 && <span style={{ background: T.accent, color: T.dark, width: 18, height: 18, borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800 }}>{activeFilters}</span>}</button>
             {activeFilters > 0 && <button onClick={() => { setSearch(""); setFilterType("all"); setDateFrom(""); setDateTo(""); }} style={{ padding: "10px 14px", borderRadius: 12, border: "1px solid rgba(239,71,111,0.2)", background: "rgba(239,71,111,0.08)", color: "#EF476F", cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit" }}>✕ Effacer</button>}
           </div>
           {showFilters && (
@@ -987,7 +987,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
               <div>
                 <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>🔧 Spécialité</div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <button onClick={() => setFilterType("all")} style={{ padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: "inherit", background: filterType === "all" ? "rgba(184,134,11,0.12)" : "rgba(0,0,0,0.05)", color: filterType === "all" ? T.gold : T.textMuted }}>Toutes</button>
+                  <button onClick={() => setFilterType("all")} style={{ padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: "inherit", background: filterType === "all" ? "rgba(37,99,235,0.1)" : "rgba(0,0,0,0.05)", color: filterType === "all" ? T.accent : T.textMuted }}>Toutes</button>
                   {types.map(t => <button key={t} onClick={() => setFilterType(filterType === t ? "all" : t)} style={{ padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: "inherit", background: filterType === t ? `${typeColors[t]}33` : "rgba(0,0,0,0.05)", color: filterType === t ? typeColors[t] : T.textMuted, display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 8, height: 8, borderRadius: 4, background: typeColors[t], opacity: filterType === t ? 1 : 0.4 }} />{t}</button>)}
                 </div>
               </div>
@@ -1005,7 +1005,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
         {/* STATUS TABS */}
         <div style={{ display: "flex", gap: 4, background: "rgba(0,0,0,0.02)", borderRadius: 12, padding: 4, marginBottom: 14, border: "1px solid rgba(0,0,0,0.06)", flexWrap: "wrap" }}>
           {[{ id: "all", l: "Toutes" }, { id: "validees", l: "Validées" }, { id: "terminees", l: "En attente" }, { id: "encours", l: "En cours" }, { id: "planifiees", l: "Planifiées" }].map(t => (
-            <button key={t.id} onClick={() => setStatusTab(t.id)} style={{ flex: 1, padding: "8px 14px", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit", background: statusTab === t.id ? "rgba(0,0,0,0.06)" : "transparent", color: statusTab === t.id ? T.gold : T.textMuted, minWidth: 80 }}>{t.l}</button>
+            <button key={t.id} onClick={() => setStatusTab(t.id)} style={{ flex: 1, padding: "8px 14px", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit", background: statusTab === t.id ? "rgba(0,0,0,0.06)" : "transparent", color: statusTab === t.id ? T.accent : T.textMuted, minWidth: 80 }}>{t.l}</button>
           ))}
         </div>
 
@@ -1023,7 +1023,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
                 {/* Row 1: main info */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: inter.poseur ? 10 : 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                    <span style={{ fontWeight: 700, color: T.gold, fontSize: 13 }}>{inter.ref}</span>
+                    <span style={{ fontWeight: 700, color: T.accent, fontSize: 13 }}>{inter.ref}</span>
                     <span style={{ color: T.textSoft, fontSize: 12 }}>{inter.date} {inter.heure}</span>
                     <TypeBadge type={inter.type} />
                     <ModeBadge mode={inter.mode} />
@@ -1033,7 +1033,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
                     <Badge status={inter.statut} />
                     {isEditing ? (
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <input type="number" value={editTTC} onChange={e => setEditTTC(e.target.value)} onKeyDown={e => e.key === "Enter" && saveTTC(inter.ref)} style={{ width: 80, padding: "6px 10px", fontSize: 14, fontWeight: 700, background: "rgba(0,0,0,0.06)", border: "1px solid " + T.gold, borderRadius: 8, color: "#06D6A0", outline: "none", fontFamily: "inherit", textAlign: "right" }} autoFocus />
+                        <input type="number" value={editTTC} onChange={e => setEditTTC(e.target.value)} onKeyDown={e => e.key === "Enter" && saveTTC(inter.ref)} style={{ width: 80, padding: "6px 10px", fontSize: 14, fontWeight: 700, background: "rgba(0,0,0,0.06)", border: "1px solid " + T.accent, borderRadius: 8, color: "#06D6A0", outline: "none", fontFamily: "inherit", textAlign: "right" }} autoFocus />
                         <span style={{ color: T.textMuted, fontSize: 14 }}>€</span>
                         <Btn onClick={() => saveTTC(inter.ref)} style={{ padding: "4px 10px", fontSize: 11 }}>✓</Btn>
                         <button onClick={() => { setEditRef(null); setEditTTC(""); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, color: T.textMuted }}>✕</button>
@@ -1072,11 +1072,11 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
             );
           })}
           {filtered.filter(i => i.statut === "Validée").length > 0 && (
-            <div style={{ padding: "14px 20px", background: "linear-gradient(135deg, rgba(184,134,11,0.05), rgba(184,134,11,0.02))", borderTop: "1px solid rgba(184,134,11,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-              <span style={{ fontWeight: 700, color: T.gold, fontSize: 13 }}>TOTAL VALIDÉ</span>
+            <div style={{ padding: "14px 20px", background: "linear-gradient(135deg, rgba(37,99,235,0.05), rgba(184,134,11,0.02))", borderTop: "1px solid rgba(37,99,235,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+              <span style={{ fontWeight: 700, color: T.accent, fontSize: 13 }}>TOTAL VALIDÉ</span>
               <div style={{ display: "flex", gap: 20 }}>
                 <span><span style={{ fontSize: 11, color: T.textMuted }}>CA </span><span style={{ fontWeight: 800, color: "#06D6A0", fontSize: 15 }}>{filtered.filter(i => i.statut === "Validée").reduce((s, i) => s + i.ttc, 0).toLocaleString("fr-FR")} €</span></span>
-                <span><span style={{ fontSize: 11, color: T.textMuted }}>Commission </span><span style={{ fontWeight: 800, color: T.gold, fontSize: 15 }}>{filtered.filter(i => i.statut === "Validée").reduce((s, i) => s + calcCommission(i), 0).toLocaleString("fr-FR")} €</span></span>
+                <span><span style={{ fontSize: 11, color: T.textMuted }}>Commission </span><span style={{ fontWeight: 800, color: T.accent, fontSize: 15 }}>{filtered.filter(i => i.statut === "Validée").reduce((s, i) => s + calcCommission(i), 0).toLocaleString("fr-FR")} €</span></span>
               </div>
             </div>
           )}
@@ -1163,7 +1163,7 @@ export default function App() {
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}*{box-sizing:border-box}::placeholder{color:rgba(0,0,0,0.3)}input[type="date"]{color-scheme:light}input[type="date"]::-webkit-calendar-picker-indicator{cursor:pointer}input[type="time"]{color-scheme:light}input[type="time"]::-webkit-calendar-picker-indicator{cursor:pointer}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%231E1E3C' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}`}</style>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}*{box-sizing:border-box}::placeholder{color:rgba(0,0,0,0.3)}input[type="date"]{color-scheme:light}input[type="date"]::-webkit-calendar-picker-indicator{cursor:pointer}input[type="time"]{color-scheme:light}input[type="time"]::-webkit-calendar-picker-indicator{cursor:pointer}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%232563EB' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}`}</style>
 
       {page === "login" && <LoginPage onLogin={a => { setAccount(a); setPage("dashboard"); }} onGoRegister={() => setPage("register")} onGoForgot={() => setPage("forgot")} />}
       {page === "register" && <RegisterPage onGoLogin={() => setPage("login")} onRegistered={(e, c) => { setVerifyEmail(e); setVerifyCode(c); setPage("verify"); }} />}
