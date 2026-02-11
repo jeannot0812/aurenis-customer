@@ -97,12 +97,26 @@ const supaUploadFile = async (file, folder) => {
     const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
     const res = await fetch(`${SUPA_URL}/storage/v1/object/media/${fileName}`, {
       method: "POST",
-      headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": file.type },
+      headers: {
+        "apikey": SUPA_KEY,
+        "Authorization": `Bearer ${SUPA_KEY}`,
+        "Content-Type": file.type || "application/octet-stream",
+        "x-upsert": "true"
+      },
       body: file
     });
-    if (!res.ok) { console.log("Upload error:", await res.text()); return null; }
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error("Upload error:", res.status, errText);
+      alert(`Erreur upload: ${errText}`);
+      return null;
+    }
     return `${SUPA_URL}/storage/v1/object/public/media/${fileName}`;
-  } catch (e) { console.log("Upload error:", e); return null; }
+  } catch (e) {
+    console.error("Upload error:", e);
+    alert(`Erreur upload: ${e.message}`);
+    return null;
+  }
 };
 
 /* ═══ MEDIA UPLOAD COMPONENT ═══ */
