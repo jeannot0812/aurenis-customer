@@ -50,6 +50,105 @@ const calcNetPatron = (inter) => {
   return inter.ttc - comm - inter.poseurCost;
 };
 
+/* ═══ NAME FORMATTING ═══ */
+const capitalize = (str) => {
+  if (!str) return "";
+  return str.split(/([- ])/).map(part => {
+    if (part === "-" || part === " ") return part;
+    return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+  }).join("");
+};
+
+/* ═══ PHONE INDICATIFS ═══ */
+const INDICATIFS = [
+  { code: "+33", flag: "🇫🇷", pays: "France", digits: 10 },
+  { code: "+32", flag: "🇧🇪", pays: "Belgique", digits: 9 },
+  { code: "+41", flag: "🇨🇭", pays: "Suisse", digits: 10 },
+  { code: "+352", flag: "🇱🇺", pays: "Luxembourg", digits: 9 },
+  { code: "+377", flag: "🇲🇨", pays: "Monaco", digits: 8 },
+  { code: "+212", flag: "🇲🇦", pays: "Maroc", digits: 10 },
+  { code: "+213", flag: "🇩🇿", pays: "Algérie", digits: 10 },
+  { code: "+216", flag: "🇹🇳", pays: "Tunisie", digits: 8 },
+  { code: "+44", flag: "🇬🇧", pays: "Royaume-Uni", digits: 11 },
+  { code: "+49", flag: "🇩🇪", pays: "Allemagne", digits: 11 },
+  { code: "+34", flag: "🇪🇸", pays: "Espagne", digits: 9 },
+  { code: "+39", flag: "🇮🇹", pays: "Italie", digits: 10 },
+  { code: "+351", flag: "🇵🇹", pays: "Portugal", digits: 9 },
+];
+
+const formatPhone = (raw, maxDigits) => {
+  const digits = raw.replace(/\D/g, "").slice(0, maxDigits);
+  return digits.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
+};
+
+const parsePhoneValue = (fullTel) => {
+  if (!fullTel) return { indicatif: "+33", number: "" };
+  for (const ind of INDICATIFS) {
+    if (fullTel.startsWith(ind.code + " ") || fullTel.startsWith(ind.code)) {
+      const num = fullTel.slice(ind.code.length).trim();
+      return { indicatif: ind.code, number: num };
+    }
+  }
+  return { indicatif: "+33", number: fullTel.replace(/^\+33\s?/, "") };
+};
+
+const PhoneInput = ({ value, onChange }) => {
+  const parsed = parsePhoneValue(value);
+  const [indicatif, setIndicatif] = useState(parsed.indicatif);
+  const [number, setNumber] = useState(parsed.number);
+  const [focused, setFocused] = useState(false);
+
+  const currentInd = INDICATIFS.find(i => i.code === indicatif) || INDICATIFS[0];
+  const rawDigits = number.replace(/\D/g, "");
+  const isFull = rawDigits.length >= currentInd.digits;
+  const remaining = currentInd.digits - rawDigits.length;
+
+  useEffect(() => {
+    const p = parsePhoneValue(value);
+    setIndicatif(p.indicatif);
+    setNumber(p.number);
+  }, [value]);
+
+  const handleNumberChange = (e) => {
+    const raw = e.target.value.replace(/\D/g, "").slice(0, currentInd.digits);
+    const formatted = formatPhone(raw, currentInd.digits);
+    setNumber(formatted);
+    onChange(`${indicatif} ${formatted}`);
+  };
+
+  const handleIndicatifChange = (e) => {
+    const newCode = e.target.value;
+    setIndicatif(newCode);
+    const newInd = INDICATIFS.find(i => i.code === newCode) || INDICATIFS[0];
+    const raw = number.replace(/\D/g, "").slice(0, newInd.digits);
+    const formatted = formatPhone(raw, newInd.digits);
+    setNumber(formatted);
+    onChange(`${newCode} ${formatted}`);
+  };
+
+  return (
+    <div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <select value={indicatif} onChange={handleIndicatifChange}
+          style={{ padding: "10px 8px", fontSize: 13, fontWeight: 600, background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#fff", outline: "none", fontFamily: "inherit", cursor: "pointer", minWidth: 120 }}>
+          {INDICATIFS.map(i => <option key={i.code} value={i.code} style={{ background: "#1E2243" }}>{i.flag} {i.code} {i.pays}</option>)}
+        </select>
+        <div style={{ flex: 1, position: "relative" }}>
+          <input
+            type="text" placeholder={`${currentInd.digits} chiffres`} value={number}
+            onChange={handleNumberChange}
+            onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+            style={{ width: "100%", padding: "10px 16px", fontSize: 14, fontWeight: 500, fontFamily: "inherit", background: isFull ? "rgba(6,214,160,0.06)" : "rgba(255,255,255,0.06)", border: focused ? "1.5px solid " + (isFull ? "#06D6A0" : "#C8A44E") : "1.5px solid " + (isFull ? "rgba(6,214,160,0.2)" : "rgba(255,255,255,0.08)"), borderRadius: 10, color: "#fff", outline: "none", boxSizing: "border-box", letterSpacing: "1px" }}
+          />
+          <div style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", fontSize: 11, fontWeight: 700, color: isFull ? "#06D6A0" : "rgba(255,255,255,0.25)" }}>
+            {isFull ? "✓" : `${rawDigits.length}/${currentInd.digits}`}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* ═══ STORAGE (localStorage) ═══ */
 const ST = {
   async get(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } },
@@ -714,11 +813,11 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
               <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 14 }}>
                 <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>👤 Client</div>
                 <div style={{ display: "flex", gap: 12 }}>
-                  <div style={{ flex: 1 }}><label style={lbl()}>Nom</label><Inp placeholder="Nom" value={inter.clientNom} onChange={e => updateIntervention(inter.ref, { clientNom: e.target.value })} /></div>
-                  <div style={{ flex: 1 }}><label style={lbl()}>Prénom</label><Inp placeholder="Prénom" value={inter.clientPrenom} onChange={e => updateIntervention(inter.ref, { clientPrenom: e.target.value })} /></div>
+                  <div style={{ flex: 1 }}><label style={lbl()}>Nom</label><Inp placeholder="Nom" value={inter.clientNom} onChange={e => updateIntervention(inter.ref, { clientNom: capitalize(e.target.value) })} /></div>
+                  <div style={{ flex: 1 }}><label style={lbl()}>Prénom</label><Inp placeholder="Prénom" value={inter.clientPrenom} onChange={e => updateIntervention(inter.ref, { clientPrenom: capitalize(e.target.value) })} /></div>
                 </div>
                 <div style={{ marginTop: 10 }}><label style={lbl()}>Adresse</label><AddressAutocomplete value={inter.adresse} onChange={v => updateIntervention(inter.ref, { adresse: v })} /></div>
-                <div style={{ marginTop: 10 }}><label style={lbl()}>Téléphone</label><Inp placeholder="Tél" value={inter.tel} onChange={e => updateIntervention(inter.ref, { tel: e.target.value })} /></div>
+                <div style={{ marginTop: 10 }}><label style={lbl()}>📱 Téléphone</label><PhoneInput value={inter.tel} onChange={v => updateIntervention(inter.ref, { tel: v })} /></div>
               </div>
 
               {/* Poseur section */}
@@ -762,7 +861,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                 if (!inter.clientNom?.trim()) missing.push("Nom client");
                 if (!inter.clientPrenom?.trim()) missing.push("Prénom client");
                 if (!inter.adresse?.trim()) missing.push("Adresse");
-                if (!inter.tel?.trim()) missing.push("Téléphone");
+                if (!inter.tel || inter.tel.replace(/\D/g, "").length < 8) missing.push("Téléphone");
                 if (!inter.ttc || inter.ttc <= 0) missing.push("Montant TTC");
                 if (!inter.date) missing.push("Date");
                 if (!inter.heure) missing.push("Heure");
@@ -778,7 +877,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                 <Btn onClick={() => setEditModal(null)} variant="ghost" style={{ flex: 1 }}>Fermer</Btn>
                 <Btn onClick={() => { duplicateIntervention(inter.ref); }} variant="ghost" style={{ flex: 1 }}>📋 Dupliquer</Btn>
                 {inter.statut === "Terminée" && (() => {
-                  const valid = inter.clientNom?.trim() && inter.clientPrenom?.trim() && inter.adresse?.trim() && inter.tel?.trim() && inter.ttc > 0 && inter.date && inter.heure;
+                  const valid = inter.clientNom?.trim() && inter.clientPrenom?.trim() && inter.adresse?.trim() && inter.tel && inter.tel.replace(/\D/g, "").length >= 8 && inter.ttc > 0 && inter.date && inter.heure;
                   return <Btn onClick={() => { if (valid) { validerIntervention(inter.ref); setEditModal(null); } }} style={{ flex: 1, opacity: valid ? 1 : 0.4, cursor: valid ? "pointer" : "not-allowed" }}>✅ Valider</Btn>;
                 })()}
               </div>
