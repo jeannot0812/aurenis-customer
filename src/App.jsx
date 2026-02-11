@@ -401,6 +401,31 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
   const updateIntervention = (ref, updates) => { setInterventions(prev => prev.map(i => i.ref === ref ? { ...i, ...updates } : i)); };
   const validerIntervention = (ref) => { updateIntervention(ref, { statut: "Validée" }); };
 
+  const nextRef = () => {
+    const maxNum = interventions.reduce((max, i) => { const n = parseInt(i.ref.replace("INT-", "")); return n > max ? n : max; }, 0);
+    return `INT-${String(maxNum + 1).padStart(3, "0")}`;
+  };
+
+  const createIntervention = () => {
+    const defaultTech = techs[0];
+    const newInter = {
+      ref: nextRef(), date: new Date().toISOString().slice(0, 10), heure: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+      type: specialties[0] || "Plomberie", mode: "RDV", clientNom: "", clientPrenom: "", tel: "", adresse: "",
+      tech: defaultTech?.name || "", statut: "Planifiée", ttc: 0, commRate: defaultTech?.commission || 0.20,
+      poseur: null, poseurCost: 0, poseurMode: null
+    };
+    setInterventions(prev => [newInter, ...prev]);
+    setEditModal(newInter.ref);
+  };
+
+  const duplicateIntervention = (ref) => {
+    const original = interventions.find(i => i.ref === ref);
+    if (!original) return;
+    const dup = { ...original, ref: nextRef(), statut: "Planifiée", date: new Date().toISOString().slice(0, 10), heure: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) };
+    setInterventions(prev => [dup, ...prev]);
+    setEditModal(dup.ref);
+  };
+
   const changeTechRate = (techId) => {
     const rate = parseFloat(newRate) / 100;
     if (isNaN(rate) || rate < 0 || rate > 1) return;
@@ -433,6 +458,9 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
               <KPI label="Commissions" value={`${totalComm.toLocaleString("fr-FR")} €`} color="#EF476F" icon="💸" />
               <KPI label="CA Net Patron" value={`${caNet.toLocaleString("fr-FR")} €`} color={T.gold} icon="🏢" />
             </div>
+            <div style={{ marginBottom: 20 }}>
+              <Btn onClick={createIntervention} style={{ padding: "10px 24px", fontSize: 14 }}>➕ Nouvelle intervention</Btn>
+            </div>
             {terminees.length > 0 && (
               <Card style={{ marginBottom: 20, borderLeft: "3px solid #FFD166" }}>
                 <SectionTitle right={<span style={{ fontSize: 12, color: "#FFD166", fontWeight: 700 }}>⏳ {terminees.length} en attente</span>}>Interventions à valider</SectionTitle>
@@ -460,7 +488,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {/* ═══ INTERVENTIONS ═══ */}
         {tab === "interventions" && (
           <Card>
-            <SectionTitle right={<span style={{ fontSize: 12, color: T.textMuted }}>{interventions.length} interventions</span>}>Toutes les interventions</SectionTitle>
+            <SectionTitle right={<div style={{ display: "flex", alignItems: "center", gap: 12 }}><span style={{ fontSize: 12, color: T.textMuted }}>{interventions.length} interventions</span><Btn onClick={createIntervention} style={{ padding: "6px 16px", fontSize: 12 }}>➕ Nouvelle</Btn></div>}>Toutes les interventions</SectionTitle>
             {interventions.map((inter, idx) => (
               <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", flexWrap: "wrap", gap: 8 }}
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(200,164,78,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
@@ -476,6 +504,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                   <span style={{ fontSize: 13, color: T.textMuted }}>{inter.clientNom} {inter.clientPrenom}</span>
                   <Badge status={inter.statut} />
                   <span style={{ fontWeight: 800, fontSize: 14, color: inter.ttc > 0 ? "#06D6A0" : "rgba(255,255,255,0.15)" }}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
+                  <Btn onClick={() => duplicateIntervention(inter.ref)} variant="ghost" style={{ padding: "4px 10px", fontSize: 11 }} title="Dupliquer">📋</Btn>
                   <Btn onClick={() => setEditModal(inter.ref)} variant="ghost" style={{ padding: "4px 10px", fontSize: 11 }}>✏️</Btn>
                   {inter.statut === "Terminée" && <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "4px 12px", fontSize: 11 }}>✅ Valider</Btn>}
                 </div>
@@ -613,7 +642,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
       </div>
 
       {/* EDIT MODAL — FULL ADMIN CONTROL */}
-      <Modal open={!!editModal} onClose={() => setEditModal(null)} title="Modifier l'intervention" width={540}>
+      <Modal open={!!editModal} onClose={() => setEditModal(null)} title={(() => { const i = interventions.find(x => x.ref === editModal); return i && !i.clientNom && !i.ttc ? "Nouvelle intervention" : "Modifier l'intervention"; })()} width={540}>
         {editModal && (() => {
           const inter = interventions.find(i => i.ref === editModal);
           if (!inter) return null;
@@ -747,6 +776,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
               {/* Actions */}
               <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
                 <Btn onClick={() => setEditModal(null)} variant="ghost" style={{ flex: 1 }}>Fermer</Btn>
+                <Btn onClick={() => { duplicateIntervention(inter.ref); }} variant="ghost" style={{ flex: 1 }}>📋 Dupliquer</Btn>
                 {inter.statut === "Terminée" && (() => {
                   const valid = inter.clientNom?.trim() && inter.clientPrenom?.trim() && inter.adresse?.trim() && inter.tel?.trim() && inter.ttc > 0 && inter.date && inter.heure;
                   return <Btn onClick={() => { if (valid) { validerIntervention(inter.ref); setEditModal(null); } }} style={{ flex: 1, opacity: valid ? 1 : 0.4, cursor: valid ? "pointer" : "not-allowed" }}>✅ Valider</Btn>;
