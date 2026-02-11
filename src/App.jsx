@@ -130,17 +130,17 @@ const PhoneInput = ({ value, onChange }) => {
     <div>
       <div style={{ display: "flex", gap: 8 }}>
         <select value={indicatif} onChange={handleIndicatifChange}
-          style={{ padding: "10px 8px", fontSize: 13, fontWeight: 600, background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#fff", outline: "none", fontFamily: "inherit", cursor: "pointer", minWidth: 120 }}>
-          {INDICATIFS.map(i => <option key={i.code} value={i.code} style={{ background: "#1E2243" }}>{i.flag} {i.code} {i.pays}</option>)}
+          style={{ padding: "10px 8px", fontSize: 13, fontWeight: 600, background: "rgba(0,0,0,0.03)", border: "1.5px solid rgba(0,0,0,0.1)", borderRadius: 10, color: "#1E1E3C", outline: "none", fontFamily: "inherit", cursor: "pointer", minWidth: 120 }}>
+          {INDICATIFS.map(i => <option key={i.code} value={i.code} style={{ background: "#FFFFFF" }}>{i.flag} {i.code} {i.pays}</option>)}
         </select>
         <div style={{ flex: 1, position: "relative" }}>
           <input
             type="text" placeholder={`${currentInd.digits} chiffres`} value={number}
             onChange={handleNumberChange}
             onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-            style={{ width: "100%", padding: "10px 16px", fontSize: 14, fontWeight: 500, fontFamily: "inherit", background: isFull ? "rgba(6,214,160,0.06)" : "rgba(255,255,255,0.06)", border: focused ? "1.5px solid " + (isFull ? "#06D6A0" : "#C8A44E") : "1.5px solid " + (isFull ? "rgba(6,214,160,0.2)" : "rgba(255,255,255,0.08)"), borderRadius: 10, color: "#fff", outline: "none", boxSizing: "border-box", letterSpacing: "1px" }}
+            style={{ width: "100%", padding: "10px 16px", fontSize: 14, fontWeight: 500, fontFamily: "inherit", background: isFull ? "rgba(6,214,160,0.06)" : "rgba(0,0,0,0.06)", border: focused ? "1.5px solid " + (isFull ? "#06D6A0" : "#B8860B") : "1.5px solid " + (isFull ? "rgba(6,214,160,0.2)" : "rgba(0,0,0,0.1)"), borderRadius: 10, color: "#1E1E3C", outline: "none", boxSizing: "border-box", letterSpacing: "1px" }}
           />
-          <div style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", fontSize: 11, fontWeight: 700, color: isFull ? "#06D6A0" : "rgba(255,255,255,0.25)" }}>
+          <div style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", fontSize: 11, fontWeight: 700, color: isFull ? "#06D6A0" : "rgba(0,0,0,0.25)" }}>
             {isFull ? "✓" : `${rawDigits.length}/${currentInd.digits}`}
           </div>
         </div>
@@ -156,7 +156,7 @@ const ST = {
 };
 
 /* ═══ TOKENS ═══ */
-const T = { dark: "#0F1225", bg: "#1B1F3B", gold: "#C8A44E", goldLight: "#E8C96A", green: "#059669", red: "#EF476F", blue: "#4361EE", violet: "#7209B7", textMuted: "rgba(255,255,255,0.4)", textSoft: "rgba(255,255,255,0.6)", radius: 20, radiusSm: 14, radiusXs: 10 };
+const T = { dark: "#F2F4F8", bg: "#FFFFFF", gold: "#B8860B", goldLight: "#DAA520", green: "#059669", red: "#EF476F", blue: "#4361EE", violet: "#7209B7", textMuted: "rgba(30,30,60,0.4)", textSoft: "rgba(30,30,60,0.6)", textDark: "#1E1E3C", radius: 20, radiusSm: 14, radiusXs: 10 };
 const typeColors = { "Plomberie": "#0EA5E9", "Serrurerie": "#8B5CF6", "Électricité": "#F59E0B" };
 const statutColors = { "Planifiée": { bg: "rgba(67,97,238,0.15)", c: "#818CF8" }, "En cours": { bg: "rgba(249,115,22,0.15)", c: "#F97316" }, "Terminée": { bg: "rgba(255,210,80,0.15)", c: "#FFD166" }, "Validée": { bg: "rgba(6,214,160,0.15)", c: "#06D6A0" } };
 
@@ -165,10 +165,10 @@ const AurenisLogo = ({ size = "lg" }) => {
   const s = size === "lg" ? 44 : 32; const fs = size === "lg" ? 24 : 18; const sub = size === "lg" ? 13 : 10;
   return (
     <div style={{ display: "flex", alignItems: "center", gap: size === "lg" ? 14 : 10 }}>
-      <div style={{ width: s, height: s, borderRadius: s * 0.32, background: "linear-gradient(135deg, #C8A44E, #E8C96A, #A07828)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 16px rgba(200,164,78,0.35)" }}>
-        <svg width={s * 0.55} height={s * 0.55} viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 10 5 15C5 18.87 8.13 22 12 22C15.87 22 19 18.87 19 15C19 10 12 2 12 2Z" fill="rgba(255,255,255,0.95)" /><path d="M12 6C12 6 8 11 8 14C8 16.21 9.79 18 12 18C14.21 18 16 16.21 16 14C16 11 12 6 12 6Z" fill="rgba(200,164,78,0.4)" /></svg>
+      <div style={{ width: s, height: s, borderRadius: s * 0.32, background: "linear-gradient(135deg, #B8860B, #DAA520, #A07828)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 16px rgba(184,134,11,0.2)" }}>
+        <svg width={s * 0.55} height={s * 0.55} viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 10 5 15C5 18.87 8.13 22 12 22C15.87 22 19 18.87 19 15C19 10 12 2 12 2Z" fill="#B8860B" /><path d="M12 6C12 6 8 11 8 14C8 16.21 9.79 18 12 18C14.21 18 16 16.21 16 14C16 11 12 6 12 6Z" fill="rgba(184,134,11,0.3)" /></svg>
       </div>
-      <div><div style={{ display: "flex", alignItems: "baseline", gap: 4 }}><span style={{ fontSize: fs, fontWeight: 800, letterSpacing: -0.5, background: "linear-gradient(135deg, #C8A44E, #E8C96A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AURENIS</span><span style={{ fontSize: sub, fontWeight: 500, color: T.textMuted, letterSpacing: 2, textTransform: "uppercase" }}>customer</span></div></div>
+      <div><div style={{ display: "flex", alignItems: "baseline", gap: 4 }}><span style={{ fontSize: fs, fontWeight: 800, letterSpacing: -0.5, background: "linear-gradient(135deg, #B8860B, #DAA520)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AURENIS</span><span style={{ fontSize: sub, fontWeight: 500, color: T.textMuted, letterSpacing: 2, textTransform: "uppercase" }}>customer</span></div></div>
     </div>
   );
 };
@@ -177,41 +177,41 @@ const Inp = ({ icon, type = "text", placeholder, value, onChange, error, onKeyDo
   <div style={{ position: "relative", marginBottom: error ? 4 : 0, ...sx }}>
     {icon && <div style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", fontSize: 18, opacity: 0.5, pointerEvents: "none" }}>{icon}</div>}
     <input type={type} placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeyDown}
-      style={{ width: "100%", padding: icon ? "14px 16px 14px 48px" : "14px 16px", fontSize: 14, fontWeight: 500, background: "rgba(255,255,255,0.06)", border: error ? "1.5px solid #EF476F" : "1.5px solid rgba(255,255,255,0.08)", borderRadius: T.radiusSm, color: "#fff", outline: "none", boxSizing: "border-box", transition: "all 0.2s", fontFamily: "inherit" }}
-      onFocus={e => { e.target.style.borderColor = T.gold; }} onBlur={e => { e.target.style.borderColor = error ? "#EF476F" : "rgba(255,255,255,0.08)"; }} />
+      style={{ width: "100%", padding: icon ? "14px 16px 14px 48px" : "14px 16px", fontSize: 14, fontWeight: 500, background: "rgba(0,0,0,0.03)", border: error ? "1.5px solid #EF476F" : "1.5px solid rgba(0,0,0,0.1)", borderRadius: T.radiusSm, color: "#1E1E3C", outline: "none", boxSizing: "border-box", transition: "all 0.2s", fontFamily: "inherit" }}
+      onFocus={e => { e.target.style.borderColor = T.gold; }} onBlur={e => { e.target.style.borderColor = error ? "#EF476F" : "rgba(0,0,0,0.1)"; }} />
     {error && <div style={{ fontSize: 12, color: "#EF476F", marginTop: 4, fontWeight: 500, paddingLeft: 4 }}>{error}</div>}
   </div>
 );
 
 const Btn = ({ children, onClick, loading, variant = "primary", disabled, style: sx }) => {
   const p = variant === "primary";
-  return <button onClick={onClick} disabled={disabled || loading} style={{ padding: "12px 24px", fontSize: 14, fontWeight: 700, border: "none", borderRadius: T.radiusSm, cursor: disabled || loading ? "not-allowed" : "pointer", background: p ? "linear-gradient(135deg, #C8A44E, #E8C96A)" : variant === "danger" ? "rgba(239,71,111,0.15)" : "rgba(255,255,255,0.06)", color: p ? "#1B1F3B" : variant === "danger" ? "#EF476F" : "#fff", opacity: disabled || loading ? 0.5 : 1, transition: "all 0.2s", fontFamily: "inherit", boxShadow: p ? "0 4px 20px rgba(200,164,78,0.3)" : "none", width: sx?.width || "auto", ...sx }}>{loading ? "..." : children}</button>;
+  return <button onClick={onClick} disabled={disabled || loading} style={{ padding: "12px 24px", fontSize: 14, fontWeight: 700, border: "none", borderRadius: T.radiusSm, cursor: disabled || loading ? "not-allowed" : "pointer", background: p ? "linear-gradient(135deg, #B8860B, #DAA520)" : variant === "danger" ? "rgba(239,71,111,0.15)" : "rgba(0,0,0,0.06)", color: p ? "#fff" : variant === "danger" ? "#EF476F" : "#fff", opacity: disabled || loading ? 0.5 : 1, transition: "all 0.2s", fontFamily: "inherit", boxShadow: p ? "0 4px 20px rgba(184,134,11,0.25)" : "none", width: sx?.width || "auto", ...sx }}>{loading ? "..." : children}</button>;
 };
 
 const Badge = ({ status }) => { const s = statutColors[status] || { bg: "rgba(148,163,184,0.15)", c: "#94A3B8" }; return <span style={{ background: s.bg, color: s.c, padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>{status}</span>; };
-const ModeBadge = ({ mode }) => <span style={{ background: mode === "Urgence" ? "linear-gradient(135deg, #EF476F, #F97316)" : "linear-gradient(135deg, #4361EE, #7209B7)", color: "#fff", padding: "3px 10px", borderRadius: 16, fontSize: 11, fontWeight: 700, whiteSpace: "nowrap" }}>{mode === "Urgence" ? "⚡ URG" : "📅 RDV"}</span>;
+const ModeBadge = ({ mode }) => <span style={{ background: mode === "Urgence" ? "linear-gradient(135deg, #EF476F, #F97316)" : "linear-gradient(135deg, #4361EE, #7209B7)", color: T.textDark, padding: "3px 10px", borderRadius: 16, fontSize: 11, fontWeight: 700, whiteSpace: "nowrap" }}>{mode === "Urgence" ? "⚡ URG" : "📅 RDV"}</span>;
 const TypeBadge = ({ type }) => { const c = typeColors[type] || T.blue; return <span style={{ background: `${c}22`, color: c, padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 700 }}>{type}</span>; };
 
 const KPI = ({ label, value, color, icon }) => (
-  <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: T.radius, padding: "20px 22px", border: "1px solid rgba(255,255,255,0.06)", borderTop: `3px solid ${color}`, flex: 1, minWidth: 150 }}>
+  <div style={{ background: "#FFFFFF", borderRadius: T.radius, padding: "20px 22px", border: "1px solid rgba(0,0,0,0.06)", borderTop: `3px solid ${color}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", flex: 1, minWidth: 150 }}>
     <div style={{ fontSize: 22, marginBottom: 6 }}>{icon}</div>
     <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>{label}</div>
-    <div style={{ fontSize: 22, fontWeight: 800, color: "#fff" }}>{value}</div>
+    <div style={{ fontSize: 22, fontWeight: 800, color: T.textDark }}>{value}</div>
   </div>
 );
 
-const Card = ({ children, style: sx }) => <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: T.radius, border: "1px solid rgba(255,255,255,0.06)", padding: 24, ...sx }}>{children}</div>;
-const SectionTitle = ({ children, right }) => <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}><h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#fff" }}>{children}</h2>{right}</div>;
+const Card = ({ children, style: sx }) => <div style={{ background: "#FFFFFF", borderRadius: T.radius, border: "1px solid rgba(0,0,0,0.06)", padding: 24, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", ...sx }}>{children}</div>;
+const SectionTitle = ({ children, right }) => <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}><h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: T.textDark }}>{children}</h2>{right}</div>;
 
 /* ═══ MODAL ═══ */
 const Modal = ({ open, onClose, title, children, width = 480 }) => {
   if (!open) return null;
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20, backdropFilter: "blur(4px)" }} onClick={onClose}>
-      <div style={{ background: "#1E2243", borderRadius: 24, padding: "28px 32px", width: "100%", maxWidth: width, border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 24px 64px rgba(0,0,0,0.5)", maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20, backdropFilter: "blur(4px)" }} onClick={onClose}>
+      <div style={{ background: "#FFFFFF", borderRadius: 24, padding: "28px 32px", width: "100%", maxWidth: width, border: "1px solid rgba(0,0,0,0.08)", boxShadow: "0 24px 64px rgba(0,0,0,0.12)", maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#fff" }}>{title}</h3>
-          <button onClick={onClose} style={{ background: "rgba(255,255,255,0.06)", border: "none", borderRadius: 10, width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
+          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: T.textDark }}>{title}</h3>
+          <button onClick={onClose} style={{ background: "rgba(0,0,0,0.03)", border: "none", borderRadius: 10, width: 36, height: 36, cursor: "pointer", color: T.textDark, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
         </div>
         {children}
       </div>
@@ -221,14 +221,14 @@ const Modal = ({ open, onClose, title, children, width = 480 }) => {
 
 /* ═══ AUTH SHELL ═══ */
 const AuthShell = ({ children }) => (
-  <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, padding: 20 }}>
-    <div style={{ position: "fixed", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(200,164,78,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+  <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: T.dark, padding: 20 }}>
+    <div style={{ position: "fixed", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(184,134,11,0.04) 0%, transparent 70%)", pointerEvents: "none" }} />
     <div style={{ width: "100%", maxWidth: 420, animation: "fadeUp 0.6s cubic-bezier(0.16,1,0.3,1)" }}>{children}</div>
   </div>
 );
 const AuthCard = ({ children, title, subtitle }) => (
-  <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 24, padding: "36px 32px", border: "1px solid rgba(255,255,255,0.06)", backdropFilter: "blur(20px)", boxShadow: "0 24px 64px rgba(0,0,0,0.4)" }}>
-    <div style={{ textAlign: "center", marginBottom: 28 }}><div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}><AurenisLogo /></div><h1 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 800, color: "#fff" }}>{title}</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted, lineHeight: 1.5 }}>{subtitle}</p></div>{children}
+  <div style={{ background: "#FFFFFF", borderRadius: 24, padding: "36px 32px", border: "1px solid rgba(0,0,0,0.08)", boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}>
+    <div style={{ textAlign: "center", marginBottom: 28 }}><div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}><AurenisLogo /></div><h1 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 800, color: T.textDark }}>{title}</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted, lineHeight: 1.5 }}>{subtitle}</p></div>{children}
   </div>
 );
 
@@ -248,7 +248,7 @@ const LoginPage = ({ onLogin, onGoRegister, onGoForgot }) => {
   return (
     <AuthShell><AuthCard title="Connexion" subtitle="Accédez à votre espace Aurenis">
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ background: "rgba(200,164,78,0.06)", border: "1px solid rgba(200,164,78,0.12)", borderRadius: T.radiusXs, padding: "8px 12px", fontSize: 11, color: T.gold, lineHeight: 1.6 }}>
+        <div style={{ background: "rgba(184,134,11,0.05)", border: "1px solid rgba(184,134,11,0.08)", borderRadius: T.radiusXs, padding: "8px 12px", fontSize: 11, color: T.gold, lineHeight: 1.6 }}>
           <strong>Démo Admin :</strong> admin@aquatech.fr / Admin123<br/>
           <strong>Créer un compte tech :</strong> ahmed@aquatech.fr, lucas@aquatech.fr...<br/>
           <strong>Créer un compte poseur :</strong> rachid@aquatech.fr, sofiane@aquatech.fr
@@ -259,7 +259,7 @@ const LoginPage = ({ onLogin, onGoRegister, onGoForgot }) => {
         <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Se connecter</Btn>
         <button onClick={onGoForgot} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.gold, fontWeight: 600, padding: 8, fontFamily: "inherit" }}>Mot de passe oublié ?</button>
       </div>
-      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}><span style={{ fontSize: 13, color: T.textMuted }}>Pas de compte ? </span><button onClick={onGoRegister} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.gold, fontWeight: 700, fontFamily: "inherit" }}>Créer un compte</button></div>
+      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(0,0,0,0.06)", textAlign: "center" }}><span style={{ fontSize: 13, color: T.textMuted }}>Pas de compte ? </span><button onClick={onGoRegister} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.gold, fontWeight: 700, fontFamily: "inherit" }}>Créer un compte</button></div>
     </AuthCard></AuthShell>
   );
 };
@@ -286,11 +286,11 @@ const RegisterPage = ({ onGoLogin, onRegistered }) => {
     <AuthShell><AuthCard title="Créer un compte" subtitle="Email professionnel fourni par l'entreprise">
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <Inp icon="✉️" type="email" placeholder="Email professionnel" value={email} onChange={e => setEmail(e.target.value)} error={errors.email} />
-        <div><Inp icon="🔒" type="password" placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} error={errors.password} />{password && <div style={{ marginTop: 8 }}><div style={{ display: "flex", gap: 4, marginBottom: 4 }}>{[0,1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i < strength.pct / 20 ? strength.color : "rgba(255,255,255,0.08)" }} />)}</div><span style={{ fontSize: 11, color: strength.color, fontWeight: 600 }}>{strength.label}</span></div>}</div>
+        <div><Inp icon="🔒" type="password" placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} error={errors.password} />{password && <div style={{ marginTop: 8 }}><div style={{ display: "flex", gap: 4, marginBottom: 4 }}>{[0,1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i < strength.pct / 20 ? strength.color : "rgba(0,0,0,0.1)" }} />)}</div><span style={{ fontSize: 11, color: strength.color, fontWeight: 600 }}>{strength.label}</span></div>}</div>
         <Inp icon="🔒" type="password" placeholder="Confirmer" value={confirm} onChange={e => setConfirm(e.target.value)} error={errors.confirm} />
         <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Créer mon compte</Btn>
       </div>
-      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.gold, fontWeight: 700, fontFamily: "inherit" }}>← Se connecter</button></div>
+      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(0,0,0,0.06)", textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.gold, fontWeight: 700, fontFamily: "inherit" }}>← Se connecter</button></div>
     </AuthCard></AuthShell>
   );
 };
@@ -303,8 +303,8 @@ const VerifyPage = ({ email, code, onVerified, onGoLogin }) => {
   const handle = async () => { const c = input.join(""); if (c.length !== 6) return setError("6 chiffres requis"); setLoading(true); await new Promise(r => setTimeout(r, 500)); if (c !== code) { setLoading(false); return setError("Code incorrect"); } const a = await ST.get(`account:${email}`); if (a) { a.verified = true; await ST.set(`account:${email}`, a); } setLoading(false); onVerified(); };
   return (
     <AuthShell><AuthCard title="Vérification" subtitle={<>Code envoyé à <strong style={{ color: T.gold }}>{email}</strong></>}>
-      <div style={{ background: "rgba(200,164,78,0.08)", border: "1px solid rgba(200,164,78,0.15)", borderRadius: T.radiusXs, padding: "10px 14px", fontSize: 12, color: T.gold, textAlign: "center", marginBottom: 20, fontWeight: 600 }}>📧 Démo — Code : <span style={{ fontSize: 16, letterSpacing: 3, fontWeight: 800 }}>{code}</span></div>
-      <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 20 }}>{input.map((v, i) => <input key={i} id={`otp-${i}`} type="text" inputMode="numeric" maxLength={1} value={v} onChange={e => hc(i, e.target.value)} onKeyDown={e => hk(i, e)} style={{ width: 48, height: 56, textAlign: "center", fontSize: 22, fontWeight: 800, background: v ? "rgba(200,164,78,0.1)" : "rgba(255,255,255,0.06)", border: "1.5px solid " + (v ? "rgba(200,164,78,0.3)" : "rgba(255,255,255,0.08)"), borderRadius: T.radiusXs, color: "#fff", outline: "none", fontFamily: "inherit" }} />)}</div>
+      <div style={{ background: "rgba(184,134,11,0.06)", border: "1px solid rgba(184,134,11,0.1)", borderRadius: T.radiusXs, padding: "10px 14px", fontSize: 12, color: T.gold, textAlign: "center", marginBottom: 20, fontWeight: 600 }}>📧 Démo — Code : <span style={{ fontSize: 16, letterSpacing: 3, fontWeight: 800 }}>{code}</span></div>
+      <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 20 }}>{input.map((v, i) => <input key={i} id={`otp-${i}`} type="text" inputMode="numeric" maxLength={1} value={v} onChange={e => hc(i, e.target.value)} onKeyDown={e => hk(i, e)} style={{ width: 48, height: 56, textAlign: "center", fontSize: 22, fontWeight: 800, background: v ? "rgba(184,134,11,0.06)" : "rgba(0,0,0,0.06)", border: "1.5px solid " + (v ? "rgba(184,134,11,0.2)" : "rgba(0,0,0,0.1)"), borderRadius: T.radiusXs, color: T.textDark, outline: "none", fontFamily: "inherit" }} />)}</div>
       {error && <div style={{ background: "rgba(239,71,111,0.1)", borderRadius: T.radiusXs, padding: "10px", fontSize: 13, color: "#EF476F", textAlign: "center", marginBottom: 14 }}>{error}</div>}
       <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Vérifier</Btn>
       <div style={{ marginTop: 16, textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.textMuted, fontFamily: "inherit" }}>← Retour</button></div>
@@ -321,7 +321,7 @@ const ForgotPage = ({ onGoLogin }) => {
   return (
     <AuthShell><AuthCard title={step === "done" ? "Réinitialisé ✓" : "Récupération"} subtitle={step === "done" ? "Connectez-vous" : "Récupérez votre accès"}>
       {step === "email" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><Inp icon="✉️" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={send} loading={ld} style={{ width: "100%" }}>Envoyer</Btn></div>}
-      {step === "code" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><div style={{ background: "rgba(200,164,78,0.08)", borderRadius: T.radiusXs, padding: "10px", fontSize: 12, color: T.gold, textAlign: "center", fontWeight: 600 }}>Code : <strong>{gc}</strong></div><Inp icon="🔑" placeholder="Code 6 chiffres" value={rc} onChange={e => setRc(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={verify} style={{ width: "100%" }}>Vérifier</Btn></div>}
+      {step === "code" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><div style={{ background: "rgba(184,134,11,0.06)", borderRadius: T.radiusXs, padding: "10px", fontSize: 12, color: T.gold, textAlign: "center", fontWeight: 600 }}>Code : <strong>{gc}</strong></div><Inp icon="🔑" placeholder="Code 6 chiffres" value={rc} onChange={e => setRc(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={verify} style={{ width: "100%" }}>Vérifier</Btn></div>}
       {step === "newpass" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><Inp icon="🔒" type="password" placeholder="Nouveau" value={np} onChange={e => setNp(e.target.value)} /><Inp icon="🔒" type="password" placeholder="Confirmer" value={cp} onChange={e => setCp(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF476F" }}>{err}</div>}<Btn onClick={reset} loading={ld} style={{ width: "100%" }}>Réinitialiser</Btn></div>}
       {step === "done" && <div style={{ textAlign: "center" }}><div style={{ fontSize: 48, marginBottom: 16 }}>✅</div><Btn onClick={onGoLogin} style={{ width: "100%" }}>Se connecter</Btn></div>}
       {step !== "done" && <div style={{ marginTop: 16, textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.textMuted, fontFamily: "inherit" }}>← Retour</button></div>}
@@ -339,14 +339,14 @@ const Header = ({ account, onLogout, roleBadge }) => {
   const color = member?.color || T.gold;
   const initials = account.name?.split(" ").map(n => n[0]).join("") || "A";
   return (
-    <div style={{ background: "rgba(27,31,59,0.95)", borderBottom: "1px solid rgba(200,164,78,0.12)", padding: "14px 28px", backdropFilter: "blur(20px)", position: "sticky", top: 0, zIndex: 50 }}>
+    <div style={{ background: "#FFFFFF", borderBottom: "1px solid rgba(0,0,0,0.08)", padding: "14px 28px", boxShadow: "0 1px 4px rgba(0,0,0,0.04)", position: "sticky", top: 0, zIndex: 50 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 1100, margin: "0 auto" }}>
         <AurenisLogo size="sm" />
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 8, background: account.role === "admin" ? "rgba(200,164,78,0.15)" : account.role === "tech" ? "rgba(14,165,233,0.15)" : "rgba(236,72,153,0.15)", color: account.role === "admin" ? T.gold : account.role === "tech" ? "#0EA5E9" : "#EC4899", textTransform: "uppercase", letterSpacing: 1 }}>{account.role === "admin" ? "Admin" : account.role === "tech" ? "Technicien" : "Poseur"}</span>
-          <div style={{ textAlign: "right" }}><div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{account.name}</div></div>
+          <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 8, background: account.role === "admin" ? "rgba(184,134,11,0.1)" : account.role === "tech" ? "rgba(14,165,233,0.1)" : "rgba(236,72,153,0.1)", color: account.role === "admin" ? T.gold : account.role === "tech" ? "#0EA5E9" : "#EC4899", textTransform: "uppercase", letterSpacing: 1 }}>{account.role === "admin" ? "Admin" : account.role === "tech" ? "Technicien" : "Poseur"}</span>
+          <div style={{ textAlign: "right" }}><div style={{ fontSize: 13, fontWeight: 700, color: T.textDark }}>{account.name}</div></div>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${color}, ${color}88)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 800, fontSize: 13 }}>{initials}</div>
-          <button onClick={onLogout} style={{ background: "rgba(239,71,111,0.1)", border: "1px solid rgba(239,71,111,0.2)", borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontSize: 11, color: "#EF476F", fontWeight: 600, fontFamily: "inherit" }}>Déconnexion</button>
+          <button onClick={onLogout} style={{ background: "rgba(239,71,111,0.08)", border: "1px solid rgba(239,71,111,0.15)", borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontSize: 11, color: "#EF476F", fontWeight: 600, fontFamily: "inherit" }}>Déconnexion</button>
         </div>
       </div>
     </div>
@@ -427,26 +427,26 @@ const AddressAutocomplete = ({ value, onChange }) => {
         onChange={e => { setQuery(e.target.value); onChange(e.target.value); setShowSugg(true); }}
         onFocus={() => { setFocused(true); setShowSugg(true); }}
         onBlur={() => setTimeout(() => { setFocused(false); setShowSugg(false); }, 250)}
-        style={{ width: "100%", padding: "12px 16px 12px 42px", fontSize: 14, fontWeight: 500, background: "rgba(255,255,255,0.06)", border: focused ? "1.5px solid " + T.gold : "1.5px solid rgba(255,255,255,0.08)", borderRadius: T.radiusSm, color: "#fff", outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
+        style={{ width: "100%", padding: "12px 16px 12px 42px", fontSize: 14, fontWeight: 500, background: "rgba(0,0,0,0.03)", border: focused ? "1.5px solid " + T.gold : "1.5px solid rgba(0,0,0,0.1)", borderRadius: T.radiusSm, color: T.textDark, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
       />
-      {loading && <div style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, border: "2px solid rgba(200,164,78,0.3)", borderTopColor: T.gold, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />}
+      {loading && <div style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, border: "2px solid rgba(184,134,11,0.15)", borderTopColor: T.gold, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />}
       {showSugg && suggestions.length > 0 && (
-        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 100, marginTop: 4, background: "#1E2243", border: "1px solid rgba(200,164,78,0.2)", borderRadius: 12, overflow: "hidden", boxShadow: "0 12px 40px rgba(0,0,0,0.5)" }}>
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 100, marginTop: 4, background: "#FFFFFF", border: "1px solid rgba(184,134,11,0.12)", borderRadius: 12, overflow: "hidden", boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }}>
           {suggestions.map((s, i) => (
             <div key={i} onMouseDown={e => e.preventDefault()} onClick={() => { setQuery(s.full); onChange(s.full); setShowSugg(false); setSuggestions([]); }}
-              style={{ padding: "10px 16px", fontSize: 13, color: "#fff", cursor: "pointer", borderBottom: i < suggestions.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}
-              onMouseEnter={e => e.currentTarget.style.background = "rgba(200,164,78,0.1)"}
+              style={{ padding: "10px 16px", fontSize: 13, color: T.textDark, cursor: "pointer", borderBottom: i < suggestions.length - 1 ? "1px solid rgba(0,0,0,0.06)" : "none" }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(184,134,11,0.06)"}
               onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ color: T.gold, fontSize: 14 }}>📍</span>
                 <div>
-                  <div style={{ fontWeight: 600, color: "#fff", fontSize: 13 }}>{s.main}</div>
+                  <div style={{ fontWeight: 600, color: "#1E1E3C", fontSize: 13 }}>{s.main}</div>
                   <div style={{ fontSize: 11, color: T.textMuted }}>{s.secondary}</div>
                 </div>
               </div>
             </div>
           ))}
-          <div style={{ padding: "5px 16px", fontSize: 9, color: "rgba(255,255,255,0.15)", textAlign: "right" }}>{source === "google" ? "Google Places" : "🇫🇷 Base Adresse Nationale"}</div>
+          <div style={{ padding: "5px 16px", fontSize: 9, color: "rgba(0,0,0,0.15)", textAlign: "right" }}>{source === "google" ? "Google Places" : "🇫🇷 Base Adresse Nationale"}</div>
         </div>
       )}
     </div>
@@ -469,9 +469,9 @@ const ConfigList = ({ items, onAdd, onRemove, label, icon, color }) => {
       </div>
       <div style={{ display: "flex", gap: 8 }}>
         <input type="text" placeholder={`Ajouter ${label.toLowerCase()}...`} value={newItem} onChange={e => setNewItem(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && newItem.trim()) { onAdd(newItem.trim()); setNewItem(""); } }}
-          style={{ flex: 1, padding: "10px 14px", fontSize: 13, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#fff", outline: "none", fontFamily: "inherit" }}
-          onFocus={e => e.target.style.borderColor = T.gold} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
-        <button onClick={() => { if (newItem.trim()) { onAdd(newItem.trim()); setNewItem(""); } }} style={{ padding: "10px 18px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #C8A44E, #E8C96A)", color: "#1B1F3B", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: "inherit" }}>+ Ajouter</button>
+          style={{ flex: 1, padding: "10px 14px", fontSize: 13, background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 10, color: T.textDark, outline: "none", fontFamily: "inherit" }}
+          onFocus={e => e.target.style.borderColor = T.gold} onBlur={e => e.target.style.borderColor = "rgba(0,0,0,0.1)"} />
+        <button onClick={() => { if (newItem.trim()) { onAdd(newItem.trim()); setNewItem(""); } }} style={{ padding: "10px 18px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #B8860B, #DAA520)", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: "inherit" }}>+ Ajouter</button>
       </div>
     </div>
   );
@@ -535,13 +535,13 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
   const tabs = [{ id: "dashboard", label: "Dashboard", icon: "📊" }, { id: "interventions", label: "Interventions", icon: "📞" }, { id: "equipe", label: "Équipe", icon: "👥" }, { id: "journal", label: "Journal", icon: "💰" }, { id: "params", label: "Paramètres", icon: "⚙️" }];
 
   return (
-    <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, minHeight: "100vh" }}>
+    <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: T.dark, minHeight: "100vh" }}>
       <Header account={account} onLogout={onLogout} />
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 28px" }}>
         {/* Time + Nav */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <div style={{ display: "flex", gap: 6, background: "rgba(255,255,255,0.04)", borderRadius: 14, padding: 4, border: "1px solid rgba(255,255,255,0.06)" }}>
-            {tabs.map(t => <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 18px", border: "none", borderRadius: 10, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", background: tab === t.id ? "rgba(255,255,255,0.1)" : "transparent", color: tab === t.id ? "#fff" : T.textMuted, transition: "all 0.2s" }}>{t.icon} {t.label}</button>)}
+          <div style={{ display: "flex", gap: 6, background: "#FFFFFF", borderRadius: 14, padding: 4, border: "1px solid rgba(0,0,0,0.08)", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+            {tabs.map(t => <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 18px", border: "none", borderRadius: 10, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", background: tab === t.id ? "rgba(0,0,0,0.06)" : "transparent", color: tab === t.id ? T.gold : T.textMuted, transition: "all 0.2s" }}>{t.icon} {t.label}</button>)}
           </div>
           <div style={{ fontSize: 13, fontWeight: 600, color: T.textMuted }}>{time.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })} · <span style={{ color: T.gold }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span></div>
         </div>
@@ -564,11 +564,11 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
               <Card style={{ marginBottom: 20, borderLeft: "3px solid #FFD166" }}>
                 <SectionTitle right={<span style={{ fontSize: 12, color: "#FFD166", fontWeight: 700 }}>⏳ {terminees.length} en attente</span>}>Interventions à valider</SectionTitle>
                 {terminees.map(inter => (
-                  <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", flexWrap: "wrap", gap: 10 }}>
+                  <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid rgba(0,0,0,0.06)", flexWrap: "wrap", gap: 10 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                       <span style={{ fontWeight: 700, color: T.gold, fontSize: 13 }}>{inter.ref}</span>
                       <span style={{ color: T.textSoft, fontSize: 13 }}>{inter.date}</span>
-                      <span style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>{inter.tech}</span>
+                      <span style={{ color: T.textDark, fontWeight: 600, fontSize: 13 }}>{inter.tech}</span>
                       <TypeBadge type={inter.type} />
                       {inter.poseur && <span style={{ fontSize: 11, color: "#EC4899", background: "rgba(236,72,153,0.1)", padding: "2px 8px", borderRadius: 6 }}>👷 {inter.poseur}</span>}
                     </div>
@@ -589,20 +589,20 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
           <Card>
             <SectionTitle right={<div style={{ display: "flex", alignItems: "center", gap: 12 }}><span style={{ fontSize: 12, color: T.textMuted }}>{interventions.length} interventions</span><Btn onClick={createIntervention} style={{ padding: "6px 16px", fontSize: 12 }}>➕ Nouvelle</Btn></div>}>Toutes les interventions</SectionTitle>
             {interventions.map((inter, idx) => (
-              <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", flexWrap: "wrap", gap: 8 }}
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(200,164,78,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: "1px solid rgba(0,0,0,0.06)", flexWrap: "wrap", gap: 8 }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(184,134,11,0.04)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                   <span style={{ fontWeight: 700, color: T.gold, fontSize: 13, minWidth: 68 }}>{inter.ref}</span>
                   <span style={{ color: T.textSoft, fontSize: 12 }}>{inter.date} {inter.heure}</span>
                   <TypeBadge type={inter.type} />
                   <ModeBadge mode={inter.mode} />
-                  <span style={{ fontSize: 13, color: "#fff", fontWeight: 600 }}>{inter.tech}</span>
+                  <span style={{ fontSize: 13, color: T.textDark, fontWeight: 600 }}>{inter.tech}</span>
                   {inter.poseur && <span style={{ fontSize: 11, color: "#EC4899", background: "rgba(236,72,153,0.1)", padding: "2px 8px", borderRadius: 6 }}>👷 {inter.poseur} ({inter.poseurCost}€ · {inter.poseurMode === "divise2" ? "÷2" : "gratuit"})</span>}
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ fontSize: 13, color: T.textMuted }}>{inter.clientNom} {inter.clientPrenom}</span>
                   <Badge status={inter.statut} />
-                  <span style={{ fontWeight: 800, fontSize: 14, color: inter.ttc > 0 ? "#06D6A0" : "rgba(255,255,255,0.15)" }}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
+                  <span style={{ fontWeight: 800, fontSize: 14, color: inter.ttc > 0 ? "#06D6A0" : "rgba(0,0,0,0.15)" }}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
                   <Btn onClick={() => duplicateIntervention(inter.ref)} variant="ghost" style={{ padding: "4px 10px", fontSize: 11 }} title="Dupliquer">📋</Btn>
                   <Btn onClick={() => setEditModal(inter.ref)} variant="ghost" style={{ padding: "4px 10px", fontSize: 11 }}>✏️</Btn>
                   {inter.statut === "Terminée" && <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "4px 12px", fontSize: 11 }}>✅ Valider</Btn>}
@@ -622,15 +622,15 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                   const myInter = interventions.filter(i => i.tech === tech.name && i.statut === "Validée");
                   const ca = myInter.reduce((s, i) => s + i.ttc, 0);
                   return (
-                    <div key={tech.id} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 16, padding: 20, borderLeft: `3px solid ${tech.color}` }}>
+                    <div key={tech.id} style={{ background: "#FFFFFF", borderRadius: 16, padding: 20, borderLeft: `3px solid ${tech.color}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 12 }}>
-                        <div><div style={{ fontWeight: 700, color: "#fff", fontSize: 15 }}>{tech.name}</div><div style={{ fontSize: 12, color: T.textMuted }}>{tech.spe}</div></div>
+                        <div><div style={{ fontWeight: 700, color: T.textDark, fontSize: 15 }}>{tech.name}</div><div style={{ fontSize: 12, color: T.textMuted }}>{tech.spe}</div></div>
                         <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${tech.color}, ${tech.color}88)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 800, fontSize: 13 }}>{tech.name.split(" ").map(n => n[0]).join("")}</div>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                         <span style={{ fontSize: 12, color: T.textMuted }}>{myInter.length} validées · CA {ca.toLocaleString("fr-FR")} €</span>
                       </div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "10px 14px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(0,0,0,0.02)", borderRadius: 10, padding: "10px 14px" }}>
                         <div><span style={{ fontSize: 11, color: T.textMuted }}>Taux commission</span><div style={{ fontSize: 20, fontWeight: 800, color: T.gold }}>{(tech.commission * 100)}%</div></div>
                         <Btn onClick={() => { setCommModal(tech.id); setNewRate(String(tech.commission * 100)); }} variant="ghost" style={{ padding: "6px 12px", fontSize: 11 }}>✏️ Modifier</Btn>
                       </div>
@@ -645,8 +645,8 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                 {INIT_POSEURS.map(p => {
                   const myInter = interventions.filter(i => i.poseur === p.name);
                   return (
-                    <div key={p.id} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 16, padding: 20, borderLeft: `3px solid ${p.color}` }}>
-                      <div style={{ fontWeight: 700, color: "#fff", fontSize: 15 }}>{p.name}</div>
+                    <div key={p.id} style={{ background: "#FFFFFF", borderRadius: 16, padding: 20, borderLeft: `3px solid ${p.color}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+                      <div style={{ fontWeight: 700, color: T.textDark, fontSize: 15 }}>{p.name}</div>
                       <div style={{ fontSize: 12, color: T.textMuted, marginBottom: 8 }}>{p.spe} · {myInter.length} interventions</div>
                       <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 8, background: "rgba(236,72,153,0.15)", color: "#EC4899" }}>POSEUR</span>
                     </div>
@@ -660,16 +660,16 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {/* ═══ JOURNAL ═══ */}
         {tab === "journal" && (
           <Card>
-            <SectionTitle right={<span style={{ fontSize: 11, color: T.gold, fontWeight: 700, background: "rgba(200,164,78,0.1)", padding: "4px 12px", borderRadius: 8 }}>AURENIS FINANCE</span>}>Journal de compte</SectionTitle>
+            <SectionTitle right={<span style={{ fontSize: 11, color: T.gold, fontWeight: 700, background: "rgba(184,134,11,0.06)", padding: "4px 12px", borderRadius: 8 }}>AURENIS FINANCE</span>}>Journal de compte</SectionTitle>
             {validees.map((inter, idx) => {
               const comm = calcCommission(inter);
               const net = calcNetPatron(inter);
               return (
-                <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", flexWrap: "wrap", gap: 8 }}>
+                <div key={inter.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid rgba(0,0,0,0.06)", flexWrap: "wrap", gap: 8 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                     <span style={{ fontWeight: 700, color: T.gold, fontSize: 12 }}>{inter.ref}</span>
                     <span style={{ fontSize: 12, color: T.textMuted }}>{inter.date}</span>
-                    <span style={{ fontSize: 13, color: "#fff", fontWeight: 600 }}>{inter.tech}</span>
+                    <span style={{ fontSize: 13, color: T.textDark, fontWeight: 600 }}>{inter.tech}</span>
                     {inter.poseur && <span style={{ fontSize: 11, color: "#EC4899" }}>👷 {inter.poseur} ({inter.poseurCost}€)</span>}
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -681,7 +681,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                 </div>
               );
             })}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0", marginTop: 8, borderTop: "2px solid rgba(200,164,78,0.2)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0", marginTop: 8, borderTop: "2px solid rgba(184,134,11,0.12)" }}>
               <span style={{ fontWeight: 700, color: T.gold, fontSize: 14 }}>TOTAL</span>
               <div style={{ display: "flex", gap: 20 }}>
                 <span style={{ fontWeight: 800, color: "#06D6A0", fontSize: 16 }}>{totalTTC.toLocaleString("fr-FR")} €</span>
@@ -697,7 +697,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {tab === "params" && (
           <div>
             <Card style={{ marginBottom: 20 }}>
-              <SectionTitle right={<span style={{ fontSize: 11, color: T.gold, background: "rgba(200,164,78,0.1)", padding: "4px 12px", borderRadius: 8, fontWeight: 700 }}>CONFIGURATION</span>}>Paramètres du système</SectionTitle>
+              <SectionTitle right={<span style={{ fontSize: 11, color: T.gold, background: "rgba(184,134,11,0.06)", padding: "4px 12px", borderRadius: 8, fontWeight: 700 }}>CONFIGURATION</span>}>Paramètres du système</SectionTitle>
 
               <ConfigList
                 items={specialties}
@@ -708,7 +708,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                 color="#0EA5E9"
               />
 
-              <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 20, marginTop: 10 }} />
+              <div style={{ borderTop: "1px solid rgba(0,0,0,0.06)", paddingTop: 20, marginTop: 10 }} />
 
               <ConfigList
                 items={statuts}
@@ -745,7 +745,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {editModal && (() => {
           const inter = interventions.find(i => i.ref === editModal);
           if (!inter) return null;
-          const selStyle = { width: "100%", padding: "12px", fontSize: 14, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: T.radiusSm, color: "#fff", fontFamily: "inherit" };
+          const selStyle = { width: "100%", padding: "12px", fontSize: 14, background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.08)", borderRadius: T.radiusSm, color: T.textDark, fontFamily: "inherit" };
           const lbl = (t) => ({ fontSize: 12, color: T.textMuted, display: "block", marginBottom: 4, fontWeight: 600 });
           return (
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -772,13 +772,13 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                 <div style={{ flex: 1 }}>
                   <label style={lbl()}>📌 Statut</label>
                   <select value={inter.statut} onChange={e => updateIntervention(inter.ref, { statut: e.target.value })} style={selStyle}>
-                    {statuts.map(s => <option key={s} value={s} style={{ background: "#1E2243" }}>{s}</option>)}
+                    {statuts.map(s => <option key={s} value={s} style={{ background: "#FFFFFF" }}>{s}</option>)}
                   </select>
                 </div>
                 <div style={{ flex: 1 }}>
                   <label style={lbl()}>🔧 Spécialité</label>
                   <select value={inter.type} onChange={e => updateIntervention(inter.ref, { type: e.target.value })} style={selStyle}>
-                    {specialties.map(s => <option key={s} value={s} style={{ background: "#1E2243" }}>{s}</option>)}
+                    {specialties.map(s => <option key={s} value={s} style={{ background: "#FFFFFF" }}>{s}</option>)}
                   </select>
                 </div>
               </div>
@@ -788,8 +788,8 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                 <div style={{ flex: 1 }}>
                   <label style={lbl()}>⚡ Mode</label>
                   <select value={inter.mode} onChange={e => updateIntervention(inter.ref, { mode: e.target.value })} style={selStyle}>
-                    <option value="Urgence" style={{ background: "#1E2243" }}>⚡ Urgence</option>
-                    <option value="RDV" style={{ background: "#1E2243" }}>📅 RDV</option>
+                    <option value="Urgence" style={{ background: "#FFFFFF" }}>⚡ Urgence</option>
+                    <option value="RDV" style={{ background: "#FFFFFF" }}>📅 RDV</option>
                   </select>
                 </div>
                 <div style={{ flex: 1 }}>
@@ -805,12 +805,12 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                   const newTech = techs.find(t => t.name === e.target.value);
                   updateIntervention(inter.ref, { tech: e.target.value, commRate: newTech ? newTech.commission : inter.commRate });
                 }} style={selStyle}>
-                  {techs.map(t => <option key={t.id} value={t.name} style={{ background: "#1E2243" }}>{t.name} ({t.spe} · {(t.commission * 100)}%)</option>)}
+                  {techs.map(t => <option key={t.id} value={t.name} style={{ background: "#FFFFFF" }}>{t.name} ({t.spe} · {(t.commission * 100)}%)</option>)}
                 </select>
               </div>
 
               {/* Client info */}
-              <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 14 }}>
+              <div style={{ background: "rgba(0,0,0,0.02)", borderRadius: 12, padding: 14 }}>
                 <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>👤 Client</div>
                 <div style={{ display: "flex", gap: 12 }}>
                   <div style={{ flex: 1 }}><label style={lbl()}>Nom</label><Inp placeholder="Nom" value={inter.clientNom} onChange={e => updateIntervention(inter.ref, { clientNom: capitalize(e.target.value) })} /></div>
@@ -824,8 +824,8 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
               <div style={{ background: "rgba(236,72,153,0.04)", borderRadius: 12, padding: 14, border: "1px solid rgba(236,72,153,0.1)" }}>
                 <div style={{ fontSize: 11, color: "#EC4899", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>👷 Poseur</div>
                 <select value={inter.poseur || ""} onChange={e => updateIntervention(inter.ref, { poseur: e.target.value || null, poseurCost: e.target.value ? inter.poseurCost : 0, poseurMode: e.target.value ? (inter.poseurMode || "divise2") : null })} style={selStyle}>
-                  <option value="" style={{ background: "#1E2243" }}>Aucun poseur</option>
-                  {INIT_POSEURS.map(p => <option key={p.id} value={p.name} style={{ background: "#1E2243" }}>{p.name} ({p.spe})</option>)}
+                  <option value="" style={{ background: "#FFFFFF" }}>Aucun poseur</option>
+                  {INIT_POSEURS.map(p => <option key={p.id} value={p.name} style={{ background: "#FFFFFF" }}>{p.name} ({p.spe})</option>)}
                 </select>
                 {inter.poseur && (
                   <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
@@ -834,7 +834,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                       <label style={lbl()}>Mode poseur</label>
                       <div style={{ display: "flex", gap: 10 }}>
                         {[{ v: "divise2", l: "÷ 2 (partagé)" }, { v: "gratuit", l: "Gratuit (patron)" }].map(o => (
-                          <button key={o.v} onClick={() => updateIntervention(inter.ref, { poseurMode: o.v })} style={{ flex: 1, padding: "10px 14px", borderRadius: 10, border: inter.poseurMode === o.v ? "1.5px solid " + T.gold : "1.5px solid rgba(255,255,255,0.08)", background: inter.poseurMode === o.v ? "rgba(200,164,78,0.1)" : "rgba(255,255,255,0.04)", color: inter.poseurMode === o.v ? T.gold : T.textMuted, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit" }}>{o.l}</button>
+                          <button key={o.v} onClick={() => updateIntervention(inter.ref, { poseurMode: o.v })} style={{ flex: 1, padding: "10px 14px", borderRadius: 10, border: inter.poseurMode === o.v ? "1.5px solid " + T.gold : "1.5px solid rgba(0,0,0,0.1)", background: inter.poseurMode === o.v ? "rgba(184,134,11,0.06)" : "rgba(0,0,0,0.05)", color: inter.poseurMode === o.v ? T.gold : T.textMuted, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit" }}>{o.l}</button>
                         ))}
                       </div>
                     </div>
@@ -844,14 +844,14 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
 
               {/* APERÇU CALCUL */}
               {inter.ttc > 0 && (
-                <div style={{ background: "rgba(200,164,78,0.06)", borderRadius: 12, padding: 14, border: "1px solid rgba(200,164,78,0.12)" }}>
+                <div style={{ background: "rgba(184,134,11,0.05)", borderRadius: 12, padding: 14, border: "1px solid rgba(184,134,11,0.08)" }}>
                   <div style={{ fontSize: 11, color: T.gold, marginBottom: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>📊 Aperçu financier</div>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Montant TTC</span><span style={{ fontWeight: 700, color: "#fff" }}>{inter.ttc.toLocaleString("fr-FR")} €</span></div>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Montant TTC</span><span style={{ fontWeight: 700, color: T.textDark }}>{inter.ttc.toLocaleString("fr-FR")} €</span></div>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Commission brute ({(inter.commRate * 100)}%)</span><span>{(inter.ttc * inter.commRate).toLocaleString("fr-FR")} €</span></div>
                   {inter.poseur && inter.poseurMode === "divise2" && <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#EF476F", marginBottom: 4 }}><span>Part poseur déduite tech (÷2)</span><span>-{(inter.poseurCost / 2).toLocaleString("fr-FR")} €</span></div>}
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#06D6A0", fontWeight: 700, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 6, marginTop: 4 }}><span>Commission nette tech</span><span>{calcCommission(inter).toLocaleString("fr-FR")} €</span></div>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#06D6A0", fontWeight: 700, borderTop: "1px solid rgba(0,0,0,0.06)", paddingTop: 6, marginTop: 4 }}><span>Commission nette tech</span><span>{calcCommission(inter).toLocaleString("fr-FR")} €</span></div>
                   {inter.poseur && <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#EC4899", marginTop: 4 }}><span>Coût poseur total</span><span>-{inter.poseurCost.toLocaleString("fr-FR")} €</span></div>}
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: T.gold, fontWeight: 800, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 6, marginTop: 6 }}><span>Net patron</span><span>{calcNetPatron(inter).toLocaleString("fr-FR")} €</span></div>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: T.gold, fontWeight: 800, borderTop: "1px solid rgba(0,0,0,0.06)", paddingTop: 6, marginTop: 6 }}><span>Net patron</span><span>{calcNetPatron(inter).toLocaleString("fr-FR")} €</span></div>
                 </div>
               )}
 
@@ -892,7 +892,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
           const tech = techs.find(t => t.id === commModal);
           return (
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div style={{ fontSize: 14, color: "#fff", fontWeight: 600 }}>{tech?.name}</div>
+              <div style={{ fontSize: 14, color: T.textDark, fontWeight: 600 }}>{tech?.name}</div>
               <div style={{ fontSize: 13, color: T.textMuted }}>Taux actuel : <strong style={{ color: T.gold }}>{(tech?.commission * 100)}%</strong></div>
               <div><label style={{ fontSize: 12, color: T.textMuted, display: "block", marginBottom: 4 }}>Nouveau taux (%)</label><Inp placeholder="Ex: 25" type="number" value={newRate} onChange={e => setNewRate(e.target.value)} /></div>
               <div style={{ background: "rgba(67,97,238,0.08)", borderRadius: T.radiusXs, padding: "10px 14px", fontSize: 12, color: T.textSoft, lineHeight: 1.6 }}>⚠️ Le nouveau taux s'appliquera uniquement aux <strong>futures interventions</strong>. Les interventions passées gardent leur taux d'origine.</div>
@@ -945,7 +945,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
   const totalComm = validees.reduce((s, i) => s + calcCommission(i), 0);
   const activeFilters = [search.trim(), filterType !== "all", dateFrom, dateTo].filter(Boolean).length;
   const types = [...new Set([...specialties, ...myInter.map(i => i.type)])];
-  const dateStyle = { padding: "9px 12px", fontSize: 13, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#fff", outline: "none", fontFamily: "inherit" };
+  const dateStyle = { padding: "9px 12px", fontSize: 13, background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 10, color: T.textDark, outline: "none", fontFamily: "inherit" };
 
   const saveTTC = (ref) => {
     const val = parseFloat(editTTC);
@@ -956,12 +956,12 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
   };
 
   return (
-    <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, minHeight: "100vh" }}>
+    <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: T.dark, minHeight: "100vh" }}>
       <Header account={account} onLogout={onLogout} />
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "24px 28px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
-          <div><h1 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 800, color: "#fff" }}>Bonjour {tech?.name.split(" ")[0]} 👋</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted }}>Votre activité</p></div>
-          <div style={{ textAlign: "right" }}><div style={{ fontSize: 20, fontWeight: 700, background: "linear-gradient(135deg, #C8A44E, #E8C96A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div></div>
+          <div><h1 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 800, color: T.textDark }}>Bonjour {tech?.name.split(" ")[0]} 👋</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted }}>Votre activité</p></div>
+          <div style={{ textAlign: "right" }}><div style={{ fontSize: 20, fontWeight: 700, background: "linear-gradient(135deg, #B8860B, #DAA520)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div></div>
         </div>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 20 }}>
@@ -977,18 +977,18 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
           <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
             <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
               <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 14, opacity: 0.4, pointerEvents: "none" }}>🔍</div>
-              <input type="text" placeholder="Rechercher..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: "100%", padding: "10px 14px 10px 38px", fontSize: 13, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, color: "#fff", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
+              <input type="text" placeholder="Rechercher..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: "100%", padding: "10px 14px 10px 38px", fontSize: 13, background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 12, color: T.textDark, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
             </div>
-            <button onClick={() => setShowFilters(!showFilters)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 16px", borderRadius: 12, background: showFilters ? "rgba(200,164,78,0.15)" : "rgba(255,255,255,0.06)", border: showFilters ? "1px solid rgba(200,164,78,0.3)" : "1px solid rgba(255,255,255,0.08)", color: showFilters ? T.gold : T.textSoft, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>⚙️ Filtres {activeFilters > 0 && <span style={{ background: T.gold, color: T.dark, width: 18, height: 18, borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800 }}>{activeFilters}</span>}</button>
+            <button onClick={() => setShowFilters(!showFilters)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 16px", borderRadius: 12, background: showFilters ? "rgba(184,134,11,0.1)" : "rgba(0,0,0,0.06)", border: showFilters ? "1px solid rgba(184,134,11,0.15)" : "1px solid rgba(0,0,0,0.08)", color: showFilters ? T.gold : T.textSoft, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>⚙️ Filtres {activeFilters > 0 && <span style={{ background: T.gold, color: T.dark, width: 18, height: 18, borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800 }}>{activeFilters}</span>}</button>
             {activeFilters > 0 && <button onClick={() => { setSearch(""); setFilterType("all"); setDateFrom(""); setDateTo(""); }} style={{ padding: "10px 14px", borderRadius: 12, border: "1px solid rgba(239,71,111,0.2)", background: "rgba(239,71,111,0.08)", color: "#EF476F", cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit" }}>✕ Effacer</button>}
           </div>
           {showFilters && (
-            <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(0,0,0,0.06)", display: "flex", flexDirection: "column", gap: 14 }}>
               <div>
                 <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>🔧 Spécialité</div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <button onClick={() => setFilterType("all")} style={{ padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: "inherit", background: filterType === "all" ? "rgba(200,164,78,0.2)" : "rgba(255,255,255,0.04)", color: filterType === "all" ? T.gold : T.textMuted }}>Toutes</button>
-                  {types.map(t => <button key={t} onClick={() => setFilterType(filterType === t ? "all" : t)} style={{ padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: "inherit", background: filterType === t ? `${typeColors[t]}33` : "rgba(255,255,255,0.04)", color: filterType === t ? typeColors[t] : T.textMuted, display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 8, height: 8, borderRadius: 4, background: typeColors[t], opacity: filterType === t ? 1 : 0.4 }} />{t}</button>)}
+                  <button onClick={() => setFilterType("all")} style={{ padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: "inherit", background: filterType === "all" ? "rgba(184,134,11,0.12)" : "rgba(0,0,0,0.05)", color: filterType === "all" ? T.gold : T.textMuted }}>Toutes</button>
+                  {types.map(t => <button key={t} onClick={() => setFilterType(filterType === t ? "all" : t)} style={{ padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: "inherit", background: filterType === t ? `${typeColors[t]}33` : "rgba(0,0,0,0.05)", color: filterType === t ? typeColors[t] : T.textMuted, display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 8, height: 8, borderRadius: 4, background: typeColors[t], opacity: filterType === t ? 1 : 0.4 }} />{t}</button>)}
                 </div>
               </div>
               <div>
@@ -1003,9 +1003,9 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
         </Card>
 
         {/* STATUS TABS */}
-        <div style={{ display: "flex", gap: 4, background: "rgba(255,255,255,0.04)", borderRadius: 12, padding: 4, marginBottom: 14, border: "1px solid rgba(255,255,255,0.06)", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 4, background: "rgba(0,0,0,0.02)", borderRadius: 12, padding: 4, marginBottom: 14, border: "1px solid rgba(0,0,0,0.06)", flexWrap: "wrap" }}>
           {[{ id: "all", l: "Toutes" }, { id: "validees", l: "Validées" }, { id: "terminees", l: "En attente" }, { id: "encours", l: "En cours" }, { id: "planifiees", l: "Planifiées" }].map(t => (
-            <button key={t.id} onClick={() => setStatusTab(t.id)} style={{ flex: 1, padding: "8px 14px", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit", background: statusTab === t.id ? "rgba(255,255,255,0.1)" : "transparent", color: statusTab === t.id ? "#fff" : T.textMuted, minWidth: 80 }}>{t.l}</button>
+            <button key={t.id} onClick={() => setStatusTab(t.id)} style={{ flex: 1, padding: "8px 14px", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit", background: statusTab === t.id ? "rgba(0,0,0,0.06)" : "transparent", color: statusTab === t.id ? T.gold : T.textMuted, minWidth: 80 }}>{t.l}</button>
           ))}
         </div>
 
@@ -1019,7 +1019,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
             const isEditing = editRef === inter.ref;
             const canEdit = inter.statut !== "Validée";
             return (
-              <div key={inter.ref} style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.04)", background: idx % 2 ? "rgba(255,255,255,0.02)" : "transparent" }}>
+              <div key={inter.ref} style={{ padding: "16px 20px", borderBottom: "1px solid rgba(0,0,0,0.06)", background: idx % 2 ? "rgba(0,0,0,0.015)" : "transparent" }}>
                 {/* Row 1: main info */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: inter.poseur ? 10 : 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
@@ -1033,15 +1033,15 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
                     <Badge status={inter.statut} />
                     {isEditing ? (
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <input type="number" value={editTTC} onChange={e => setEditTTC(e.target.value)} onKeyDown={e => e.key === "Enter" && saveTTC(inter.ref)} style={{ width: 80, padding: "6px 10px", fontSize: 14, fontWeight: 700, background: "rgba(255,255,255,0.1)", border: "1px solid " + T.gold, borderRadius: 8, color: "#06D6A0", outline: "none", fontFamily: "inherit", textAlign: "right" }} autoFocus />
+                        <input type="number" value={editTTC} onChange={e => setEditTTC(e.target.value)} onKeyDown={e => e.key === "Enter" && saveTTC(inter.ref)} style={{ width: 80, padding: "6px 10px", fontSize: 14, fontWeight: 700, background: "rgba(0,0,0,0.06)", border: "1px solid " + T.gold, borderRadius: 8, color: "#06D6A0", outline: "none", fontFamily: "inherit", textAlign: "right" }} autoFocus />
                         <span style={{ color: T.textMuted, fontSize: 14 }}>€</span>
                         <Btn onClick={() => saveTTC(inter.ref)} style={{ padding: "4px 10px", fontSize: 11 }}>✓</Btn>
                         <button onClick={() => { setEditRef(null); setEditTTC(""); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, color: T.textMuted }}>✕</button>
                       </div>
                     ) : (
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <span style={{ fontWeight: 800, fontSize: 15, color: inter.ttc > 0 ? "#06D6A0" : "rgba(255,255,255,0.15)" }}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
-                        {canEdit && <button onClick={() => { setEditRef(inter.ref); setEditTTC(String(inter.ttc || "")); }} style={{ background: "rgba(255,255,255,0.06)", border: "none", borderRadius: 6, padding: "3px 8px", cursor: "pointer", fontSize: 11, color: T.textMuted }}>✏️</button>}
+                        <span style={{ fontWeight: 800, fontSize: 15, color: inter.ttc > 0 ? "#06D6A0" : "rgba(0,0,0,0.15)" }}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
+                        {canEdit && <button onClick={() => { setEditRef(inter.ref); setEditTTC(String(inter.ttc || "")); }} style={{ background: "rgba(0,0,0,0.03)", border: "none", borderRadius: 6, padding: "3px 8px", cursor: "pointer", fontSize: 11, color: T.textMuted }}>✏️</button>}
                         {inter.statut === "Validée" && <span style={{ fontSize: 10, color: "#06D6A0" }}>🔒</span>}
                       </div>
                     )}
@@ -1058,7 +1058,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
                       </span>
                     </div>
                     <div style={{ display: "flex", gap: 20, flexWrap: "wrap", fontSize: 13 }}>
-                      <span style={{ color: T.textSoft }}>Commission brute ({(inter.commRate * 100)}%) : <strong style={{ color: "#fff" }}>{commBrute.toLocaleString("fr-FR")} €</strong></span>
+                      <span style={{ color: T.textSoft }}>Commission brute ({(inter.commRate * 100)}%) : <strong style={{ color: T.textDark }}>{commBrute.toLocaleString("fr-FR")} €</strong></span>
                       {inter.poseurMode === "divise2" && <span style={{ color: "#EF476F" }}>Part poseur : <strong>-{(inter.poseurCost / 2).toLocaleString("fr-FR")} €</strong></span>}
                       <span style={{ color: "#06D6A0", fontWeight: 700 }}>Commission nette : <strong>{commNette.toLocaleString("fr-FR")} €</strong></span>
                     </div>
@@ -1072,7 +1072,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
             );
           })}
           {filtered.filter(i => i.statut === "Validée").length > 0 && (
-            <div style={{ padding: "14px 20px", background: "linear-gradient(135deg, rgba(200,164,78,0.1), rgba(200,164,78,0.04))", borderTop: "1px solid rgba(200,164,78,0.15)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+            <div style={{ padding: "14px 20px", background: "linear-gradient(135deg, rgba(184,134,11,0.05), rgba(184,134,11,0.02))", borderTop: "1px solid rgba(184,134,11,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
               <span style={{ fontWeight: 700, color: T.gold, fontSize: 13 }}>TOTAL VALIDÉ</span>
               <div style={{ display: "flex", gap: 20 }}>
                 <span><span style={{ fontSize: 11, color: T.textMuted }}>CA </span><span style={{ fontWeight: 800, color: "#06D6A0", fontSize: 15 }}>{filtered.filter(i => i.statut === "Validée").reduce((s, i) => s + i.ttc, 0).toLocaleString("fr-FR")} €</span></span>
@@ -1099,10 +1099,10 @@ const PoseurDash = ({ account, onLogout, interventions }) => {
   const totalPose = myInter.reduce((s, i) => s + i.poseurCost, 0);
 
   return (
-    <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, minHeight: "100vh" }}>
+    <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: T.dark, minHeight: "100vh" }}>
       <Header account={account} onLogout={onLogout} />
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 28px" }}>
-        <div style={{ marginBottom: 24 }}><h1 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 800, color: "#fff" }}>Bonjour {poseur?.name.split(" ")[0]} 👋</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted }}>Vos interventions en tant que poseur</p></div>
+        <div style={{ marginBottom: 24 }}><h1 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 800, color: T.textDark }}>Bonjour {poseur?.name.split(" ")[0]} 👋</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted }}>Vos interventions en tant que poseur</p></div>
 
         <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 24 }}>
           <KPI label="Mes poses" value={myInter.length} color="#EC4899" icon="👷" />
@@ -1114,7 +1114,7 @@ const PoseurDash = ({ account, onLogout, interventions }) => {
           {myInter.length === 0 ? (
             <div style={{ padding: 48, textAlign: "center" }}><div style={{ fontSize: 40, opacity: 0.3, marginBottom: 8 }}>👷</div><div style={{ fontSize: 14, color: T.textSoft }}>Aucune intervention assignée</div></div>
           ) : myInter.map((inter, idx) => (
-            <div key={inter.ref} style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.04)", background: idx % 2 ? "rgba(255,255,255,0.02)" : "transparent" }}>
+            <div key={inter.ref} style={{ padding: "16px 20px", borderBottom: "1px solid rgba(0,0,0,0.06)", background: idx % 2 ? "rgba(0,0,0,0.015)" : "transparent" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                   <span style={{ fontWeight: 700, color: "#EC4899", fontSize: 13 }}>{inter.ref}</span>
@@ -1128,7 +1128,7 @@ const PoseurDash = ({ account, onLogout, interventions }) => {
                 </div>
               </div>
               <div style={{ marginTop: 8, fontSize: 12, color: T.textMuted }}>
-                <span>Dépanneur : <strong style={{ color: "#fff" }}>{inter.tech}</strong></span>
+                <span>Dépanneur : <strong style={{ color: T.textDark }}>{inter.tech}</strong></span>
                 <span style={{ margin: "0 10px" }}>·</span>
                 <span>Client : {inter.clientNom} {inter.clientPrenom}</span>
                 <span style={{ margin: "0 10px" }}>·</span>
@@ -1163,7 +1163,7 @@ export default function App() {
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}*{box-sizing:border-box}::placeholder{color:rgba(255,255,255,0.25)}input[type="date"]{color-scheme:dark}input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}input[type="time"]{color-scheme:dark}input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}`}</style>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}*{box-sizing:border-box}::placeholder{color:rgba(0,0,0,0.3)}input[type="date"]{color-scheme:light}input[type="date"]::-webkit-calendar-picker-indicator{cursor:pointer}input[type="time"]{color-scheme:light}input[type="time"]::-webkit-calendar-picker-indicator{cursor:pointer}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%231E1E3C' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}`}</style>
 
       {page === "login" && <LoginPage onLogin={a => { setAccount(a); setPage("dashboard"); }} onGoRegister={() => setPage("register")} onGoForgot={() => setPage("forgot")} />}
       {page === "register" && <RegisterPage onGoLogin={() => setPage("login")} onRegistered={(e, c) => { setVerifyEmail(e); setVerifyCode(c); setPage("verify"); }} />}
