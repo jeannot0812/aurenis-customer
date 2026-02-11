@@ -151,10 +151,29 @@ const fileToBase64 = (file) => new Promise((resolve) => {
   }
 });
 
+/* ═══ MEDIA LIGHTBOX ═══ */
+const MediaLightbox = ({ media, onClose }) => {
+  if (!media) return null;
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.9)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, padding: 16, backdropFilter: "blur(8px)" }}>
+      <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.15)", border: "none", borderRadius: "50%", width: 40, height: 40, cursor: "pointer", color: "#fff", fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2001 }}>✕</button>
+      <div onClick={e => e.stopPropagation()} style={{ maxWidth: "95vw", maxHeight: "90vh" }}>
+        {media.type === "video" ? (
+          <video src={media.url} controls autoPlay style={{ maxWidth: "95vw", maxHeight: "85vh", borderRadius: 12 }} />
+        ) : (
+          <img src={media.url} alt="" style={{ maxWidth: "95vw", maxHeight: "85vh", borderRadius: 12, objectFit: "contain" }} />
+        )}
+      </div>
+    </div>
+  );
+};
+
 /* ═══ MEDIA UPLOAD COMPONENT ═══ */
 const MediaUpload = ({ medias = [], onAdd, onRemove, label = "Photos / Vidéos", minRequired = 0, readOnly = false }) => {
   const fileRef = useRef(null);
+  const cameraRef = useRef(null);
   const [uploading, setUploading] = useState(false);
+  const [viewMedia, setViewMedia] = useState(null);
 
   const handleFiles = async (e) => {
     const files = Array.from(e.target.files);
@@ -166,13 +185,16 @@ const MediaUpload = ({ medias = [], onAdd, onRemove, label = "Photos / Vidéos",
     }
     setUploading(false);
     if (fileRef.current) fileRef.current.value = "";
+    if (cameraRef.current) cameraRef.current.value = "";
   };
 
   return (
     <div style={{ marginTop: 10 }}>
+      {viewMedia && <MediaLightbox media={viewMedia} onClose={() => setViewMedia(null)} />}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
         <span style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>📸 {label}</span>
         {minRequired > 0 && medias.length < minRequired && <span style={{ fontSize: 10, color: "#EF476F", fontWeight: 600 }}>Min. {minRequired} requis</span>}
+        {medias.length >= minRequired && minRequired > 0 && <span style={{ fontSize: 10, color: "#06D6A0", fontWeight: 600 }}>✅ {medias.length} fichier{medias.length > 1 ? "s" : ""}</span>}
       </div>
       {/* Media grid */}
       {medias.length > 0 && (
@@ -180,9 +202,9 @@ const MediaUpload = ({ medias = [], onAdd, onRemove, label = "Photos / Vidéos",
           {medias.map((m, idx) => (
             <div key={idx} style={{ position: "relative", width: 90, height: 90, borderRadius: 10, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)" }}>
               {m.type === "video" ? (
-                <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover" }} onClick={() => window.open(m.url, "_blank")} />
+                <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => setViewMedia(m)} />
               ) : (
-                <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => window.open(m.url, "_blank")} />
+                <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => setViewMedia(m)} />
               )}
               {m.type === "video" && <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 24, pointerEvents: "none", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}>▶️</div>}
               {!readOnly && <button onClick={() => onRemove(idx)} style={{ position: "absolute", top: 2, right: 2, background: "rgba(0,0,0,0.7)", border: "none", borderRadius: "50%", width: 20, height: 20, cursor: "pointer", color: "#EF476F", fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>}
@@ -190,15 +212,20 @@ const MediaUpload = ({ medias = [], onAdd, onRemove, label = "Photos / Vidéos",
           ))}
         </div>
       )}
-      {/* Upload button */}
+      {/* Upload buttons */}
       {!readOnly && (
-        <div>
+        <div style={{ display: "flex", gap: 8 }}>
           <input ref={fileRef} type="file" accept="image/*,video/*" multiple onChange={handleFiles} style={{ display: "none" }} />
-          <button onClick={() => fileRef.current?.click()} disabled={uploading} style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 16px", background: "rgba(255,255,255,0.06)", border: "1px dashed rgba(255,255,255,0.15)", borderRadius: 10, cursor: uploading ? "wait" : "pointer", color: T.textSoft, fontSize: 12, fontWeight: 600, fontFamily: "inherit", width: "100%" }}>
-            {uploading ? <><span style={{ width: 14, height: 14, border: "2px solid rgba(200,164,78,0.3)", borderTopColor: T.gold, borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> Envoi en cours...</> : <>📷 Ajouter photo / vidéo</>}
+          <input ref={cameraRef} type="file" accept="image/*" capture="environment" onChange={handleFiles} style={{ display: "none" }} />
+          <button onClick={() => cameraRef.current?.click()} disabled={uploading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "10px 16px", background: "rgba(200,164,78,0.1)", border: "1px dashed rgba(200,164,78,0.3)", borderRadius: 10, cursor: uploading ? "wait" : "pointer", color: T.gold, fontSize: 12, fontWeight: 600, fontFamily: "inherit", flex: 1 }}>
+            📷 Prendre photo
+          </button>
+          <button onClick={() => fileRef.current?.click()} disabled={uploading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "10px 16px", background: "rgba(255,255,255,0.06)", border: "1px dashed rgba(255,255,255,0.15)", borderRadius: 10, cursor: uploading ? "wait" : "pointer", color: T.textSoft, fontSize: 12, fontWeight: 600, fontFamily: "inherit", flex: 1 }}>
+            📁 Galerie / Fichier
           </button>
         </div>
       )}
+      {uploading && <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: T.gold }}><span style={{ width: 14, height: 14, border: "2px solid rgba(200,164,78,0.3)", borderTopColor: T.gold, borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> Envoi en cours...</div>}
     </div>
   );
 };
@@ -546,6 +573,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
   const [telModal, setTelModal] = useState(null);
   const [newTel, setNewTel] = useState("");
   const [time, setTime] = useState(new Date());
+  const [viewMedia, setViewMedia] = useState(null);
 
   useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearTimeout(t); }, []);
 
@@ -1142,7 +1170,7 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                   <div style={{ fontSize: 11, color: T.gold, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>📸 Photos/vidéos technicien ({(inter.techMedias || []).length})</div>
                   <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                     {(inter.techMedias || []).map((m, i) => (
-                      <div key={i} style={{ position: "relative", width: 70, height: 70, borderRadius: 8, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", cursor: "pointer" }} onClick={() => window.open(m.url, "_blank")}>
+                      <div key={i} style={{ position: "relative", width: 70, height: 70, borderRadius: 8, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", cursor: "pointer" }} onClick={() => setViewMedia(m)}>
                         {m.type === "video" ? <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                         {m.type === "video" && <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, textShadow: "0 2px 6px rgba(0,0,0,0.6)" }}>▶️</div>}
                       </div>
@@ -1157,7 +1185,7 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                   <div style={{ fontSize: 11, color: "#EC4899", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>📸 Photos/vidéos poseur ({(inter.poseurMedias || []).length})</div>
                   <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                     {(inter.poseurMedias || []).map((m, i) => (
-                      <div key={i} style={{ position: "relative", width: 70, height: 70, borderRadius: 8, overflow: "hidden", border: "1px solid rgba(236,72,153,0.2)", cursor: "pointer" }} onClick={() => window.open(m.url, "_blank")}>
+                      <div key={i} style={{ position: "relative", width: 70, height: 70, borderRadius: 8, overflow: "hidden", border: "1px solid rgba(236,72,153,0.2)", cursor: "pointer" }} onClick={() => setViewMedia(m)}>
                         {m.type === "video" ? <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                         {m.type === "video" && <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, textShadow: "0 2px 6px rgba(0,0,0,0.6)" }}>▶️</div>}
                       </div>
@@ -1179,6 +1207,7 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
       </Modal>
 
       {/* COMMISSION MODAL */}
+      {viewMedia && <MediaLightbox media={viewMedia} onClose={() => setViewMedia(null)} />}
       <Modal open={!!commModal} onClose={() => setCommModal(null)} title="Modifier le taux de commission">
         {commModal && (() => {
           const tech = techs.find(t => t.id === commModal);
@@ -1409,6 +1438,7 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
 const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
   const [time, setTime] = useState(new Date());
   const [expandedRef, setExpandedRef] = useState(null);
+  const [viewMedia, setViewMedia] = useState(null);
   useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearTimeout(t); }, []);
 
   const poseur = INIT_POSEURS.find(p => p.id === account.memberId);
@@ -1436,6 +1466,7 @@ const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
           <KPI label="Total achats avancés" value={`${totalAchats.toLocaleString("fr-FR")} €`} color="#F97316" icon="🧾" />
         </div>
 
+        {viewMedia && <MediaLightbox media={viewMedia} onClose={() => setViewMedia(null)} />}
         <Card style={{ padding: 0, overflow: "hidden" }}>
           {myInter.length === 0 ? (
             <div style={{ padding: 48, textAlign: "center" }}><div style={{ fontSize: 40, opacity: 0.3, marginBottom: 8 }}>👷</div><div style={{ fontSize: 14, color: T.textSoft }}>Aucune intervention assignée</div></div>
@@ -1486,9 +1517,9 @@ const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
                           {(inter.techMedias || []).map((m, i) => (
                             <div key={i} style={{ position: "relative", width: 110, height: 110, borderRadius: 10, overflow: "hidden", border: "1px solid rgba(200,164,78,0.2)" }}>
                               {m.type === "video" ? (
-                                <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => window.open(m.url, "_blank")} />
+                                <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => setViewMedia(m)} />
                               ) : (
-                                <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => window.open(m.url, "_blank")} />
+                                <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => setViewMedia(m)} />
                               )}
                               {m.type === "video" && <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 28, pointerEvents: "none", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}>▶️</div>}
                             </div>
