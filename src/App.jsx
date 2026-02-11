@@ -727,10 +727,30 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                 </div>
               )}
 
+              {/* Validation errors */}
+              {(() => {
+                const missing = [];
+                if (!inter.clientNom?.trim()) missing.push("Nom client");
+                if (!inter.clientPrenom?.trim()) missing.push("Prénom client");
+                if (!inter.adresse?.trim()) missing.push("Adresse");
+                if (!inter.tel?.trim()) missing.push("Téléphone");
+                if (!inter.ttc || inter.ttc <= 0) missing.push("Montant TTC");
+                if (!inter.date) missing.push("Date");
+                if (!inter.heure) missing.push("Heure");
+                return missing.length > 0 ? (
+                  <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#EF4444", lineHeight: 1.6 }}>
+                    ⚠️ Champs obligatoires manquants : <strong>{missing.join(", ")}</strong>
+                  </div>
+                ) : null;
+              })()}
+
               {/* Actions */}
               <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
                 <Btn onClick={() => setEditModal(null)} variant="ghost" style={{ flex: 1 }}>Fermer</Btn>
-                {inter.statut === "Terminée" && <Btn onClick={() => { validerIntervention(inter.ref); setEditModal(null); }} style={{ flex: 1 }}>✅ Valider</Btn>}
+                {inter.statut === "Terminée" && (() => {
+                  const valid = inter.clientNom?.trim() && inter.clientPrenom?.trim() && inter.adresse?.trim() && inter.tel?.trim() && inter.ttc > 0 && inter.date && inter.heure;
+                  return <Btn onClick={() => { if (valid) { validerIntervention(inter.ref); setEditModal(null); } }} style={{ flex: 1, opacity: valid ? 1 : 0.4, cursor: valid ? "pointer" : "not-allowed" }}>✅ Valider</Btn>;
+                })()}
               </div>
             </div>
           );
