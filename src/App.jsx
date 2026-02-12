@@ -19,7 +19,7 @@ const INIT_POSEURS = [
   { id: "P002", name: "Sofiane Belkacem", tel: "+33 6 60 70 80 90", spe: "Serrurerie", status: "Disponible", color: "#F43F5E", email: "sofiane@aquatech.fr", role: "poseur" },
 ];
 
-const ADMIN_EMAIL = "admin@aquatech.fr";
+const SUPER_ADMIN_EMAIL = "aurenis.contact@gmail.com";
 
 const INIT_INTERVENTIONS = [
   { ref: "INT-001", date: "2026-02-11", heure: "09:00", type: "Plomberie", mode: "Urgence", clientNom: "Dupont", clientPrenom: "Marie", tel: "+33 6 11 22 33 44", adresse: "12 rue de la Paix, 75002", tech: "Ahmed Benali", statut: "Validée", ttc: 350, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
@@ -363,9 +363,10 @@ const LoginPage = ({ onLogin, onGoRegister, onGoForgot }) => {
     setError(""); if (!email.trim()) return setError("Email requis"); if (!password) return setError("Mot de passe requis");
     setLoading(true); await new Promise(r => setTimeout(r, 600));
     const em = email.toLowerCase().trim();
-    if (em === ADMIN_EMAIL) { if (password === "Admin123") { setLoading(false); return onLogin({ email: em, name: "Administrateur", role: "admin" }); } else { setLoading(false); return setError("Mot de passe admin incorrect"); } }
+    if (em === SUPER_ADMIN_EMAIL) { if (password === "Admin123") { setLoading(false); return onLogin({ email: em, name: "Super Admin", role: "admin", approved: true }); } else { setLoading(false); return setError("Mot de passe incorrect"); } }
     const a = await ST.get(`account:${em}`); if (!a) { setLoading(false); return setError("Aucun compte trouvé"); }
     if (!a.verified) { setLoading(false); return setError("Email non vérifié"); }
+    if (a.role === "admin" && !a.approved) { setLoading(false); return setError("Compte en attente de validation par le super admin"); }
     if (a.password !== password) { setLoading(false); return setError("Mot de passe incorrect"); }
     setLoading(false); onLogin(a);
   };
@@ -404,7 +405,8 @@ const RegisterPage = ({ onGoLogin, onRegistered }) => {
     const em = email.toLowerCase().trim(); const ex = await ST.get(`account:${em}`); if (ex) { setLoading(false); return setErrors({ email: "Compte existant" }); }
     const memberId = role === "admin" ? "A" + Date.now() : (role === "tech" ? "T" + Date.now() : "P" + Date.now());
     const code = String(Math.floor(100000 + Math.random() * 900000));
-    await ST.set(`account:${em}`, { email: em, password, name: name.trim(), memberId, role, verified: false, verifyCode: code });
+    const approved = role !== "admin";
+    await ST.set(`account:${em}`, { email: em, password, name: name.trim(), memberId, role, verified: false, verifyCode: code, approved });
     setLoading(false); onRegistered(em, code);
   };
   const strength = (() => { if (!password) return { pct: 0, label: "", color: "#333" }; let s = 0; if (password.length >= 6) s++; if (password.length >= 10) s++; if (/[A-Z]/.test(password)) s++; if (/[0-9]/.test(password)) s++; if (/[^a-zA-Z0-9]/.test(password)) s++; return [{ pct: 20, label: "Très faible", color: "#EF4444" }, { pct: 40, label: "Faible", color: "#F97316" }, { pct: 60, label: "Moyen", color: "#FBBF24" }, { pct: 80, label: "Fort", color: "#06D6A0" }, { pct: 100, label: "Excellent", color: "#10B981" }][Math.min(s, 4)]; })();
