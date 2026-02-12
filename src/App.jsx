@@ -374,9 +374,9 @@ const LoginPage = ({ onLogin, onGoRegister, onGoForgot }) => {
     <AuthShell><AuthCard title="Connexion" subtitle="Accédez à votre espace Aurenis">
       <div className="flex flex-col gap-3.5">
         <div className="bg-primary-50 border border-primary-200 rounded-lg p-3 text-xs text-primary-600 leading-relaxed">
-          <strong>Démo Admin :</strong> admin@aquatech.fr / Admin123<br/>
-          <strong>Créer un compte tech :</strong> ahmed@aquatech.fr, lucas@aquatech.fr...<br/>
-          <strong>Créer un compte poseur :</strong> rachid@aquatech.fr, sofiane@aquatech.fr
+          <strong>Super Admin :</strong> {SUPER_ADMIN_EMAIL} / Admin123<br/>
+          <strong>Inscription libre :</strong> Créez un compte avec n'importe quel email<br/>
+          <strong>Validation :</strong> Les comptes Admin nécessitent l'approbation du Super Admin
         </div>
         <Inp icon="✉️" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} />
         <div className="relative"><Inp icon="🔒" type={show ? "text" : "password"} placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} /><button onClick={() => setShow(!show)} className="absolute right-3.5 top-3.5 bg-transparent border-none cursor-pointer text-sm text-gray-400 hover:text-gray-600">{show ? "🙈" : "👁️"}</button></div>
@@ -469,8 +469,19 @@ const ForgotPage = ({ onGoLogin }) => {
   );
 };
 
-const VerifiedPage = ({ onGoLogin }) => (
-  <AuthShell><AuthCard title="Email vérifié !" subtitle="Compte activé"><div style={{ textAlign: "center", marginBottom: 20 }}><div style={{ fontSize: 48 }}>✅</div></div><Btn onClick={onGoLogin} style={{ width: "100%" }}>Se connecter</Btn></AuthCard></AuthShell>
+const VerifiedPage = ({ onGoLogin, isAdminPending }) => (
+  <AuthShell><AuthCard title="Email vérifié !" subtitle={isAdminPending ? "En attente de validation" : "Compte activé"}>
+    <div style={{ textAlign: "center", marginBottom: 20 }}>
+      <div style={{ fontSize: 48 }}>✅</div>
+      {isAdminPending && (
+        <div className="mt-4 bg-warning-50 border border-warning-200 rounded-lg p-4 text-sm text-warning-700">
+          <strong className="block mb-1">⏳ Validation requise</strong>
+          Votre compte <strong>Admin</strong> doit être approuvé par le Super Admin (<strong>{SUPER_ADMIN_EMAIL}</strong>) avant de pouvoir vous connecter. Vous recevrez une notification dès validation.
+        </div>
+      )}
+    </div>
+    <Btn onClick={onGoLogin} style={{ width: "100%" }}>Retour à la connexion</Btn>
+  </AuthCard></AuthShell>
 );
 
 /* ═══ APP HEADER ═══ */
@@ -628,8 +639,25 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
   const [newTel, setNewTel] = useState("");
   const [time, setTime] = useState(new Date());
   const [viewMedia, setViewMedia] = useState(null);
+  const [pendingAccounts, setPendingAccounts] = useState([]);
 
   useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearTimeout(t); }, []);
+
+  useEffect(() => {
+    if (account.email !== SUPER_ADMIN_EMAIL) return;
+    const loadPending = async () => {
+      const accounts = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key?.startsWith("account:")) {
+          const acc = await ST.get(key);
+          if (acc && acc.role === "admin" && !acc.approved && acc.verified) accounts.push(acc);
+        }
+      }
+      setPendingAccounts(accounts);
+    };
+    loadPending();
+  }, [account.email]);
 
   const validees = interventions.filter(i => i.statut === "Validée");
   const terminees = interventions.filter(i => i.statut === "Terminée");
@@ -655,7 +683,23 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
     setNewTel(""); setTelModal(null);
   };
 
-  const tabs = [{ id: "dashboard", label: "Dashboard", icon: "📊" }, { id: "interventions", label: "Interventions", icon: "📞" }, { id: "equipe", label: "Équipe", icon: "👥" }, { id: "journal", label: "Journal", icon: "💰" }, { id: "params", label: "Paramètres", icon: "⚙️" }];
+  const approveAdmin = async (email) => {
+    const acc = await ST.get(`account:${email}`);
+    if (acc) {
+      acc.approved = true;
+      await ST.set(`account:${email}`, acc);
+      setPendingAccounts(prev => prev.filter(a => a.email !== email));
+    }
+  };
+
+  const rejectAdmin = async (email) => {
+    await ST.set(`account:${email}`, null);
+    setPendingAccounts(prev => prev.filter(a => a.email !== email));
+  };
+
+  const isSuperAdmin = account.email === SUPER_ADMIN_EMAIL;
+  const baseTabs = [{ id: "dashboard", label: "Dashboard", icon: "📊" }, { id: "interventions", label: "Interventions", icon: "📞" }, { id: "equipe", label: "Équipe", icon: "👥" }, { id: "journal", label: "Journal", icon: "💰" }, { id: "params", label: "Paramètres", icon: "⚙️" }];
+  const tabs = isSuperAdmin ? [...baseTabs.slice(0, 3), { id: "validations", label: `Validations${pendingAccounts.length > 0 ? ` (${pendingAccounts.length})` : ""}`, icon: "✅" }, ...baseTabs.slice(3)] : baseTabs;
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -1035,6 +1079,51 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
         })()}
 
         {/* ═══ PARAMÈTRES ═══ */}
+        {/* ═══ VALIDATIONS (Super Admin only) ═══ */}
+        {tab === "validations" && isSuperAdmin && (
+          <div>
+            <Card>
+              <SectionTitle right={<span className="text-[11px] bg-warning-100 text-warning-700 px-3 py-1 rounded-lg font-bold uppercase tracking-wide">Super Admin</span>}>Validation des comptes Admin</SectionTitle>
+              {pendingAccounts.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-5xl mb-4">✅</div>
+                  <p className="text-gray-500 font-medium">Aucune demande en attente</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {pendingAccounts.map(acc => (
+                    <div key={acc.email} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-xl hover:border-primary-300 transition-all">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-1">
+                          <div className="w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-sm">{acc.name.split(' ').map(n => n[0]).join('').slice(0, 2)}</div>
+                          <div>
+                            <div className="font-bold text-gray-900">{acc.name}</div>
+                            <div className="text-sm text-gray-500">{acc.email}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 mt-2 ml-13">
+                          <span className="badge badge-primary text-[10px] uppercase tracking-wide">👑 Admin</span>
+                          <span className="text-xs text-gray-500">• Membre ID: {acc.memberId}</span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => rejectAdmin(acc.email)} className="px-4 py-2 bg-danger-50 border border-danger-200 text-danger-600 rounded-lg text-sm font-semibold hover:bg-danger-100 transition-all">❌ Refuser</button>
+                        <button onClick={() => approveAdmin(acc.email)} className="px-4 py-2 bg-success-600 text-white rounded-lg text-sm font-semibold hover:bg-success-700 shadow-sm hover:shadow transition-all">✅ Approuver</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="mt-5 pt-5 border-t border-gray-200">
+                <div className="bg-primary-50 border border-primary-200 rounded-lg p-4 text-sm text-primary-700">
+                  <strong className="block mb-1">ℹ️ Information</strong>
+                  Seul le Super Admin (<strong>{SUPER_ADMIN_EMAIL}</strong>) peut valider les inscriptions Admin. Les comptes Tech et Poseur sont approuvés automatiquement.
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
+
         {tab === "params" && (
           <div>
             <Card className="mb-5">
@@ -1635,6 +1724,7 @@ export default function App() {
   const [account, setAccount] = useState(null);
   const [verifyEmail, setVerifyEmail] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
+  const [isAdminPending, setIsAdminPending] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const [interventions, setInterventions] = useState(INIT_INTERVENTIONS);
@@ -1691,8 +1781,8 @@ export default function App() {
 
       {!loading && page === "login" && <LoginPage onLogin={a => { setAccount(a); setPage("dashboard"); }} onGoRegister={() => setPage("register")} onGoForgot={() => setPage("forgot")} />}
       {!loading && page === "register" && <RegisterPage onGoLogin={() => setPage("login")} onRegistered={(e, c) => { setVerifyEmail(e); setVerifyCode(c); setPage("verify"); }} />}
-      {!loading && page === "verify" && <VerifyPage email={verifyEmail} code={verifyCode} onVerified={() => setPage("verified")} onGoLogin={() => setPage("login")} />}
-      {!loading && page === "verified" && <VerifiedPage onGoLogin={() => setPage("login")} />}
+      {!loading && page === "verify" && <VerifyPage email={verifyEmail} code={verifyCode} onVerified={async () => { const acc = await ST.get(`account:${verifyEmail}`); setIsAdminPending(acc?.role === "admin" && !acc?.approved); setPage("verified"); }} onGoLogin={() => setPage("login")} />}
+      {!loading && page === "verified" && <VerifiedPage onGoLogin={() => setPage("login")} isAdminPending={isAdminPending} />}
       {!loading && page === "forgot" && <ForgotPage onGoLogin={() => setPage("login")} />}
       {!loading && page === "dashboard" && account?.role === "admin" && <AdminDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} setTechs={setTechs} specialties={specialties} setSpecialties={setSpecialties} statuts={statuts} setStatuts={setStatuts} />}
       {!loading && page === "dashboard" && account?.role === "tech" && <TechDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} specialties={specialties} />}
