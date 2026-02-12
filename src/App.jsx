@@ -193,13 +193,13 @@ const fileToBase64 = (file) => new Promise((resolve) => {
 const MediaLightbox = ({ media, onClose }) => {
   if (!media) return null;
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.9)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, padding: 16, backdropFilter: "blur(8px)" }}>
-      <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.15)", border: "none", borderRadius: "50%", width: 40, height: 40, cursor: "pointer", color: "#fff", fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2001 }}>✕</button>
-      <div onClick={e => e.stopPropagation()} style={{ maxWidth: "95vw", maxHeight: "90vh" }}>
+    <div onClick={onClose} className="fixed inset-0 bg-black/90 flex items-center justify-center z-[2000] p-4 backdrop-blur-sm">
+      <button onClick={onClose} className="absolute top-4 right-4 bg-white/15 border-none rounded-full w-10 h-10 cursor-pointer text-white text-xl flex items-center justify-center z-[2001] hover:bg-white/25 transition-colors">✕</button>
+      <div onClick={e => e.stopPropagation()} className="max-w-[95vw] max-h-[90vh]">
         {media.type === "video" ? (
-          <video src={media.url} controls autoPlay style={{ maxWidth: "95vw", maxHeight: "85vh", borderRadius: 12 }} />
+          <video src={media.url} controls autoPlay className="max-w-[95vw] max-h-[85vh] rounded-xl" />
         ) : (
-          <img src={media.url} alt="" style={{ maxWidth: "95vw", maxHeight: "85vh", borderRadius: 12, objectFit: "contain" }} />
+          <img src={media.url} alt="" className="max-w-[95vw] max-h-[85vh] rounded-xl object-contain" />
         )}
       </div>
     </div>
@@ -227,43 +227,43 @@ const MediaUpload = ({ medias = [], onAdd, onRemove, label = "Photos / Vidéos",
   };
 
   return (
-    <div style={{ marginTop: 10 }}>
+    <div className="mt-2.5">
       {viewMedia && <MediaLightbox media={viewMedia} onClose={() => setViewMedia(null)} />}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-        <span style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>📸 {label}</span>
-        {minRequired > 0 && medias.length < minRequired && <span style={{ fontSize: 10, color: "#EF4444", fontWeight: 600 }}>Min. {minRequired} requis</span>}
-        {medias.length >= minRequired && minRequired > 0 && <span style={{ fontSize: 10, color: "#06D6A0", fontWeight: 600 }}>✅ {medias.length} fichier{medias.length > 1 ? "s" : ""}</span>}
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-xs text-gray-500 font-bold uppercase tracking-wide">📸 {label}</span>
+        {minRequired > 0 && medias.length < minRequired && <span className="text-xs text-danger-600 font-semibold">Min. {minRequired} requis</span>}
+        {medias.length >= minRequired && minRequired > 0 && <span className="text-xs text-success-600 font-semibold">✅ {medias.length} fichier{medias.length > 1 ? "s" : ""}</span>}
       </div>
       {/* Media grid */}
       {medias.length > 0 && (
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
+        <div className="flex gap-2 flex-wrap mb-2.5">
           {medias.map((m, idx) => (
-            <div key={idx} style={{ position: "relative", width: 90, height: 90, borderRadius: 10, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)" }}>
+            <div key={idx} className="relative w-[90px] h-[90px] rounded-lg overflow-hidden border border-gray-200">
               {m.type === "video" ? (
-                <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => setViewMedia(m)} />
+                <video src={m.url} className="w-full h-full object-cover cursor-pointer" onClick={() => setViewMedia(m)} />
               ) : (
-                <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => setViewMedia(m)} />
+                <img src={m.url} alt="" className="w-full h-full object-cover cursor-pointer" onClick={() => setViewMedia(m)} />
               )}
-              {m.type === "video" && <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 24, pointerEvents: "none", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}>▶️</div>}
-              {!readOnly && <button onClick={() => onRemove(idx)} style={{ position: "absolute", top: 2, right: 2, background: "rgba(0,0,0,0.7)", border: "none", borderRadius: "50%", width: 20, height: 20, cursor: "pointer", color: "#EF4444", fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>}
+              {m.type === "video" && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl pointer-events-none drop-shadow-lg">▶️</div>}
+              {!readOnly && <button onClick={() => onRemove(idx)} className="absolute top-0.5 right-0.5 bg-black/70 border-none rounded-full w-5 h-5 cursor-pointer text-danger-500 text-xs flex items-center justify-center hover:bg-black/90">✕</button>}
             </div>
           ))}
         </div>
       )}
       {/* Upload buttons */}
       {!readOnly && (
-        <div style={{ display: "flex", gap: 8 }}>
-          <input ref={fileRef} type="file" accept="image/*,video/*" multiple onChange={handleFiles} style={{ display: "none" }} />
-          <input ref={cameraRef} type="file" accept="image/*" capture="environment" onChange={handleFiles} style={{ display: "none" }} />
-          <button onClick={() => cameraRef.current?.click()} disabled={uploading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "10px 16px", background: "rgba(6,182,212,0.1)", border: "1px dashed rgba(6,182,212,0.2)", borderRadius: 10, cursor: uploading ? "wait" : "pointer", color: T.cyan, fontSize: 12, fontWeight: 600, fontFamily: T.fontBody, flex: 1 }}>
+        <div className="flex gap-2">
+          <input ref={fileRef} type="file" accept="image/*,video/*" multiple onChange={handleFiles} className="hidden" />
+          <input ref={cameraRef} type="file" accept="image/*" capture="environment" onChange={handleFiles} className="hidden" />
+          <button onClick={() => cameraRef.current?.click()} disabled={uploading} className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-primary-50 border border-dashed border-primary-200 rounded-lg cursor-pointer text-primary-600 text-xs font-semibold flex-1 disabled:opacity-50 disabled:cursor-wait hover:bg-primary-100 transition-colors">
             📷 Prendre photo
           </button>
-          <button onClick={() => fileRef.current?.click()} disabled={uploading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "10px 16px", background: "rgba(255,255,255,0.04)", border: "1px dashed rgba(255,255,255,0.15)", borderRadius: 10, cursor: uploading ? "wait" : "pointer", color: T.textSoft, fontSize: 12, fontWeight: 600, fontFamily: T.fontBody, flex: 1 }}>
+          <button onClick={() => fileRef.current?.click()} disabled={uploading} className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-gray-50 border border-dashed border-gray-200 rounded-lg cursor-pointer text-gray-600 text-xs font-semibold flex-1 disabled:opacity-50 disabled:cursor-wait hover:bg-gray-100 transition-colors">
             📁 Galerie / Fichier
           </button>
         </div>
       )}
-      {uploading && <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: T.cyan }}><span style={{ width: 14, height: 14, border: "2px solid rgba(6,182,212,0.2)", borderTopColor: T.cyan, borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> Envoi en cours...</div>}
+      {uploading && <div className="mt-2 flex items-center gap-2 text-xs text-primary-600"><span className="inline-block w-3.5 h-3.5 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin" /> Envoi en cours...</div>}
     </div>
   );
 };
@@ -274,64 +274,69 @@ const ST = {
   async set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } },
 };
 
-/* ═══ TOKENS ═══ */
-const T = { dark: "#0A0F1C", bg: "#111827", surface: "#1F2937", surfaceHover: "#263044", cyan: "#06B6D4", cyanLight: "#22D3EE", cyanDim: "rgba(6,182,212,0.12)", amber: "#F59E0B", amberLight: "#FBBF24", amberDim: "rgba(245,158,11,0.12)", green: "#10B981", red: "#EF4444", pink: "#EC4899", violet: "#8B5CF6", blue: "#3B82F6", textPrimary: "#F9FAFB", textSecondary: "#9CA3AF", textMuted: "#6B7280", textSoft: "#9CA3AF", textInverse: "#0A0F1C", border: "rgba(255,255,255,0.06)", borderActive: "rgba(6,182,212,0.4)", borderSubtle: "rgba(255,255,255,0.03)", radius: 12, radiusSm: 8, radiusXs: 6, radiusFull: 9999, fontDisplay: "'Space Grotesk', sans-serif", fontBody: "'Outfit', sans-serif", fontMono: "'JetBrains Mono', monospace", gold: "#06B6D4", goldLight: "#22D3EE" };
-const typeColors = { "Plomberie": "#06B6D4", "Serrurerie": "#8B5CF6", "Électricité": "#F59E0B" };
-const statutColors = { "Planifiée": { bg: "rgba(59,130,246,0.12)", c: "#60A5FA" }, "En cours": { bg: "rgba(245,158,11,0.12)", c: "#FBBF24" }, "Terminée": { bg: "rgba(249,115,22,0.12)", c: "#FB923C" }, "Validée": { bg: "rgba(16,185,129,0.12)", c: "#34D399" } };
-
 /* ═══ SHARED COMPONENTS ═══ */
 const AurenisLogo = ({ size = "lg" }) => {
   const s = size === "lg" ? 40 : 28; const fs = size === "lg" ? 22 : 16; const sub = size === "lg" ? 11 : 9;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: size === "lg" ? 12 : 8 }}>
-      <div style={{ width: s, height: s, borderRadius: T.radiusSm, border: `2px solid ${T.cyan}`, display: "flex", alignItems: "center", justifyContent: "center", background: T.cyanDim }}>
-        <svg width={s * 0.5} height={s * 0.5} viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 10 5 15C5 18.87 8.13 22 12 22C15.87 22 19 18.87 19 15C19 10 12 2 12 2Z" stroke={T.cyan} strokeWidth="2" fill="none" /><path d="M12 8C12 8 9 12 9 14.5C9 16.43 10.34 18 12 18C13.66 18 15 16.43 15 14.5C15 12 12 8 12 8Z" fill={T.cyan} opacity="0.3" /></svg>
+    <div className={`flex items-center ${size === "lg" ? "gap-3" : "gap-2"}`}>
+      <div className="flex items-center justify-center rounded-lg border-2 border-primary-600 bg-primary-50" style={{ width: s, height: s }}>
+        <svg width={s * 0.5} height={s * 0.5} viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 10 5 15C5 18.87 8.13 22 12 22C15.87 22 19 18.87 19 15C19 10 12 2 12 2Z" stroke="#06B6D4" strokeWidth="2" fill="none" /><path d="M12 8C12 8 9 12 9 14.5C9 16.43 10.34 18 12 18C13.66 18 15 16.43 15 14.5C15 12 12 8 12 8Z" fill="#06B6D4" opacity="0.3" /></svg>
       </div>
-      <div><div style={{ display: "flex", alignItems: "baseline", gap: 6 }}><span style={{ fontSize: fs, fontWeight: 700, letterSpacing: 2, color: T.cyan, fontFamily: T.fontDisplay }}>AURENIS</span><span style={{ fontSize: sub, fontWeight: 300, color: T.textMuted, letterSpacing: 4, textTransform: "uppercase", fontFamily: T.fontBody }}>customer</span></div></div>
+      <div><div className="flex items-baseline gap-1.5"><span className="font-bold text-primary-600 tracking-wider" style={{ fontSize: fs }}>AURENIS</span><span className="font-light text-gray-400 tracking-widest uppercase" style={{ fontSize: sub }}>customer</span></div></div>
     </div>
   );
 };
 
 const Inp = ({ icon, type = "text", placeholder, value, onChange, error, onKeyDown, style: sx }) => (
-  <div style={{ position: "relative", marginBottom: error ? 4 : 0, ...sx }}>
-    {icon && <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16, color: T.textMuted, pointerEvents: "none" }}>{icon}</div>}
+  <div className={`relative ${error ? "mb-1" : "mb-0"}`} style={sx}>
+    {icon && <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base text-gray-400 pointer-events-none">{icon}</div>}
     <input type={type} placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeyDown}
-      style={{ width: "100%", padding: icon ? "13px 16px 13px 44px" : "13px 16px", fontSize: 15, fontWeight: 400, background: T.surface, border: error ? `1px solid ${T.red}` : `1px solid ${T.border}`, borderRadius: T.radiusSm, color: T.textPrimary, outline: "none", boxSizing: "border-box", transition: "all 0.15s", fontFamily: T.fontBody }}
-      onFocus={e => { e.target.style.borderColor = T.cyan; e.target.style.boxShadow = "0 0 0 3px rgba(6,182,212,0.1)"; }} onBlur={e => { e.target.style.borderColor = error ? T.red : T.border; e.target.style.boxShadow = "none"; }} />
-    {error && <div style={{ fontSize: 12, color: T.red, marginTop: 4, fontWeight: 500, paddingLeft: 4, fontFamily: T.fontBody }}>{error}</div>}
+      className={`input ${icon ? "pl-11" : ""} ${error ? "input-error" : ""}`} />
+    {error && <div className="text-xs text-danger-600 mt-1 font-medium pl-1">{error}</div>}
   </div>
 );
 
 const Btn = ({ children, onClick, loading, variant = "primary", disabled, style: sx }) => {
-  const p = variant === "primary";
-  return <button onClick={onClick} disabled={disabled || loading} style={{ padding: "12px 20px", fontSize: 14, fontWeight: 600, border: p ? "none" : variant === "danger" ? `1px solid rgba(239,68,68,0.2)` : `1px solid ${T.border}`, borderRadius: T.radiusSm, cursor: disabled || loading ? "not-allowed" : "pointer", background: p ? T.cyan : variant === "danger" ? "rgba(239,68,68,0.1)" : "rgba(255,255,255,0.04)", color: p ? T.textInverse : variant === "danger" ? T.red : T.textPrimary, opacity: disabled || loading ? 0.4 : 1, transition: "all 0.15s", fontFamily: T.fontBody, boxShadow: p ? "0 2px 12px rgba(6,182,212,0.25)" : "none", minHeight: 44, width: sx?.width || "auto", ...sx }}>{loading ? "..." : children}</button>;
+  const variantClass = variant === "primary" ? "btn-primary" : variant === "danger" ? "btn-danger" : variant === "success" ? "btn-success" : "btn-ghost";
+  return <button onClick={onClick} disabled={disabled || loading} className={`btn ${variantClass}`} style={sx}>{loading ? "..." : children}</button>;
 };
 
-const Badge = ({ status }) => { const s = statutColors[status] || { bg: "rgba(148,163,184,0.12)", c: "#94A3B8" }; return <span style={{ background: s.bg, color: s.c, padding: "3px 10px", borderRadius: T.radiusXs, fontSize: 11, fontWeight: 600, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.5, fontFamily: T.fontBody, borderLeft: `2px solid ${s.c}` }}>{status}</span>; };
-const ModeBadge = ({ mode }) => <span style={{ background: mode === "Urgence" ? T.red : T.blue, color: "#fff", padding: "3px 10px", borderRadius: T.radiusXs, fontSize: 10, fontWeight: 700, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.5, fontFamily: T.fontBody, animation: mode === "Urgence" ? "pulseUrgent 2s infinite" : "none" }}>{mode === "Urgence" ? "⚡ URG" : "📅 RDV"}</span>;
-const TypeBadge = ({ type }) => { const c = typeColors[type] || T.blue; return <span style={{ background: `${c}18`, color: c, padding: "3px 10px", borderRadius: T.radiusXs, fontSize: 11, fontWeight: 600, fontFamily: T.fontBody, display: "inline-flex", alignItems: "center", gap: 5 }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c, display: "inline-block" }} />{type}</span>; };
+const Badge = ({ status }) => {
+  const statusMap = {
+    "Planifiée": "badge-primary",
+    "En cours": "badge-warning",
+    "Terminée": "badge-warning",
+    "Validée": "badge-success"
+  };
+  return <span className={`badge ${statusMap[status] || "badge-gray"} uppercase tracking-wide border-l-2`}>{status}</span>;
+};
+const ModeBadge = ({ mode }) => <span className={`badge text-xs font-bold uppercase tracking-wide ${mode === "Urgence" ? "bg-danger-600 text-white animate-pulse" : "bg-primary-600 text-white"}`}>{mode === "Urgence" ? "⚡ URG" : "📅 RDV"}</span>;
+const TypeBadge = ({ type }) => {
+  const typeColorMap = { "Plomberie": "text-cyan-600 bg-cyan-50", "Serrurerie": "text-purple-600 bg-purple-50", "Électricité": "text-amber-600 bg-amber-50" };
+  return <span className={`badge ${typeColorMap[type] || "badge-gray"} inline-flex items-center gap-1.5`}><span className="w-1.5 h-1.5 rounded-full" style={{ background: type === "Plomberie" ? "#06B6D4" : type === "Serrurerie" ? "#8B5CF6" : "#F59E0B" }} />{type}</span>;
+};
 
 const KPI = ({ label, value, color, icon }) => (
-  <div className="aurenis-reveal" style={{ background: T.surface, borderRadius: T.radius, padding: "16px 14px", border: `1px solid ${T.border}`, borderLeft: `3px solid ${color}`, flex: 1, minWidth: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02)" }}>
-    <div style={{ fontSize: 18, marginBottom: 4, opacity: 0.8 }}>{icon}</div>
-    <div style={{ fontSize: 10, color: T.textMuted, fontWeight: 500, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: T.fontBody }}>{label}</div>
-    <div style={{ fontSize: 22, fontWeight: 700, color: T.textPrimary, wordBreak: "break-word", fontFamily: T.fontMono }}>{value}</div>
+  <div className="kpi-card flex-1 min-w-[140px] border-l-3" style={{ borderLeftColor: color }}>
+    <div className="text-lg mb-1 opacity-80">{icon}</div>
+    <div className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">{label}</div>
+    <div className="text-2xl font-bold text-gray-900 break-words font-mono">{value}</div>
   </div>
 );
 
-const Card = ({ children, style: sx }) => <div style={{ background: T.surface, borderRadius: T.radius, border: `1px solid ${T.border}`, padding: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02)", ...sx }}>{children}</div>;
-const SectionTitle = ({ children, right }) => <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}><h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: T.textPrimary, fontFamily: T.fontDisplay }}>{children}</h2>{right}</div>;
+const Card = ({ children, style: sx }) => <div className="card p-5" style={sx}>{children}</div>;
+const SectionTitle = ({ children, right }) => <div className="flex justify-between items-center mb-5"><h2 className="m-0 text-lg font-bold text-gray-900">{children}</h2>{right}</div>;
 
 /* ═══ MODAL ═══ */
 const Modal = ({ open, onClose, title, children, width = 480 }) => {
   if (!open) return null;
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1000, padding: 0, backdropFilter: "blur(8px)" }} onClick={onClose}>
-      <div style={{ background: T.surface, borderRadius: `${T.radius}px ${T.radius}px 0 0`, padding: "20px 16px", width: "100%", maxWidth: width, border: `1px solid ${T.border}`, borderBottom: "none", boxShadow: "0 -24px 64px rgba(0,0,0,0.6)", maxHeight: "88vh", overflowY: "auto", WebkitOverflowScrolling: "touch", animation: "slideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1)" }} onClick={e => e.stopPropagation()}>
-        <div style={{ width: 48, height: 4, borderRadius: 2, background: T.textMuted, margin: "0 auto 16px", opacity: 0.4 }} />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: T.textPrimary, fontFamily: T.fontDisplay }}>{title}</h3>
-          <button onClick={onClose} style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${T.border}`, borderRadius: T.radiusSm, width: 36, height: 36, cursor: "pointer", color: T.textSecondary, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.15s" }}>✕</button>
+    <div className="fixed inset-0 bg-black/70 flex items-end justify-center z-[1000] p-0 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-white rounded-t-2xl p-5 w-full border border-gray-200 border-b-0 shadow-2xl max-h-[88vh] overflow-y-auto animate-slide-up" style={{ maxWidth: width }} onClick={e => e.stopPropagation()}>
+        <div className="w-12 h-1 rounded-full bg-gray-300 mx-auto mb-4 opacity-40" />
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="m-0 text-lg font-bold text-gray-900">{title}</h3>
+          <button onClick={onClose} className="bg-gray-100 border border-gray-200 rounded-lg w-9 h-9 cursor-pointer text-gray-500 text-base flex items-center justify-center flex-shrink-0 hover:bg-gray-200 transition-all">✕</button>
         </div>
         {children}
       </div>
@@ -341,13 +346,13 @@ const Modal = ({ open, onClose, title, children, width = 480 }) => {
 
 /* ═══ AUTH SHELL ═══ */
 const AuthShell = ({ children }) => (
-  <div className="aurenis-auth-bg" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: T.dark, padding: 16 }}>
-    <div style={{ width: "100%", maxWidth: 400, animation: "fadeUp 0.4s cubic-bezier(0.16,1,0.3,1)" }}>{children}</div>
+  <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 bg-grid-pattern">
+    <div className="w-full max-w-md animate-fade-up">{children}</div>
   </div>
 );
 const AuthCard = ({ children, title, subtitle }) => (
-  <div style={{ background: T.surface, borderRadius: T.radius, padding: "32px 24px", border: `1px solid ${T.border}`, boxShadow: "0 24px 64px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.3)" }}>
-    <div style={{ textAlign: "center", marginBottom: 24 }}><div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}><AurenisLogo /></div><h1 style={{ margin: "0 0 6px", fontSize: 20, fontWeight: 700, color: T.textPrimary, fontFamily: T.fontDisplay }}>{title}</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted, lineHeight: 1.5, fontFamily: T.fontBody }}>{subtitle}</p></div>{children}
+  <div className="card p-8 shadow-soft-lg">
+    <div className="text-center mb-6"><div className="flex justify-center mb-3.5"><AurenisLogo /></div><h1 className="m-0 mb-1.5 text-xl font-bold text-gray-900">{title}</h1><p className="m-0 text-sm text-gray-600 leading-relaxed">{subtitle}</p></div>{children}
   </div>
 );
 
@@ -366,19 +371,19 @@ const LoginPage = ({ onLogin, onGoRegister, onGoForgot }) => {
   };
   return (
     <AuthShell><AuthCard title="Connexion" subtitle="Accédez à votre espace Aurenis">
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ background: T.cyanDim, border: `1px solid ${T.borderActive}`, borderRadius: T.radiusXs, padding: "8px 12px", fontSize: 11, color: T.cyan, lineHeight: 1.6, fontFamily: T.fontBody }}>
+      <div className="flex flex-col gap-3.5">
+        <div className="bg-primary-50 border border-primary-200 rounded-lg p-3 text-xs text-primary-600 leading-relaxed">
           <strong>Démo Admin :</strong> admin@aquatech.fr / Admin123<br/>
           <strong>Créer un compte tech :</strong> ahmed@aquatech.fr, lucas@aquatech.fr...<br/>
           <strong>Créer un compte poseur :</strong> rachid@aquatech.fr, sofiane@aquatech.fr
         </div>
         <Inp icon="✉️" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} />
-        <div style={{ position: "relative" }}><Inp icon="🔒" type={show ? "text" : "password"} placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} /><button onClick={() => setShow(!show)} style={{ position: "absolute", right: 14, top: 14, background: "none", border: "none", cursor: "pointer", fontSize: 14, color: T.textMuted }}>{show ? "🙈" : "👁️"}</button></div>
-        {error && <div style={{ background: "rgba(239,68,68,0.1)", borderRadius: T.radiusXs, padding: "10px 14px", fontSize: 13, color: T.red, fontWeight: 500, fontFamily: T.fontBody }}>{error}</div>}
+        <div className="relative"><Inp icon="🔒" type={show ? "text" : "password"} placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} /><button onClick={() => setShow(!show)} className="absolute right-3.5 top-3.5 bg-transparent border-none cursor-pointer text-sm text-gray-400 hover:text-gray-600">{show ? "🙈" : "👁️"}</button></div>
+        {error && <div className="bg-danger-50 rounded-lg p-3 text-sm text-danger-600 font-medium">{error}</div>}
         <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Se connecter</Btn>
-        <button onClick={onGoForgot} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.cyan, fontWeight: 600, padding: 8, fontFamily: T.fontBody }}>Mot de passe oublié ?</button>
+        <button onClick={onGoForgot} className="bg-transparent border-none cursor-pointer text-sm text-primary-600 font-semibold p-2 hover:text-primary-700">Mot de passe oublié ?</button>
       </div>
-      <div style={{ marginTop: 20, paddingTop: 16, borderTop: `1px solid ${T.border}`, textAlign: "center" }}><span style={{ fontSize: 13, color: T.textMuted }}>Pas de compte ? </span><button onClick={onGoRegister} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.cyan, fontWeight: 700, fontFamily: T.fontBody }}>Créer un compte</button></div>
+      <div className="mt-5 pt-4 border-t border-gray-200 text-center"><span className="text-sm text-gray-600">Pas de compte ? </span><button onClick={onGoRegister} className="bg-transparent border-none cursor-pointer text-sm text-primary-600 font-bold hover:text-primary-700">Créer un compte</button></div>
     </AuthCard></AuthShell>
   );
 };
@@ -402,16 +407,16 @@ const RegisterPage = ({ onGoLogin, onRegistered }) => {
     setLoading(false); onRegistered(em, code);
   };
   const strength = (() => { if (!password) return { pct: 0, label: "", color: "#333" }; let s = 0; if (password.length >= 6) s++; if (password.length >= 10) s++; if (/[A-Z]/.test(password)) s++; if (/[0-9]/.test(password)) s++; if (/[^a-zA-Z0-9]/.test(password)) s++; return [{ pct: 20, label: "Très faible", color: "#EF4444" }, { pct: 40, label: "Faible", color: "#F97316" }, { pct: 60, label: "Moyen", color: "#FBBF24" }, { pct: 80, label: "Fort", color: "#06D6A0" }, { pct: 100, label: "Excellent", color: "#10B981" }][Math.min(s, 4)]; })();
-  const eyeBtn = (visible, toggle) => <button onClick={toggle} style={{ position: "absolute", right: 14, top: 14, background: "none", border: "none", cursor: "pointer", fontSize: 14, color: T.textMuted }}>{visible ? "🙈" : "👁️"}</button>;
+  const eyeBtn = (visible, toggle) => <button onClick={toggle} className="absolute right-3.5 top-3.5 bg-transparent border-none cursor-pointer text-sm text-gray-400 hover:text-gray-600">{visible ? "🙈" : "👁️"}</button>;
   return (
     <AuthShell><AuthCard title="Créer un compte" subtitle="Email professionnel fourni par l'entreprise">
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      <div className="flex flex-col gap-3.5">
         <Inp icon="✉️" type="email" placeholder="Email professionnel" value={email} onChange={e => setEmail(e.target.value)} error={errors.email} />
-        <div><div style={{ position: "relative" }}><Inp icon="🔒" type={showPw ? "text" : "password"} placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} error={errors.password} />{eyeBtn(showPw, () => setShowPw(!showPw))}</div>{password && <div style={{ marginTop: 8 }}><div style={{ display: "flex", gap: 4, marginBottom: 4 }}>{[0,1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i < strength.pct / 20 ? strength.color : "rgba(255,255,255,0.08)" }} />)}</div><span style={{ fontSize: 11, color: strength.color, fontWeight: 600 }}>{strength.label}</span></div>}</div>
-        <div style={{ position: "relative" }}><Inp icon="🔒" type={showCf ? "text" : "password"} placeholder="Confirmer" value={confirm} onChange={e => setConfirm(e.target.value)} error={errors.confirm} />{eyeBtn(showCf, () => setShowCf(!showCf))}</div>
+        <div><div className="relative"><Inp icon="🔒" type={showPw ? "text" : "password"} placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} error={errors.password} />{eyeBtn(showPw, () => setShowPw(!showPw))}</div>{password && <div className="mt-2"><div className="flex gap-1 mb-1">{[0,1,2,3,4].map(i => <div key={i} className="flex-1 h-1 rounded" style={{ background: i < strength.pct / 20 ? strength.color : "#E5E7EB" }} />)}</div><span className="text-xs font-semibold" style={{ color: strength.color }}>{strength.label}</span></div>}</div>
+        <div className="relative"><Inp icon="🔒" type={showCf ? "text" : "password"} placeholder="Confirmer" value={confirm} onChange={e => setConfirm(e.target.value)} error={errors.confirm} />{eyeBtn(showCf, () => setShowCf(!showCf))}</div>
         <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Créer mon compte</Btn>
       </div>
-      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.cyan, fontWeight: 700, fontFamily: T.fontBody }}>← Se connecter</button></div>
+      <div className="mt-5 pt-4 border-t border-gray-200 text-center"><button onClick={onGoLogin} className="bg-transparent border-none cursor-pointer text-sm text-primary-600 font-bold hover:text-primary-700">← Se connecter</button></div>
     </AuthCard></AuthShell>
   );
 };
@@ -423,12 +428,12 @@ const VerifyPage = ({ email, code, onVerified, onGoLogin }) => {
   const hk = (i, e) => { if (e.key === "Backspace" && !input[i] && i > 0) document.getElementById(`otp-${i-1}`)?.focus(); };
   const handle = async () => { const c = input.join(""); if (c.length !== 6) return setError("6 chiffres requis"); setLoading(true); await new Promise(r => setTimeout(r, 500)); if (c !== code) { setLoading(false); return setError("Code incorrect"); } const a = await ST.get(`account:${email}`); if (a) { a.verified = true; await ST.set(`account:${email}`, a); } setLoading(false); onVerified(); };
   return (
-    <AuthShell><AuthCard title="Vérification" subtitle={<>Code envoyé à <strong style={{ color: T.cyan }}>{email}</strong></>}>
-      <div style={{ background: "rgba(6,182,212,0.08)", border: "1px solid rgba(6,182,212,0.15)", borderRadius: T.radiusXs, padding: "10px 14px", fontSize: 12, color: T.cyan, textAlign: "center", marginBottom: 20, fontWeight: 600 }}>📧 Démo — Code : <span style={{ fontSize: 16, letterSpacing: 3, fontWeight: 700 }}>{code}</span></div>
-      <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 20 }}>{input.map((v, i) => <input key={i} id={`otp-${i}`} type="text" inputMode="numeric" maxLength={1} value={v} onChange={e => hc(i, e.target.value)} onKeyDown={e => hk(i, e)} style={{ width: 48, height: 56, textAlign: "center", fontSize: 22, fontWeight: 700, background: v ? "rgba(6,182,212,0.1)" : "rgba(255,255,255,0.06)", border: "1.5px solid " + (v ? "rgba(6,182,212,0.2)" : "rgba(255,255,255,0.08)"), borderRadius: T.radiusXs, color: "#fff", outline: "none", fontFamily: T.fontBody }} />)}</div>
-      {error && <div style={{ background: "rgba(239,68,68,0.1)", borderRadius: T.radiusXs, padding: "10px", fontSize: 13, color: "#EF4444", textAlign: "center", marginBottom: 14 }}>{error}</div>}
+    <AuthShell><AuthCard title="Vérification" subtitle={<>Code envoyé à <strong className="text-primary-600">{email}</strong></>}>
+      <div className="bg-primary-50 border border-primary-200 rounded-lg px-3.5 py-2.5 text-xs text-primary-600 text-center mb-5 font-semibold">📧 Démo — Code : <span className="text-base tracking-widest font-bold">{code}</span></div>
+      <div className="flex gap-2 justify-center mb-5">{input.map((v, i) => <input key={i} id={`otp-${i}`} type="text" inputMode="numeric" maxLength={1} value={v} onChange={e => hc(i, e.target.value)} onKeyDown={e => hk(i, e)} className={`w-12 h-14 text-center text-2xl font-bold ${v ? "bg-primary-50 border-primary-200" : "bg-gray-50 border-gray-200"} border-2 rounded-lg text-gray-900 outline-none focus:ring-2 focus:ring-primary-500`} />)}</div>
+      {error && <div className="bg-danger-50 rounded-lg p-2.5 text-sm text-danger-600 text-center mb-3.5">{error}</div>}
       <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Vérifier</Btn>
-      <div style={{ marginTop: 16, textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.textMuted, fontFamily: T.fontBody }}>← Retour</button></div>
+      <div className="mt-4 text-center"><button onClick={onGoLogin} className="bg-transparent border-none cursor-pointer text-sm text-gray-500 hover:text-gray-700">← Retour</button></div>
     </AuthCard></AuthShell>
   );
 };
@@ -440,14 +445,14 @@ const ForgotPage = ({ onGoLogin }) => {
   const send = async () => { setErr(""); if (!email.trim()) return setErr("Email requis"); setLd(true); await new Promise(r => setTimeout(r, 600)); const a = await ST.get(`account:${email.toLowerCase().trim()}`); if (!a) { setLd(false); return setErr("Aucun compte"); } const c = String(Math.floor(100000 + Math.random() * 900000)); a.resetCode = c; await ST.set(`account:${email.toLowerCase().trim()}`, a); setGc(c); setLd(false); setStep("code"); };
   const verify = () => { setErr(""); if (rc !== gc) return setErr("Code incorrect"); setStep("newpass"); };
   const reset = async () => { setErr(""); if (np.length < 6) return setErr("Min. 6 car."); if (np !== cp) return setErr("Non identiques"); setLd(true); const a = await ST.get(`account:${email.toLowerCase().trim()}`); if (a) { a.password = np; await ST.set(`account:${email.toLowerCase().trim()}`, a); } setLd(false); setStep("done"); };
-  const eyeBtn = (visible, toggle) => <button onClick={toggle} style={{ position: "absolute", right: 14, top: 14, background: "none", border: "none", cursor: "pointer", fontSize: 14, color: T.textMuted }}>{visible ? "🙈" : "👁️"}</button>;
+  const eyeBtn = (visible, toggle) => <button onClick={toggle} className="absolute right-3.5 top-3.5 bg-transparent border-none cursor-pointer text-sm text-gray-400 hover:text-gray-600">{visible ? "🙈" : "👁️"}</button>;
   return (
     <AuthShell><AuthCard title={step === "done" ? "Réinitialisé ✓" : "Récupération"} subtitle={step === "done" ? "Connectez-vous" : "Récupérez votre accès"}>
-      {step === "email" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><Inp icon="✉️" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF4444" }}>{err}</div>}<Btn onClick={send} loading={ld} style={{ width: "100%" }}>Envoyer</Btn></div>}
-      {step === "code" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><div style={{ background: "rgba(6,182,212,0.08)", borderRadius: T.radiusXs, padding: "10px", fontSize: 12, color: T.cyan, textAlign: "center", fontWeight: 600 }}>Code : <strong>{gc}</strong></div><Inp icon="🔑" placeholder="Code 6 chiffres" value={rc} onChange={e => setRc(e.target.value)} />{err && <div style={{ fontSize: 13, color: "#EF4444" }}>{err}</div>}<Btn onClick={verify} style={{ width: "100%" }}>Vérifier</Btn></div>}
-      {step === "newpass" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}><div style={{ position: "relative" }}><Inp icon="🔒" type={showNp ? "text" : "password"} placeholder="Nouveau" value={np} onChange={e => setNp(e.target.value)} />{eyeBtn(showNp, () => setShowNp(!showNp))}</div><div style={{ position: "relative" }}><Inp icon="🔒" type={showCp ? "text" : "password"} placeholder="Confirmer" value={cp} onChange={e => setCp(e.target.value)} />{eyeBtn(showCp, () => setShowCp(!showCp))}</div>{err && <div style={{ fontSize: 13, color: "#EF4444" }}>{err}</div>}<Btn onClick={reset} loading={ld} style={{ width: "100%" }}>Réinitialiser</Btn></div>}
-      {step === "done" && <div style={{ textAlign: "center" }}><div style={{ fontSize: 48, marginBottom: 16 }}>✅</div><Btn onClick={onGoLogin} style={{ width: "100%" }}>Se connecter</Btn></div>}
-      {step !== "done" && <div style={{ marginTop: 16, textAlign: "center" }}><button onClick={onGoLogin} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: T.textMuted, fontFamily: T.fontBody }}>← Retour</button></div>}
+      {step === "email" && <div className="flex flex-col gap-3.5"><Inp icon="✉️" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />{err && <div className="text-sm text-danger-600">{err}</div>}<Btn onClick={send} loading={ld} style={{ width: "100%" }}>Envoyer</Btn></div>}
+      {step === "code" && <div className="flex flex-col gap-3.5"><div className="bg-primary-50 rounded-lg p-2.5 text-xs text-primary-600 text-center font-semibold">Code : <strong>{gc}</strong></div><Inp icon="🔑" placeholder="Code 6 chiffres" value={rc} onChange={e => setRc(e.target.value)} />{err && <div className="text-sm text-danger-600">{err}</div>}<Btn onClick={verify} style={{ width: "100%" }}>Vérifier</Btn></div>}
+      {step === "newpass" && <div className="flex flex-col gap-3.5"><div className="relative"><Inp icon="🔒" type={showNp ? "text" : "password"} placeholder="Nouveau" value={np} onChange={e => setNp(e.target.value)} />{eyeBtn(showNp, () => setShowNp(!showNp))}</div><div className="relative"><Inp icon="🔒" type={showCp ? "text" : "password"} placeholder="Confirmer" value={cp} onChange={e => setCp(e.target.value)} />{eyeBtn(showCp, () => setShowCp(!showCp))}</div>{err && <div className="text-sm text-danger-600">{err}</div>}<Btn onClick={reset} loading={ld} style={{ width: "100%" }}>Réinitialiser</Btn></div>}
+      {step === "done" && <div className="text-center"><div className="text-5xl mb-4">✅</div><Btn onClick={onGoLogin} style={{ width: "100%" }}>Se connecter</Btn></div>}
+      {step !== "done" && <div className="mt-4 text-center"><button onClick={onGoLogin} className="bg-transparent border-none cursor-pointer text-sm text-gray-500 hover:text-gray-700">← Retour</button></div>}
     </AuthCard></AuthShell>
   );
 };
@@ -459,19 +464,19 @@ const VerifiedPage = ({ onGoLogin }) => (
 /* ═══ APP HEADER ═══ */
 const Header = ({ account, onLogout, roleBadge }) => {
   const member = [...INIT_TECHS, ...INIT_POSEURS].find(m => m.id === account.memberId);
-  const color = member?.color || T.cyan;
+  const color = member?.color || "#06B6D4";
   const initials = account.name?.split(" ").map(n => n[0]).join("") || "A";
-  const roleColor = account.role === "admin" ? T.cyan : account.role === "tech" ? T.blue : T.pink;
+  const roleColorClass = account.role === "admin" ? "bg-primary-600" : account.role === "tech" ? "bg-blue-600" : "bg-pink-600";
   return (
-    <div style={{ background: T.dark, borderBottom: `1px solid ${T.border}`, padding: 0, backdropFilter: "blur(24px)", position: "sticky", top: 0, zIndex: 50 }}>
-      <div style={{ height: 2, background: roleColor }} />
-      <div className="aurenis-header-inner" style={{ padding: "10px 16px" }}>
+    <div className="bg-white border-b border-gray-200 backdrop-blur-xl sticky top-0 z-50 shadow-sm">
+      <div className={`h-0.5 ${roleColorClass}`} />
+      <div className="aurenis-header-inner px-4 py-2.5">
         <AurenisLogo size="sm" />
         <div className="aurenis-header-right">
-          <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: T.radiusXs, background: `${roleColor}18`, color: roleColor, textTransform: "uppercase", letterSpacing: 1, fontFamily: T.fontBody }}>{account.role === "admin" ? "Admin" : account.role === "tech" ? "Technicien" : "Poseur"}</span>
-          <div style={{ textAlign: "right" }}><div style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary, fontFamily: T.fontBody }}>{account.name}</div></div>
-          <div style={{ width: 34, height: 34, borderRadius: T.radiusSm, background: color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: 12, fontFamily: T.fontDisplay }}>{initials}</div>
-          <button onClick={onLogout} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: T.red, fontWeight: 600, fontFamily: T.fontBody, padding: "6px 10px", opacity: 0.8 }}>Déconnexion</button>
+          <span className={`text-xs font-bold px-2 py-1 rounded-lg uppercase tracking-wide ${account.role === "admin" ? "bg-primary-50 text-primary-600" : account.role === "tech" ? "bg-blue-50 text-blue-600" : "bg-pink-50 text-pink-600"}`}>{account.role === "admin" ? "Admin" : account.role === "tech" ? "Technicien" : "Poseur"}</span>
+          <div className="text-right"><div className="text-sm font-semibold text-gray-900">{account.name}</div></div>
+          <div className="w-[34px] h-[34px] rounded-lg flex items-center justify-center text-white font-bold text-xs" style={{ background: color }}>{initials}</div>
+          <button onClick={onLogout} className="bg-transparent border-none cursor-pointer text-xs text-danger-600 font-semibold px-2.5 py-1.5 opacity-80 hover:opacity-100">Déconnexion</button>
         </div>
       </div>
     </div>
@@ -545,33 +550,31 @@ const AddressAutocomplete = ({ value, onChange }) => {
   }, [query, focused, fetchSuggestions]);
 
   return (
-    <div style={{ position: "relative" }}>
-      <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16, opacity: 0.4, pointerEvents: "none" }}>📍</div>
+    <div className="relative">
+      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base opacity-40 pointer-events-none">📍</div>
       <input
         type="text" placeholder="Tapez une adresse..." value={query}
         onChange={e => { setQuery(e.target.value); onChange(e.target.value); setShowSugg(true); }}
         onFocus={() => { setFocused(true); setShowSugg(true); }}
         onBlur={() => setTimeout(() => { setFocused(false); setShowSugg(false); }, 250)}
-        style={{ width: "100%", padding: "12px 16px 12px 42px", fontSize: 14, fontWeight: 500, background: "rgba(255,255,255,0.04)", border: focused ? "1.5px solid " + T.cyan : "1.5px solid rgba(255,255,255,0.08)", borderRadius: T.radiusSm, color: "#fff", outline: "none", boxSizing: "border-box", fontFamily: T.fontBody }}
+        className={`w-full px-4 py-3 pl-11 text-sm font-medium bg-white border ${focused ? "border-primary-500 ring-2 ring-primary-500/20" : "border-gray-300"} rounded-xl text-gray-900 outline-none transition-all`}
       />
-      {loading && <div style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, border: "2px solid rgba(6,182,212,0.2)", borderTopColor: T.cyan, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />}
+      {loading && <div className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin" />}
       {showSugg && suggestions.length > 0 && (
-        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 100, marginTop: 4, background: "#1F2937", border: "1px solid rgba(6,182,212,0.15)", borderRadius: 12, overflow: "hidden", boxShadow: "0 12px 40px rgba(0,0,0,0.5)" }}>
+        <div className="absolute top-full left-0 right-0 z-[100] mt-1 bg-white border border-primary-100 rounded-xl overflow-hidden shadow-soft-lg">
           {suggestions.map((s, i) => (
             <div key={i} onMouseDown={e => e.preventDefault()} onClick={() => { setQuery(s.full); onChange(s.full); setShowSugg(false); setSuggestions([]); }}
-              style={{ padding: "10px 16px", fontSize: 13, color: "#fff", cursor: "pointer", borderBottom: i < suggestions.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}
-              onMouseEnter={e => e.currentTarget.style.background = "rgba(6,182,212,0.1)"}
-              onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ color: T.cyan, fontSize: 14 }}>📍</span>
+              className={`px-4 py-2.5 text-sm text-gray-900 cursor-pointer transition-colors hover:bg-primary-50 ${i < suggestions.length - 1 ? "border-b border-gray-100" : ""}`}>
+              <div className="flex items-center gap-2">
+                <span className="text-primary-600 text-sm">📍</span>
                 <div>
-                  <div style={{ fontWeight: 600, color: "#fff", fontSize: 13 }}>{s.main}</div>
-                  <div style={{ fontSize: 11, color: T.textMuted }}>{s.secondary}</div>
+                  <div className="font-semibold text-gray-900 text-sm">{s.main}</div>
+                  <div className="text-xs text-gray-500">{s.secondary}</div>
                 </div>
               </div>
             </div>
           ))}
-          <div style={{ padding: "5px 16px", fontSize: 9, color: "rgba(255,255,255,0.15)", textAlign: "right" }}>{source === "google" ? "Google Places" : "🇫🇷 Base Adresse Nationale"}</div>
+          <div className="px-4 py-1.5 text-[9px] text-gray-300 text-right">{source === "google" ? "Google Places" : "🇫🇷 Base Adresse Nationale"}</div>
         </div>
       )}
     </div>
@@ -582,21 +585,20 @@ const AddressAutocomplete = ({ value, onChange }) => {
 const ConfigList = ({ items, onAdd, onRemove, label, icon, color }) => {
   const [newItem, setNewItem] = useState("");
   return (
-    <div style={{ marginBottom: 20 }}>
-      <div style={{ fontSize: 12, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}><span>{icon}</span> {label}</div>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
+    <div className="mb-5">
+      <div className="text-xs text-gray-500 font-bold uppercase tracking-wide mb-2.5 flex items-center gap-1.5"><span>{icon}</span> {label}</div>
+      <div className="flex gap-2 flex-wrap mb-2.5">
         {items.map((item, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, background: `${color}18`, border: `1px solid ${color}30`, borderRadius: 20, padding: "6px 14px" }}>
-            <span style={{ fontSize: 13, fontWeight: 600, color }}>{item}</span>
-            <button onClick={() => onRemove(item)} style={{ background: "none", border: "none", cursor: "pointer", color: "#EF4444", fontSize: 14, padding: 0, lineHeight: 1, fontFamily: T.fontBody, opacity: 0.7 }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0.7}>✕</button>
+          <div key={i} className="flex items-center gap-1.5 rounded-full px-3.5 py-1.5" style={{ background: `${color}18`, border: `1px solid ${color}30` }}>
+            <span className="text-sm font-semibold" style={{ color }}>{item}</span>
+            <button onClick={() => onRemove(item)} className="bg-transparent border-none cursor-pointer text-danger-600 text-sm p-0 leading-none opacity-70 hover:opacity-100 transition-opacity">✕</button>
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", gap: 8 }}>
+      <div className="flex gap-2">
         <input type="text" placeholder={`Ajouter ${label.toLowerCase()}...`} value={newItem} onChange={e => setNewItem(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && newItem.trim()) { onAdd(newItem.trim()); setNewItem(""); } }}
-          style={{ flex: 1, padding: "10px 14px", fontSize: 13, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#fff", outline: "none", fontFamily: T.fontBody }}
-          onFocus={e => e.target.style.borderColor = T.cyan} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
-        <button onClick={() => { if (newItem.trim()) { onAdd(newItem.trim()); setNewItem(""); } }} style={{ padding: "10px 18px", borderRadius: 10, border: "none", background: "#06B6D4", color: "#111827", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: T.fontBody }}>+ Ajouter</button>
+          className="flex-1 input" />
+        <button onClick={() => { if (newItem.trim()) { onAdd(newItem.trim()); setNewItem(""); } }} className="btn btn-primary">+ Ajouter</button>
       </div>
     </div>
   );
@@ -644,45 +646,45 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
   const tabs = [{ id: "dashboard", label: "Dashboard", icon: "📊" }, { id: "interventions", label: "Interventions", icon: "📞" }, { id: "equipe", label: "Équipe", icon: "👥" }, { id: "journal", label: "Journal", icon: "💰" }, { id: "params", label: "Paramètres", icon: "⚙️" }];
 
   return (
-    <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, minHeight: "100vh" }}>
+    <div className="bg-gray-50 min-h-screen">
       <Header account={account} onLogout={onLogout} />
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 16px" }}>
+      <div className="max-w-[1100px] mx-auto px-4 py-5">
         {/* Time + Nav */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <div style={{ display: "flex", gap: 6, background: "rgba(255,255,255,0.04)", borderRadius: 14, padding: 4, border: "1px solid rgba(255,255,255,0.06)", overflowX: "auto", WebkitOverflowScrolling: "touch" }} className="aurenis-tabs">
+        <div className="flex justify-between items-center mb-5">
+          <div className="aurenis-tabs">
             {tabs.map(t => <button key={t.id} onClick={() => setTab(t.id)} className={tab === t.id ? "active" : ""}>{t.icon} {t.label}</button>)}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: T.textMuted }}>{time.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })} · <span style={{ color: T.cyan }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span></div>
+          <div className="text-sm font-semibold text-gray-500">{time.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })} · <span className="text-primary-600">{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span></div>
         </div>
 
         {/* ═══ DASHBOARD ═══ */}
         {tab === "dashboard" && (
           <div>
             <div className="aurenis-kpis">
-              <KPI label="Interventions" value={interventions.length} color={T.cyan} icon="📋" />
+              <KPI label="Interventions" value={interventions.length} color="#06B6D4" icon="📋" />
               <KPI label="Validées" value={validees.length} color="#06D6A0" icon="✅" />
               <KPI label="En attente" value={attente} color="#FBBF24" icon="⏳" />
               <KPI label="CA Validé TTC" value={`${totalTTC.toLocaleString("fr-FR")} €`} color="#10B981" icon="💰" />
               <KPI label="Commissions" value={`${totalComm.toLocaleString("fr-FR")} €`} color="#EF4444" icon="💸" />
-              <KPI label="CA Net Patron" value={`${caNet.toLocaleString("fr-FR")} €`} color={T.cyan} icon="🏢" />
+              <KPI label="CA Net Patron" value={`${caNet.toLocaleString("fr-FR")} €`} color="#06B6D4" icon="🏢" />
             </div>
             {terminees.length > 0 && (
-              <Card style={{ marginBottom: 20, borderLeft: "3px solid #FBBF24" }}>
-                <SectionTitle right={<span style={{ fontSize: 12, color: "#FBBF24", fontWeight: 700 }}>⏳ {terminees.length} en attente</span>}>Interventions à valider</SectionTitle>
+              <Card className="mb-5 border-l-3 border-l-warning-500">
+                <SectionTitle right={<span className="text-xs text-warning-500 font-bold">⏳ {terminees.length} en attente</span>}>Interventions à valider</SectionTitle>
                 {terminees.map(inter => (
-                  <div key={inter.ref} className="aurenis-inter-row" style={{ padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                      <span style={{ fontWeight: 700, color: T.cyan, fontSize: 13 }}>{inter.ref}</span>
-                      <span style={{ color: T.textSoft, fontSize: 13 }}>{inter.date}</span>
-                      <span style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>{inter.tech}</span>
+                  <div key={inter.ref} className="aurenis-inter-row py-3 border-b border-gray-100">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <span className="font-bold text-primary-600 text-sm">{inter.ref}</span>
+                      <span className="text-gray-600 text-sm">{inter.date}</span>
+                      <span className="text-gray-900 font-semibold text-sm">{inter.tech}</span>
                       <TypeBadge type={inter.type} />
-                      {inter.poseur && <span style={{ fontSize: 11, color: "#EC4899", background: "rgba(236,72,153,0.1)", padding: "2px 8px", borderRadius: 6 }}>👷 {inter.poseur}</span>}
+                      {inter.poseur && <span className="text-xs text-pink-600 bg-pink-50 px-2 py-0.5 rounded-md">👷 {inter.poseur}</span>}
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                      <span style={{ fontWeight: 700, color: "#06D6A0", fontSize: 15 }}>{inter.ttc} €</span>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-success-600 text-base">{inter.ttc} €</span>
                       <button className="wa-btn" onClick={() => sendWhatsApp(inter.tel, waMessageClient(inter))} title="WhatsApp client"><WaIcon /></button>
-                      <Btn onClick={() => setEditModal(inter.ref)} variant="ghost" style={{ padding: "6px 12px", fontSize: 12 }}>✏️ Modifier</Btn>
-                      <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "6px 16px", fontSize: 12 }}>✅ Valider</Btn>
+                      <Btn onClick={() => setEditModal(inter.ref)} variant="ghost" className="btn-sm">✏️ Modifier</Btn>
+                      <Btn onClick={() => validerIntervention(inter.ref)} className="btn-sm">✅ Valider</Btn>
                     </div>
                   </div>
                 ))}
@@ -694,26 +696,25 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {/* ═══ INTERVENTIONS ═══ */}
         {tab === "interventions" && (
           <Card>
-            <SectionTitle right={<span style={{ fontSize: 12, color: T.textMuted }}>{interventions.length} interventions</span>}>Toutes les interventions</SectionTitle>
+            <SectionTitle right={<span className="text-xs text-gray-500">{interventions.length} interventions</span>}>Toutes les interventions</SectionTitle>
             {interventions.map((inter, idx) => (
-              <div key={inter.ref} className="aurenis-inter-row"
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(6,182,212,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                  <span style={{ fontWeight: 700, color: T.cyan, fontSize: 13, minWidth: 68 }}>{inter.ref}</span>
-                  <span style={{ color: T.textSoft, fontSize: 12 }}>{inter.date} {inter.heure}</span>
+              <div key={inter.ref} className="aurenis-inter-row">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <span className="font-bold text-primary-600 text-sm min-w-[68px]">{inter.ref}</span>
+                  <span className="text-gray-600 text-xs">{inter.date} {inter.heure}</span>
                   <TypeBadge type={inter.type} />
                   <ModeBadge mode={inter.mode} />
-                  <span style={{ fontSize: 13, color: "#fff", fontWeight: 600 }}>{inter.tech}</span>
-                  {inter.poseur && <span style={{ fontSize: 11, color: "#EC4899", background: "rgba(236,72,153,0.1)", padding: "2px 8px", borderRadius: 6 }}>👷 {inter.poseur} ({inter.poseurCost}€ · {inter.poseurMode === "divise2" ? "÷2" : "gratuit"})</span>}
+                  <span className="text-sm text-gray-900 font-semibold">{inter.tech}</span>
+                  {inter.poseur && <span className="text-xs text-pink-600 bg-pink-50 px-2 py-0.5 rounded-md">👷 {inter.poseur} ({inter.poseurCost}€ · {inter.poseurMode === "divise2" ? "÷2" : "gratuit"})</span>}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 13, color: T.textMuted }}>{inter.clientNom} {inter.clientPrenom}</span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm text-gray-500">{inter.clientNom} {inter.clientPrenom}</span>
                   <Badge status={inter.statut} />
-                  <span style={{ fontWeight: 700, fontSize: 14, color: inter.ttc > 0 ? "#06D6A0" : "rgba(255,255,255,0.15)" }}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
+                  <span className={`font-bold text-sm ${inter.ttc > 0 ? "text-success-600" : "text-gray-300"}`}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
                   <button className="wa-btn" onClick={() => sendWhatsApp(inter.tel, waMessageClient(inter))} title="WhatsApp client"><WaIcon /></button>
-                  {(() => { const t = techs.find(tc => tc.name === inter.tech); return t ? <button className="wa-btn" onClick={() => sendWhatsApp(t.tel, waMessageTech(inter, t.name))} title="WhatsApp tech"><WaIcon /><span style={{ fontSize: 9 }}>Tech</span></button> : null; })()}
-                  <Btn onClick={() => setEditModal(inter.ref)} variant="ghost" style={{ padding: "4px 10px", fontSize: 11 }}>✏️</Btn>
-                  {inter.statut === "Terminée" && <Btn onClick={() => validerIntervention(inter.ref)} style={{ padding: "4px 12px", fontSize: 11 }}>✅ Valider</Btn>}
+                  {(() => { const t = techs.find(tc => tc.name === inter.tech); return t ? <button className="wa-btn" onClick={() => sendWhatsApp(t.tel, waMessageTech(inter, t.name))} title="WhatsApp tech"><WaIcon /><span className="text-[9px]">Tech</span></button> : null; })()}
+                  <Btn onClick={() => setEditModal(inter.ref)} variant="ghost" className="btn-sm">✏️</Btn>
+                  {inter.statut === "Terminée" && <Btn onClick={() => validerIntervention(inter.ref)} className="btn-sm">✅ Valider</Btn>}
                 </div>
               </div>
             ))}
@@ -723,33 +724,33 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
         {/* ═══ EQUIPE ═══ */}
         {tab === "equipe" && (
           <div>
-            <Card style={{ marginBottom: 20 }}>
+            <Card className="mb-5">
               <SectionTitle>Techniciens</SectionTitle>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 14 }}>
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-3.5">
                 {techs.map(tech => {
                   const myInter = interventions.filter(i => i.tech === tech.name && i.statut === "Validée");
                   const ca = myInter.reduce((s, i) => s + i.ttc, 0);
                   return (
-                    <div key={tech.id} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 16, padding: 20, borderLeft: `3px solid ${tech.color}` }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 12 }}>
-                        <div><div style={{ fontWeight: 700, color: "#fff", fontSize: 15 }}>{tech.name}</div><div style={{ fontSize: 12, color: T.textMuted }}>{tech.spe}</div></div>
-                        <div style={{ width: 36, height: 36, borderRadius: T.radiusSm, background: tech.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: 13 }}>{tech.name.split(" ").map(n => n[0]).join("")}</div>
+                    <div key={tech.id} className="bg-white rounded-2xl p-5 border-l-3" style={{ borderLeftColor: tech.color }}>
+                      <div className="flex justify-between items-start mb-3">
+                        <div><div className="font-bold text-gray-900 text-base">{tech.name}</div><div className="text-xs text-gray-500">{tech.spe}</div></div>
+                        <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-sm" style={{ background: tech.color }}>{tech.name.split(" ").map(n => n[0]).join("")}</div>
                       </div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                        <span style={{ fontSize: 12, color: T.textMuted }}>{myInter.length} validées · CA {ca.toLocaleString("fr-FR")} €</span>
+                      <div className="flex justify-between items-center mb-2.5">
+                        <span className="text-xs text-gray-500">{myInter.length} validées · CA {ca.toLocaleString("fr-FR")} €</span>
                       </div>
                       {/* Téléphone */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "10px 14px", marginBottom: 8 }}>
-                        <div><span style={{ fontSize: 11, color: T.textMuted }}>Téléphone</span><div style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginTop: 2 }}>{tech.tel}</div></div>
-                        <div style={{ display: "flex", gap: 6 }}>
-                          <button className="wa-btn" onClick={() => sendWhatsApp(tech.tel, `Bonjour ${tech.name.split(" ")[0]},\n\n`)} title="WhatsApp" style={{ padding: "7px 10px" }}><WaIcon /></button>
-                          <Btn onClick={() => { setTelModal(tech.id); setNewTel(tech.tel); }} variant="ghost" style={{ padding: "6px 12px", fontSize: 11 }}>✏️</Btn>
+                      <div className="flex justify-between items-center bg-gray-50 rounded-lg px-3.5 py-2.5 mb-2">
+                        <div><span className="text-xs text-gray-500">Téléphone</span><div className="text-sm font-semibold text-gray-900 mt-0.5">{tech.tel}</div></div>
+                        <div className="flex gap-1.5">
+                          <button className="wa-btn !p-2" onClick={() => sendWhatsApp(tech.tel, `Bonjour ${tech.name.split(" ")[0]},\n\n`)} title="WhatsApp"><WaIcon /></button>
+                          <Btn onClick={() => { setTelModal(tech.id); setNewTel(tech.tel); }} variant="ghost" className="btn-sm">✏️</Btn>
                         </div>
                       </div>
                       {/* Commission */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "10px 14px" }}>
-                        <div><span style={{ fontSize: 11, color: T.textMuted }}>Taux commission</span><div style={{ fontSize: 20, fontWeight: 700, color: T.cyan }}>{(tech.commission * 100)}%</div></div>
-                        <Btn onClick={() => { setCommModal(tech.id); setNewRate(String(tech.commission * 100)); }} variant="ghost" style={{ padding: "6px 12px", fontSize: 11 }}>✏️ Modifier</Btn>
+                      <div className="flex justify-between items-center bg-gray-50 rounded-lg px-3.5 py-2.5">
+                        <div><span className="text-xs text-gray-500">Taux commission</span><div className="text-xl font-bold text-primary-600">{(tech.commission * 100)}%</div></div>
+                        <Btn onClick={() => { setCommModal(tech.id); setNewRate(String(tech.commission * 100)); }} variant="ghost" className="btn-sm">✏️ Modifier</Btn>
                       </div>
                     </div>
                   );
@@ -758,14 +759,14 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
             </Card>
             <Card>
               <SectionTitle>Poseurs</SectionTitle>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 14 }}>
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-3.5">
                 {INIT_POSEURS.map(p => {
                   const myInter = interventions.filter(i => i.poseur === p.name);
                   return (
-                    <div key={p.id} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 16, padding: 20, borderLeft: `3px solid ${p.color}` }}>
-                      <div style={{ fontWeight: 700, color: "#fff", fontSize: 15 }}>{p.name}</div>
-                      <div style={{ fontSize: 12, color: T.textMuted, marginBottom: 8 }}>{p.spe} · {myInter.length} interventions</div>
-                      <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 8, background: "rgba(236,72,153,0.15)", color: "#EC4899" }}>POSEUR</span>
+                    <div key={p.id} className="bg-white rounded-2xl p-5 border-l-3" style={{ borderLeftColor: p.color }}>
+                      <div className="font-bold text-gray-900 text-base">{p.name}</div>
+                      <div className="text-xs text-gray-500 mb-2">{p.spe} · {myInter.length} interventions</div>
+                      <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-pink-100 text-pink-600">POSEUR</span>
                     </div>
                   );
                 })}
@@ -838,7 +839,7 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
             }, [jFiltered]);
 
             const toggleSort = (field) => { if (jSortField === field) setJSortDir(jSortDir === "asc" ? "desc" : "asc"); else { setJSortField(field); setJSortDir("desc"); } };
-            const SortIcon = ({ field }) => { if (jSortField !== field) return <span style={{ opacity: 0.3, fontSize: 9 }}>⇅</span>; return <span style={{ color: T.cyan, fontSize: 9 }}>{jSortDir === "asc" ? "▲" : "▼"}</span>; };
+            const SortIcon = ({ field }) => { if (jSortField !== field) return <span className="opacity-30 text-[9px]">⇅</span>; return <span className="text-primary-600 text-[9px]">{jSortDir === "asc" ? "▲" : "▼"}</span>; };
 
             const fmt = (n) => n.toLocaleString("fr-FR", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
 
@@ -887,70 +888,67 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
             const resetFilters = () => { setJSearch(""); setJDateFrom(""); setJDateTo(""); setJTechFilter(""); setJTypeFilter(""); setJPoseurFilter(""); setJQuickPeriod(""); };
             const hasFilters = jSearch || jDateFrom || jDateTo || jTechFilter || jTypeFilter || jPoseurFilter;
 
-            const fSel = { padding: "8px 12px", fontSize: 13, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: T.radiusSm, color: "#fff", fontFamily: T.fontBody, outline: "none", appearance: "none", WebkitAppearance: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 10px center", width: "100%", boxSizing: "border-box" };
-            const fInp = { width: "100%", padding: "8px 12px", fontSize: 13, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: T.radiusSm, color: "#fff", outline: "none", boxSizing: "border-box", fontFamily: T.fontBody };
-            const fLabel = { fontSize: 10, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: 4 };
-
             return (
               <div>
                 {/* Header with actions */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#fff" }}>💰 Journal de compte</h2>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <button onClick={() => setJShowStats(!jShowStats)} style={{ background: jShowStats ? "rgba(6,182,212,0.15)" : "rgba(255,255,255,0.06)", border: jShowStats ? "1px solid rgba(6,182,212,0.2)" : "1px solid rgba(255,255,255,0.08)", color: jShowStats ? T.cyan : T.textMuted, borderRadius: T.radiusSm, padding: "7px 14px", cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: T.fontBody }}>📊 Stats</button>
-                    <button onClick={exportCSV} style={{ background: "rgba(6,214,160,0.1)", border: "1px solid rgba(6,214,160,0.2)", color: "#06D6A0", borderRadius: T.radiusSm, padding: "7px 14px", cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: T.fontBody }}>📥 CSV</button>
-                    <button onClick={exportPDF} style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,71,111,0.2)", color: "#EF4444", borderRadius: T.radiusSm, padding: "7px 14px", cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: T.fontBody }}>📄 PDF</button>
+                <div className="flex justify-between items-center mb-4 flex-wrap gap-2.5">
+                  <h2 className="m-0 text-lg font-bold text-gray-900">💰 Journal de compte</h2>
+                  <div className="flex gap-2">
+                    <button onClick={() => setJShowStats(!jShowStats)} className={`${jShowStats ? "bg-primary-100 border-primary-200 text-primary-600" : "bg-gray-100 border-gray-200 text-gray-600"} border rounded-lg px-3.5 py-1.5 cursor-pointer text-xs font-semibold transition-colors`}>📊 Stats</button>
+                    <button onClick={exportCSV} className="bg-success-50 border border-success-200 text-success-600 rounded-lg px-3.5 py-1.5 cursor-pointer text-xs font-semibold hover:bg-success-100">📥 CSV</button>
+                    <button onClick={exportPDF} className="bg-danger-50 border border-danger-200 text-danger-600 rounded-lg px-3.5 py-1.5 cursor-pointer text-xs font-semibold hover:bg-danger-100">📄 PDF</button>
                   </div>
                 </div>
 
                 {/* Filters */}
-                <Card style={{ padding: 16, marginBottom: 14 }}>
-                  <div className="aurenis-filter-row" style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "end" }}>
-                    <div style={{ flex: "1 1 180px" }}><label style={fLabel}>🔍 Recherche</label><input type="text" placeholder="Réf, client, tech, adresse..." value={jSearch} onChange={e => setJSearch(e.target.value)} style={fInp} /></div>
-                    <div style={{ flex: "0 0 135px" }}><label style={fLabel}>📅 Du</label><input type="date" value={jDateFrom} onChange={e => { setJDateFrom(e.target.value); setJQuickPeriod(""); }} style={fInp} /></div>
-                    <div style={{ flex: "0 0 135px" }}><label style={fLabel}>📅 Au</label><input type="date" value={jDateTo} onChange={e => { setJDateTo(e.target.value); setJQuickPeriod(""); }} style={fInp} /></div>
-                    <div style={{ flex: "0 0 140px" }}><label style={fLabel}>👨‍🔧 Technicien</label><select value={jTechFilter} onChange={e => setJTechFilter(e.target.value)} style={fSel}><option value="">Tous</option>{techNames.map(t => <option key={t} value={t}>{t}</option>)}</select></div>
-                    <div style={{ flex: "0 0 130px" }}><label style={fLabel}>🔧 Type</label><select value={jTypeFilter} onChange={e => setJTypeFilter(e.target.value)} style={fSel}><option value="">Tous</option>{typeNames.map(t => <option key={t} value={t}>{t}</option>)}</select></div>
-                    <div style={{ flex: "0 0 140px" }}><label style={fLabel}>👷 Poseur</label><select value={jPoseurFilter} onChange={e => setJPoseurFilter(e.target.value)} style={fSel}><option value="">Tous</option><option value="__all__">Avec poseur</option>{poseurNames.map(p => <option key={p} value={p}>{p}</option>)}</select></div>
-                    {hasFilters && <div style={{ flex: "0 0 auto" }}><label style={{ ...fLabel, color: "transparent" }}>&nbsp;</label><button onClick={resetFilters} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: T.textMuted, borderRadius: T.radiusSm, padding: "8px 12px", cursor: "pointer", fontSize: 12, fontFamily: T.fontBody }}>✕ Reset</button></div>}
+                <Card className="p-4 mb-3.5">
+                  <div className="aurenis-filter-row">
+                    <div className="flex-[1_1_180px]"><label className="text-xs text-gray-500 font-bold uppercase tracking-wide block mb-1">🔍 Recherche</label><input type="text" placeholder="Réf, client, tech, adresse..." value={jSearch} onChange={e => setJSearch(e.target.value)} className="input" /></div>
+                    <div className="flex-[0_0_135px]"><label className="text-xs text-gray-500 font-bold uppercase tracking-wide block mb-1">📅 Du</label><input type="date" value={jDateFrom} onChange={e => { setJDateFrom(e.target.value); setJQuickPeriod(""); }} className="input" /></div>
+                    <div className="flex-[0_0_135px]"><label className="text-xs text-gray-500 font-bold uppercase tracking-wide block mb-1">📅 Au</label><input type="date" value={jDateTo} onChange={e => { setJDateTo(e.target.value); setJQuickPeriod(""); }} className="input" /></div>
+                    <div className="flex-[0_0_140px]"><label className="text-xs text-gray-500 font-bold uppercase tracking-wide block mb-1">👨‍🔧 Technicien</label><select value={jTechFilter} onChange={e => setJTechFilter(e.target.value)} className="input"><option value="">Tous</option>{techNames.map(t => <option key={t} value={t}>{t}</option>)}</select></div>
+                    <div className="flex-[0_0_130px]"><label className="text-xs text-gray-500 font-bold uppercase tracking-wide block mb-1">🔧 Type</label><select value={jTypeFilter} onChange={e => setJTypeFilter(e.target.value)} className="input"><option value="">Tous</option>{typeNames.map(t => <option key={t} value={t}>{t}</option>)}</select></div>
+                    <div className="flex-[0_0_140px]"><label className="text-xs text-gray-500 font-bold uppercase tracking-wide block mb-1">👷 Poseur</label><select value={jPoseurFilter} onChange={e => setJPoseurFilter(e.target.value)} className="input"><option value="">Tous</option><option value="__all__">Avec poseur</option>{poseurNames.map(p => <option key={p} value={p}>{p}</option>)}</select></div>
+                    {hasFilters && <div className="flex-[0_0_auto]"><label className="text-xs text-transparent font-bold uppercase tracking-wide block mb-1">&nbsp;</label><button onClick={resetFilters} className="bg-gray-100 border border-gray-200 text-gray-600 rounded-lg px-3 py-2 cursor-pointer text-xs hover:bg-gray-200">✕ Reset</button></div>}
                   </div>
-                  <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
+                  <div className="flex gap-1.5 mt-2.5 flex-wrap">
                     {[{ key: "today", label: "Aujourd'hui" }, { key: "yesterday", label: "Hier" }, { key: "week", label: "7 jours" }, { key: "month", label: "Ce mois" }, { key: "lastmonth", label: "Mois dernier" }, { key: "", label: "Tout" }].map(p => (
-                      <button key={p.key} onClick={() => applyQuickPeriod(p.key)} style={{ background: jQuickPeriod === p.key ? "rgba(6,182,212,0.15)" : "rgba(255,255,255,0.04)", border: jQuickPeriod === p.key ? "1px solid rgba(6,182,212,0.2)" : "1px solid rgba(255,255,255,0.06)", color: jQuickPeriod === p.key ? T.cyan : T.textMuted, borderRadius: 20, padding: "3px 12px", cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: T.fontBody }}>{p.label}</button>
+                      <button key={p.key} onClick={() => applyQuickPeriod(p.key)} className={`${jQuickPeriod === p.key ? "bg-primary-100 border-primary-200 text-primary-600" : "bg-gray-50 border-gray-200 text-gray-600"} border rounded-full px-3 py-1 cursor-pointer text-xs font-semibold hover:bg-gray-100`}>{p.label}</button>
                     ))}
                   </div>
                 </Card>
 
                 {/* Stats */}
                 {jShowStats && (
-                  <div style={{ marginBottom: 14 }}>
-                    <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
+                  <div className="mb-3.5">
+                    <div className="flex gap-2.5 flex-wrap mb-2.5">
                       {[
-                        { label: "Interventions", value: jStats.count, color: T.cyan, icon: "📋" },
+                        { label: "Interventions", value: jStats.count, color: "#06B6D4", icon: "📋" },
                         { label: "CA Total", value: `${fmt(jStats.total)} €`, color: "#06D6A0", icon: "💰" },
                         { label: "Commissions", value: `-${fmt(jStats.totalC)} €`, color: "#EF4444", icon: "💸" },
                         { label: "Poseurs", value: `-${fmt(jStats.totalP)} €`, color: "#EC4899", icon: "👷" },
-                        { label: "Net Patron", value: `${fmt(jStats.net)} €`, color: T.cyan, icon: "🏢" },
+                        { label: "Net Patron", value: `${fmt(jStats.net)} €`, color: "#06B6D4", icon: "🏢" },
                         { label: "Moy / inter", value: `${fmt(jStats.avg)} €`, color: "#818CF8", icon: "📈" },
                       ].map((s, i) => <KPI key={i} label={s.label} value={s.value} color={s.color} icon={s.icon} />)}
                     </div>
-                    <div className="aurenis-stats-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                      <Card style={{ padding: 14 }}>
-                        <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>👨‍🔧 Par technicien</div>
+                    <div className="aurenis-stats-grid">
+                      <Card className="p-3.5">
+                        <div className="text-xs text-gray-500 font-bold uppercase tracking-wide mb-2.5">👨‍🔧 Par technicien</div>
                         {Object.entries(jStats.byTech).map(([name, d]) => (
-                          <div key={name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                            <div><span style={{ fontWeight: 600, fontSize: 13, color: "#fff" }}>{name}</span><span style={{ color: T.textMuted, fontSize: 11, marginLeft: 8 }}>{d.count} inter</span></div>
-                            <div style={{ display: "flex", gap: 14, fontSize: 12 }}><span style={{ color: "#06D6A0" }}>{fmt(d.ca)} €</span><span style={{ color: T.cyan, fontWeight: 700 }}>{fmt(d.net)} € net</span></div>
+                          <div key={name} className="flex justify-between items-center py-1.5 border-b border-gray-100">
+                            <div><span className="font-semibold text-sm text-gray-900">{name}</span><span className="text-gray-500 text-xs ml-2">{d.count} inter</span></div>
+                            <div className="flex gap-3.5 text-xs"><span className="text-success-600">{fmt(d.ca)} €</span><span className="text-primary-600 font-bold">{fmt(d.net)} € net</span></div>
                           </div>
                         ))}
                       </Card>
-                      <Card style={{ padding: 14 }}>
-                        <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>🔧 Par type</div>
+                      <Card className="p-3.5">
+                        <div className="text-xs text-gray-500 font-bold uppercase tracking-wide mb-2.5">🔧 Par type</div>
                         {Object.entries(jStats.byType).map(([type, d]) => {
-                          const tc = typeColors[type] || T.blue; const pct = jStats.total > 0 ? (d.ca / jStats.total * 100) : 0;
-                          return (<div key={type} style={{ marginBottom: 10 }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}><span style={{ color: tc, fontWeight: 600, fontSize: 13 }}>{type}</span><span style={{ fontSize: 11, color: T.textMuted }}>{d.count} inter · {fmt(d.ca)} € ({pct.toFixed(0)}%)</span></div>
-                            <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 4, height: 5, overflow: "hidden" }}><div style={{ width: `${pct}%`, height: "100%", background: tc, borderRadius: 4 }} /></div>
+                          const tc = type === "Plomberie" ? "#06B6D4" : type === "Serrurerie" ? "#8B5CF6" : "#F59E0B";
+                          const pct = jStats.total > 0 ? (d.ca / jStats.total * 100) : 0;
+                          return (<div key={type} className="mb-2.5">
+                            <div className="flex justify-between mb-1"><span className="font-semibold text-sm" style={{ color: tc }}>{type}</span><span className="text-xs text-gray-500">{d.count} inter · {fmt(d.ca)} € ({pct.toFixed(0)}%)</span></div>
+                            <div className="bg-gray-100 rounded h-1.5 overflow-hidden"><div className="h-full rounded" style={{ width: `${pct}%`, background: tc }} /></div>
                           </div>);
                         })}
                       </Card>
@@ -959,20 +957,20 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                 )}
 
                 {/* Table */}
-                <Card style={{ padding: 0, overflow: "hidden" }}>
+                <Card className="p-0 overflow-hidden">
                   {/* Table header */}
-                  <div className="aurenis-journal-grid aurenis-journal-head" style={{ display: "grid", gridTemplateColumns: "80px 85px 1fr 75px 85px 80px 100px 90px", padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.08)", fontSize: 10, color: T.textMuted, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 700 }}>
-                    <div onClick={() => toggleSort("ref")} style={{ cursor: "pointer" }}>Réf <SortIcon field="ref" /></div>
-                    <div onClick={() => toggleSort("date")} style={{ cursor: "pointer" }}>Date <SortIcon field="date" /></div>
+                  <div className="aurenis-journal-grid aurenis-journal-head border-b border-gray-200 text-xs text-gray-600 uppercase tracking-wide font-bold">
+                    <div onClick={() => toggleSort("ref")} className="cursor-pointer">Réf <SortIcon field="ref" /></div>
+                    <div onClick={() => toggleSort("date")} className="cursor-pointer">Date <SortIcon field="date" /></div>
                     <div>Client / Tech</div>
                     <div>Type</div>
-                    <div onClick={() => toggleSort("ttc")} style={{ cursor: "pointer", textAlign: "right" }}>TTC <SortIcon field="ttc" /></div>
-                    <div style={{ textAlign: "right" }}>Comm.</div>
-                    <div style={{ textAlign: "right" }}>Poseur</div>
-                    <div onClick={() => toggleSort("net")} style={{ cursor: "pointer", textAlign: "right" }}>Net <SortIcon field="net" /></div>
+                    <div onClick={() => toggleSort("ttc")} className="cursor-pointer text-right">TTC <SortIcon field="ttc" /></div>
+                    <div className="text-right">Comm.</div>
+                    <div className="text-right">Poseur</div>
+                    <div onClick={() => toggleSort("net")} className="cursor-pointer text-right">Net <SortIcon field="net" /></div>
                   </div>
 
-                  {jFiltered.length === 0 && <div style={{ padding: 40, textAlign: "center" }}><div style={{ fontSize: 36, opacity: 0.3, marginBottom: 8 }}>🔍</div><div style={{ fontSize: 13, color: T.textSoft }}>Aucune intervention trouvée</div></div>}
+                  {jFiltered.length === 0 && <div className="p-10 text-center"><div className="text-4xl opacity-30 mb-2">🔍</div><div className="text-sm text-gray-600">Aucune intervention trouvée</div></div>}
 
                   {jFiltered.map((inter, idx) => {
                     const comm = calcCommission(inter);
@@ -980,35 +978,27 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                     const isExpanded = jExpandedRow === inter.ref;
                     return (
                       <div key={inter.ref}>
-                        <div onClick={() => setJExpandedRow(isExpanded ? null : inter.ref)} className="aurenis-journal-grid" style={{
-                          display: "grid", gridTemplateColumns: "80px 85px 1fr 75px 85px 80px 100px 90px",
-                          padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.03)",
-                          fontSize: 13, alignItems: "center", cursor: "pointer",
-                          background: isExpanded ? "rgba(6,182,212,0.04)" : idx % 2 ? "rgba(255,255,255,0.02)" : "transparent", transition: "background 0.15s"
-                        }}
-                          onMouseEnter={e => { if (!isExpanded) e.currentTarget.style.background = "rgba(6,182,212,0.03)"; }}
-                          onMouseLeave={e => { if (!isExpanded) e.currentTarget.style.background = idx % 2 ? "rgba(255,255,255,0.02)" : "transparent"; }}
-                        >
-                          <span style={{ fontWeight: 700, color: T.cyan, fontSize: 11 }}>{inter.ref}</span>
-                          <span style={{ color: T.textMuted, fontSize: 12 }}>{inter.date}</span>
+                        <div onClick={() => setJExpandedRow(isExpanded ? null : inter.ref)} className={`aurenis-journal-grid border-b border-gray-100 cursor-pointer transition-colors ${isExpanded ? "bg-primary-50" : idx % 2 ? "bg-gray-50/50" : "bg-white"} hover:bg-primary-50/50`}>
+                          <span className="font-bold text-primary-600 text-xs">{inter.ref}</span>
+                          <span className="text-gray-500 text-xs">{inter.date}</span>
                           <div>
-                            <span style={{ fontWeight: 600, color: "#fff", fontSize: 13 }}>{inter.clientNom} {inter.clientPrenom}</span>
-                            <span style={{ color: T.textMuted, fontSize: 11, marginLeft: 6 }}>({inter.tech})</span>
+                            <span className="font-semibold text-gray-900 text-sm">{inter.clientNom} {inter.clientPrenom}</span>
+                            <span className="text-gray-500 text-xs ml-1.5">({inter.tech})</span>
                           </div>
                           <div><TypeBadge type={inter.type} /></div>
-                          <div style={{ textAlign: "right", fontWeight: 700, color: "#06D6A0" }}>{fmt(inter.ttc)} €</div>
-                          <div style={{ textAlign: "right", color: "#EF4444", fontSize: 12 }}>-{fmt(comm)} €</div>
-                          <div style={{ textAlign: "right", color: inter.poseurCost > 0 ? "#EC4899" : "rgba(255,255,255,0.1)", fontSize: 12 }}>
+                          <div className="text-right font-bold text-success-600">{fmt(inter.ttc)} €</div>
+                          <div className="text-right text-danger-600 text-xs">-{fmt(comm)} €</div>
+                          <div className={`text-right text-xs ${inter.poseurCost > 0 ? "text-pink-600" : "text-gray-300"}`}>
                             {inter.poseurCost > 0 ? <>👷 -{fmt(inter.poseurCost)} €</> : "—"}
                           </div>
-                          <div style={{ textAlign: "right", fontWeight: 700, color: T.cyan }}>{fmt(net)} €</div>
+                          <div className="text-right font-bold text-primary-600">{fmt(net)} €</div>
                         </div>
                         {isExpanded && (
-                          <div style={{ padding: "10px 14px 10px 14px", background: "rgba(6,182,212,0.03)", borderBottom: "1px solid rgba(6,182,212,0.08)", fontSize: 12, display: "flex", flexWrap: "wrap", gap: 14 }}>
-                            <div><div style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", marginBottom: 2 }}>📞 Téléphone</div><div style={{ color: "#fff" }}>{inter.tel}</div></div>
-                            <div><div style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", marginBottom: 2 }}>📍 Adresse</div><div style={{ color: "#fff" }}>{inter.adresse}</div></div>
-                            <div><div style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", marginBottom: 2 }}>⚡ Mode</div><div><ModeBadge mode={inter.mode} /></div></div>
-                            {inter.poseur && <div><div style={{ color: T.textMuted, fontSize: 10, textTransform: "uppercase", marginBottom: 2 }}>👷 Poseur</div><div style={{ color: "#EC4899", fontWeight: 600 }}>{inter.poseur} · {fmt(inter.poseurCost)} € · {inter.poseurMode === "divise2" ? "÷2" : "Gratuit"}</div></div>}
+                          <div className="px-3.5 py-2.5 bg-primary-50 border-b border-primary-100 text-xs flex flex-wrap gap-3.5">
+                            <div><div className="text-gray-500 text-[10px] uppercase mb-0.5">📞 Téléphone</div><div className="text-gray-900">{inter.tel}</div></div>
+                            <div><div className="text-gray-500 text-[10px] uppercase mb-0.5">📍 Adresse</div><div className="text-gray-900">{inter.adresse}</div></div>
+                            <div><div className="text-gray-500 text-[10px] uppercase mb-0.5">⚡ Mode</div><div><ModeBadge mode={inter.mode} /></div></div>
+                            {inter.poseur && <div><div className="text-gray-500 text-[10px] uppercase mb-0.5">👷 Poseur</div><div className="text-pink-600 font-semibold">{inter.poseur} · {fmt(inter.poseurCost)} € · {inter.poseurMode === "divise2" ? "÷2" : "Gratuit"}</div></div>}
                           </div>
                         )}
                       </div>
@@ -1017,12 +1007,12 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
 
                   {/* Total row */}
                   {jFiltered.length > 0 && (
-                    <div className="aurenis-journal-grid" style={{ display: "grid", gridTemplateColumns: "80px 85px 1fr 75px 85px 80px 100px 90px", padding: "12px 14px", borderTop: "2px solid rgba(6,182,212,0.15)", fontSize: 13, fontWeight: 700, alignItems: "center", background: "rgba(6,182,212,0.04)" }}>
-                      <div style={{ color: T.cyan, gridColumn: "span 4" }}>TOTAL — {jStats.count} intervention{jStats.count > 1 ? "s" : ""}</div>
-                      <div style={{ textAlign: "right", color: "#06D6A0" }}>{fmt(jStats.total)} €</div>
-                      <div style={{ textAlign: "right", color: "#EF4444" }}>-{fmt(jStats.totalC)} €</div>
-                      <div style={{ textAlign: "right", color: "#EC4899" }}>{jStats.totalP > 0 ? `-${fmt(jStats.totalP)} €` : "—"}</div>
-                      <div style={{ textAlign: "right", color: T.cyan, fontWeight: 700 }}>{fmt(jStats.net)} €</div>
+                    <div className="aurenis-journal-grid border-t-2 border-primary-200 font-bold bg-primary-50">
+                      <div className="text-primary-600 col-span-4">TOTAL — {jStats.count} intervention{jStats.count > 1 ? "s" : ""}</div>
+                      <div className="text-right text-success-600">{fmt(jStats.total)} €</div>
+                      <div className="text-right text-danger-600">-{fmt(jStats.totalC)} €</div>
+                      <div className="text-right text-pink-600">{jStats.totalP > 0 ? `-${fmt(jStats.totalP)} €` : "—"}</div>
+                      <div className="text-right text-primary-600 font-bold">{fmt(jStats.net)} €</div>
                     </div>
                   )}
                 </Card>
@@ -1035,8 +1025,8 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
         {/* ═══ PARAMÈTRES ═══ */}
         {tab === "params" && (
           <div>
-            <Card style={{ marginBottom: 20 }}>
-              <SectionTitle right={<span style={{ fontSize: 11, color: T.cyan, background: "rgba(6,182,212,0.1)", padding: "4px 12px", borderRadius: 8, fontWeight: 700 }}>CONFIGURATION</span>}>Paramètres du système</SectionTitle>
+            <Card className="mb-5">
+              <SectionTitle right={<span className="text-[11px] text-primary-600 bg-primary-100 px-3 py-1 rounded-lg font-bold">CONFIGURATION</span>}>Paramètres du système</SectionTitle>
 
               <ConfigList
                 items={specialties}
@@ -1047,7 +1037,7 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                 color="#0EA5E9"
               />
 
-              <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 20, marginTop: 10 }} />
+              <div className="border-t border-gray-200 pt-5 mt-2.5" />
 
               <ConfigList
                 items={statuts}
@@ -1058,20 +1048,20 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
                 color="#06D6A0"
               />
 
-              <div style={{ background: "rgba(67,97,238,0.06)", borderRadius: 12, padding: 14, border: "1px solid rgba(67,97,238,0.1)", marginTop: 10 }}>
-                <div style={{ fontSize: 12, color: T.textSoft, lineHeight: 1.6 }}>
-                  <strong style={{ color: "#818CF8" }}>ℹ️ Info :</strong> Le statut <strong style={{ color: "#06D6A0" }}>Validée</strong> est obligatoire car il déclenche le calcul définitif des commissions. Les autres statuts peuvent être personnalisés librement. Les spécialités ajoutées seront disponibles dans le formulaire de modification des interventions.
+              <div className="bg-blue-50 rounded-xl p-3.5 border border-blue-200 mt-2.5">
+                <div className="text-xs text-gray-600 leading-relaxed">
+                  <strong className="text-blue-500">ℹ️ Info :</strong> Le statut <strong className="text-success-600">Validée</strong> est obligatoire car il déclenche le calcul définitif des commissions. Les autres statuts peuvent être personnalisés librement. Les spécialités ajoutées seront disponibles dans le formulaire de modification des interventions.
                 </div>
               </div>
             </Card>
 
             <Card>
               <SectionTitle>📍 Autocomplétion d'adresse</SectionTitle>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(6,214,160,0.06)", borderRadius: 12, padding: 16, border: "1px solid rgba(6,214,160,0.12)", marginBottom: 12 }}>
-                <span style={{ fontSize: 28 }}>🌍</span>
+              <div className="flex items-center gap-3 bg-success-50 rounded-xl p-4 border border-success-200 mb-3">
+                <span className="text-[28px]">🌍</span>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#06D6A0", marginBottom: 2 }}>Google Places API + Base Adresse Nationale</div>
-                  <div style={{ fontSize: 12, color: T.textSoft }}>L'autocomplétion utilise Google Places API en priorité, avec fallback sur l'API gouv.fr (BAN). Toutes les adresses de France sont couvertes.</div>
+                  <div className="text-sm font-bold text-success-600 mb-0.5">Google Places API + Base Adresse Nationale</div>
+                  <div className="text-xs text-gray-600">L'autocomplétion utilise Google Places API en priorité, avec fallback sur l'API gouv.fr (BAN). Toutes les adresses de France sont couvertes.</div>
                 </div>
               </div>
             </Card>
@@ -1084,96 +1074,95 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
         {editModal && (() => {
           const inter = interventions.find(i => i.ref === editModal);
           if (!inter) return null;
-          const selStyle = { width: "100%", padding: "12px", fontSize: 14, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: T.radiusSm, color: "#fff", fontFamily: T.fontBody };
-          const lbl = (t) => ({ fontSize: 12, color: T.textMuted, display: "block", marginBottom: 4, fontWeight: 600 });
+          const lbl = "text-xs text-gray-500 block mb-1 font-semibold";
           return (
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div className="flex flex-col gap-4">
               {/* REF Header */}
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ fontWeight: 700, color: T.cyan, fontSize: 16 }}>{inter.ref}</span>
+              <div className="flex items-center gap-2.5">
+                <span className="font-bold text-primary-600 text-base">{inter.ref}</span>
                 <Badge status={inter.statut} />
               </div>
 
               {/* ROW: Date + Heure */}
-              <div style={{ display: "flex", gap: 12 }}>
-                <div style={{ flex: 1 }}>
-                  <label style={lbl()}>📅 Date</label>
-                  <input type="date" value={inter.date} onChange={e => updateIntervention(inter.ref, { date: e.target.value })} style={{ ...selStyle, padding: "10px 12px" }} />
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <label className={lbl}>📅 Date</label>
+                  <input type="date" value={inter.date} onChange={e => updateIntervention(inter.ref, { date: e.target.value })} className="input" />
                 </div>
-                <div style={{ flex: 1 }}>
-                  <label style={lbl()}>🕐 Heure</label>
-                  <input type="time" value={inter.heure} onChange={e => updateIntervention(inter.ref, { heure: e.target.value })} style={{ ...selStyle, padding: "10px 12px" }} />
+                <div className="flex-1">
+                  <label className={lbl}>🕐 Heure</label>
+                  <input type="time" value={inter.heure} onChange={e => updateIntervention(inter.ref, { heure: e.target.value })} className="input" />
                 </div>
               </div>
 
               {/* ROW: Statut + Type */}
-              <div style={{ display: "flex", gap: 12 }}>
-                <div style={{ flex: 1 }}>
-                  <label style={lbl()}>📌 Statut</label>
-                  <select value={inter.statut} onChange={e => updateIntervention(inter.ref, { statut: e.target.value })} style={selStyle}>
-                    {statuts.map(s => <option key={s} value={s} style={{ background: "#1F2937" }}>{s}</option>)}
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <label className={lbl}>📌 Statut</label>
+                  <select value={inter.statut} onChange={e => updateIntervention(inter.ref, { statut: e.target.value })} className="input">
+                    {statuts.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <label style={lbl()}>🔧 Spécialité</label>
-                  <select value={inter.type} onChange={e => updateIntervention(inter.ref, { type: e.target.value })} style={selStyle}>
-                    {specialties.map(s => <option key={s} value={s} style={{ background: "#1F2937" }}>{s}</option>)}
+                <div className="flex-1">
+                  <label className={lbl}>🔧 Spécialité</label>
+                  <select value={inter.type} onChange={e => updateIntervention(inter.ref, { type: e.target.value })} className="input">
+                    {specialties.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
               </div>
 
               {/* ROW: Mode + TTC */}
-              <div style={{ display: "flex", gap: 12 }}>
-                <div style={{ flex: 1 }}>
-                  <label style={lbl()}>⚡ Mode</label>
-                  <select value={inter.mode} onChange={e => updateIntervention(inter.ref, { mode: e.target.value })} style={selStyle}>
-                    <option value="Urgence" style={{ background: "#1F2937" }}>⚡ Urgence</option>
-                    <option value="RDV" style={{ background: "#1F2937" }}>📅 RDV</option>
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <label className={lbl}>⚡ Mode</label>
+                  <select value={inter.mode} onChange={e => updateIntervention(inter.ref, { mode: e.target.value })} className="input">
+                    <option value="Urgence">⚡ Urgence</option>
+                    <option value="RDV">📅 RDV</option>
                   </select>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <label style={lbl()}>💰 Montant TTC (€)</label>
+                <div className="flex-1">
+                  <label className={lbl}>💰 Montant TTC (€)</label>
                   <Inp placeholder="Montant" type="number" value={inter.ttc || ""} onChange={e => updateIntervention(inter.ref, { ttc: parseFloat(e.target.value) || 0 })} />
                 </div>
               </div>
 
               {/* Technicien attribué */}
               <div>
-                <label style={lbl()}>👨‍🔧 Technicien attribué</label>
+                <label className={lbl}>👨‍🔧 Technicien attribué</label>
                 <select value={inter.tech} onChange={e => {
                   const newTech = techs.find(t => t.name === e.target.value);
                   updateIntervention(inter.ref, { tech: e.target.value, commRate: newTech ? newTech.commission : inter.commRate });
-                }} style={selStyle}>
-                  {techs.map(t => <option key={t.id} value={t.name} style={{ background: "#1F2937" }}>{t.name} ({t.spe} · {(t.commission * 100)}%)</option>)}
+                }} className="input">
+                  {techs.map(t => <option key={t.id} value={t.name}>{t.name} ({t.spe} · {(t.commission * 100)}%)</option>)}
                 </select>
               </div>
 
               {/* Client info */}
-              <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 14 }}>
-                <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>👤 Client</div>
-                <div style={{ display: "flex", gap: 12 }}>
-                  <div style={{ flex: 1 }}><label style={lbl()}>Nom</label><Inp placeholder="Nom" value={inter.clientNom} onChange={e => updateIntervention(inter.ref, { clientNom: e.target.value })} /></div>
-                  <div style={{ flex: 1 }}><label style={lbl()}>Prénom</label><Inp placeholder="Prénom" value={inter.clientPrenom} onChange={e => updateIntervention(inter.ref, { clientPrenom: e.target.value })} /></div>
+              <div className="bg-gray-50 rounded-xl p-3.5">
+                <div className="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-2.5">👤 Client</div>
+                <div className="flex gap-3">
+                  <div className="flex-1"><label className={lbl}>Nom</label><Inp placeholder="Nom" value={inter.clientNom} onChange={e => updateIntervention(inter.ref, { clientNom: e.target.value })} /></div>
+                  <div className="flex-1"><label className={lbl}>Prénom</label><Inp placeholder="Prénom" value={inter.clientPrenom} onChange={e => updateIntervention(inter.ref, { clientPrenom: e.target.value })} /></div>
                 </div>
-                <div style={{ marginTop: 10 }}><label style={lbl()}>Adresse</label><AddressAutocomplete value={inter.adresse} onChange={v => updateIntervention(inter.ref, { adresse: v })} /></div>
-                <div style={{ marginTop: 10 }}><label style={lbl()}>Téléphone</label><Inp placeholder="Tél" value={inter.tel} onChange={e => updateIntervention(inter.ref, { tel: e.target.value })} /></div>
+                <div className="mt-2.5"><label className={lbl}>Adresse</label><AddressAutocomplete value={inter.adresse} onChange={v => updateIntervention(inter.ref, { adresse: v })} /></div>
+                <div className="mt-2.5"><label className={lbl}>Téléphone</label><Inp placeholder="Tél" value={inter.tel} onChange={e => updateIntervention(inter.ref, { tel: e.target.value })} /></div>
               </div>
 
               {/* Poseur section */}
-              <div style={{ background: "rgba(236,72,153,0.04)", borderRadius: 12, padding: 14, border: "1px solid rgba(236,72,153,0.1)" }}>
-                <div style={{ fontSize: 11, color: "#EC4899", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>👷 Poseur</div>
-                <select value={inter.poseur || ""} onChange={e => updateIntervention(inter.ref, { poseur: e.target.value || null, poseurCost: e.target.value ? inter.poseurCost : 0, poseurMode: e.target.value ? (inter.poseurMode || "divise2") : null })} style={selStyle}>
-                  <option value="" style={{ background: "#1F2937" }}>Aucun poseur</option>
-                  {INIT_POSEURS.map(p => <option key={p.id} value={p.name} style={{ background: "#1F2937" }}>{p.name} ({p.spe})</option>)}
+              <div className="bg-pink-50 rounded-xl p-3.5 border border-pink-200">
+                <div className="text-[11px] text-pink-600 font-bold uppercase tracking-wider mb-2.5">👷 Poseur</div>
+                <select value={inter.poseur || ""} onChange={e => updateIntervention(inter.ref, { poseur: e.target.value || null, poseurCost: e.target.value ? inter.poseurCost : 0, poseurMode: e.target.value ? (inter.poseurMode || "divise2") : null })} className="input">
+                  <option value="">Aucun poseur</option>
+                  {INIT_POSEURS.map(p => <option key={p.id} value={p.name}>{p.name} ({p.spe})</option>)}
                 </select>
                 {inter.poseur && (
-                  <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
-                    <div><label style={lbl()}>Coût poseur (€)</label><Inp placeholder="Coût" type="number" value={inter.poseurCost || ""} onChange={e => updateIntervention(inter.ref, { poseurCost: parseFloat(e.target.value) || 0 })} /></div>
+                  <div className="mt-3 flex flex-col gap-2.5">
+                    <div><label className={lbl}>Coût poseur (€)</label><Inp placeholder="Coût" type="number" value={inter.poseurCost || ""} onChange={e => updateIntervention(inter.ref, { poseurCost: parseFloat(e.target.value) || 0 })} /></div>
                     <div>
-                      <label style={lbl()}>Mode poseur</label>
-                      <div style={{ display: "flex", gap: 10 }}>
+                      <label className={lbl}>Mode poseur</label>
+                      <div className="flex gap-2.5">
                         {[{ v: "divise2", l: "÷ 2 (partagé)" }, { v: "gratuit", l: "Gratuit (patron)" }].map(o => (
-                          <button key={o.v} onClick={() => updateIntervention(inter.ref, { poseurMode: o.v })} style={{ flex: 1, padding: "10px 14px", borderRadius: 10, border: inter.poseurMode === o.v ? "1.5px solid " + T.cyan : "1.5px solid rgba(255,255,255,0.08)", background: inter.poseurMode === o.v ? "rgba(6,182,212,0.1)" : "rgba(255,255,255,0.04)", color: inter.poseurMode === o.v ? T.cyan : T.textMuted, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: T.fontBody }}>{o.l}</button>
+                          <button key={o.v} onClick={() => updateIntervention(inter.ref, { poseurMode: o.v })} className={`flex-1 px-3.5 py-2.5 rounded-lg text-xs font-semibold cursor-pointer ${inter.poseurMode === o.v ? "border-2 border-primary-600 bg-primary-50 text-primary-600" : "border border-gray-200 bg-white text-gray-500"}`}>{o.l}</button>
                         ))}
                       </div>
                     </div>
@@ -1183,36 +1172,36 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
 
               {/* APERÇU CALCUL */}
               {inter.ttc > 0 && (
-                <div style={{ background: "rgba(6,182,212,0.06)", borderRadius: 12, padding: 14, border: "1px solid rgba(6,182,212,0.12)" }}>
-                  <div style={{ fontSize: 11, color: T.cyan, marginBottom: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>📊 Aperçu financier</div>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Montant TTC</span><span style={{ fontWeight: 700, color: "#fff" }}>{inter.ttc.toLocaleString("fr-FR")} €</span></div>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Commission brute ({(inter.commRate * 100)}%)</span><span>{(inter.ttc * inter.commRate).toLocaleString("fr-FR")} €</span></div>
-                  {inter.poseur && inter.poseurMode === "divise2" && <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#EF4444", marginBottom: 4 }}><span>Part poseur déduite tech (÷2)</span><span>-{(inter.poseurCost / 2).toLocaleString("fr-FR")} €</span></div>}
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#06D6A0", fontWeight: 700, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 6, marginTop: 4 }}><span>Commission nette tech</span><span>{calcCommission(inter).toLocaleString("fr-FR")} €</span></div>
-                  {inter.poseur && <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#EC4899", marginTop: 4 }}><span>Coût poseur total</span><span>-{inter.poseurCost.toLocaleString("fr-FR")} €</span></div>}
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: T.cyan, fontWeight: 700, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 6, marginTop: 6 }}><span>Net patron</span><span>{calcNetPatron(inter).toLocaleString("fr-FR")} €</span></div>
+                <div className="bg-primary-50 rounded-xl p-3.5 border border-primary-200">
+                  <div className="text-[11px] text-primary-600 mb-2.5 font-bold uppercase tracking-wider">📊 Aperçu financier</div>
+                  <div className="flex justify-between text-[13px] text-gray-600 mb-1"><span>Montant TTC</span><span className="font-bold text-gray-900">{inter.ttc.toLocaleString("fr-FR")} €</span></div>
+                  <div className="flex justify-between text-[13px] text-gray-600 mb-1"><span>Commission brute ({(inter.commRate * 100)}%)</span><span>{(inter.ttc * inter.commRate).toLocaleString("fr-FR")} €</span></div>
+                  {inter.poseur && inter.poseurMode === "divise2" && <div className="flex justify-between text-[13px] text-red-600 mb-1"><span>Part poseur déduite tech (÷2)</span><span>-{(inter.poseurCost / 2).toLocaleString("fr-FR")} €</span></div>}
+                  <div className="flex justify-between text-[13px] text-success-600 font-bold border-t border-gray-200 pt-1.5 mt-1"><span>Commission nette tech</span><span>{calcCommission(inter).toLocaleString("fr-FR")} €</span></div>
+                  {inter.poseur && <div className="flex justify-between text-[13px] text-pink-600 mt-1"><span>Coût poseur total</span><span>-{inter.poseurCost.toLocaleString("fr-FR")} €</span></div>}
+                  <div className="flex justify-between text-sm text-primary-600 font-bold border-t border-gray-200 pt-1.5 mt-1.5"><span>Net patron</span><span>{calcNetPatron(inter).toLocaleString("fr-FR")} €</span></div>
                 </div>
               )}
 
               {/* POSEUR DETAILS */}
               {inter.poseur && (inter.poseurPrixPose > 0 || inter.poseurAchats > 0) && (
-                <div style={{ background: "rgba(236,72,153,0.06)", borderRadius: 12, padding: 14, border: "1px solid rgba(236,72,153,0.12)" }}>
-                  <div style={{ fontSize: 11, color: "#EC4899", marginBottom: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>👷 Détails poseur — {inter.poseur}</div>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Prix de pose déclaré</span><span style={{ fontWeight: 700, color: "#EC4899" }}>{(inter.poseurPrixPose || 0).toLocaleString("fr-FR")} €</span></div>
-                  {inter.poseurAchats > 0 && <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Achats avancés</span><span style={{ fontWeight: 700, color: "#F97316" }}>{inter.poseurAchats.toLocaleString("fr-FR")} €</span></div>}
-                  {inter.poseurNote && <div style={{ fontSize: 12, color: T.textSoft, marginTop: 6, fontStyle: "italic", background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 8 }}>📝 {inter.poseurNote}</div>}
+                <div className="bg-pink-50 rounded-xl p-3.5 border border-pink-200">
+                  <div className="text-[11px] text-pink-600 mb-2 font-bold uppercase tracking-wider">👷 Détails poseur — {inter.poseur}</div>
+                  <div className="flex justify-between text-[13px] text-gray-600 mb-1"><span>Prix de pose déclaré</span><span className="font-bold text-pink-600">{(inter.poseurPrixPose || 0).toLocaleString("fr-FR")} €</span></div>
+                  {inter.poseurAchats > 0 && <div className="flex justify-between text-[13px] text-gray-600 mb-1"><span>Achats avancés</span><span className="font-bold text-orange-600">{inter.poseurAchats.toLocaleString("fr-FR")} €</span></div>}
+                  {inter.poseurNote && <div className="text-xs text-gray-600 mt-1.5 italic bg-gray-50 p-2 rounded-lg">📝 {inter.poseurNote}</div>}
                 </div>
               )}
 
               {/* MEDIAS TECH */}
               {(inter.techMedias || []).length > 0 && (
                 <div>
-                  <div style={{ fontSize: 11, color: T.cyan, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>📸 Photos/vidéos technicien ({(inter.techMedias || []).length})</div>
-                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  <div className="text-[11px] text-primary-600 font-bold uppercase tracking-wider mb-2">📸 Photos/vidéos technicien ({(inter.techMedias || []).length})</div>
+                  <div className="flex gap-1.5 flex-wrap">
                     {(inter.techMedias || []).map((m, i) => (
-                      <div key={i} style={{ position: "relative", width: 70, height: 70, borderRadius: 8, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", cursor: "pointer" }} onClick={() => setViewMedia(m)}>
-                        {m.type === "video" ? <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
-                        {m.type === "video" && <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, textShadow: "0 2px 6px rgba(0,0,0,0.6)" }}>▶️</div>}
+                      <div key={i} className="relative w-[70px] h-[70px] rounded-lg overflow-hidden border border-gray-200 cursor-pointer" onClick={() => setViewMedia(m)}>
+                        {m.type === "video" ? <video src={m.url} className="w-full h-full object-cover" /> : <img src={m.url} alt="" className="w-full h-full object-cover" />}
+                        {m.type === "video" && <div className="absolute inset-0 flex items-center justify-center text-xl drop-shadow-md">▶️</div>}
                       </div>
                     ))}
                   </div>
@@ -1222,12 +1211,12 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
               {/* MEDIAS POSEUR */}
               {(inter.poseurMedias || []).length > 0 && (
                 <div>
-                  <div style={{ fontSize: 11, color: "#EC4899", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>📸 Photos/vidéos poseur ({(inter.poseurMedias || []).length})</div>
-                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  <div className="text-[11px] text-pink-600 font-bold uppercase tracking-wider mb-2">📸 Photos/vidéos poseur ({(inter.poseurMedias || []).length})</div>
+                  <div className="flex gap-1.5 flex-wrap">
                     {(inter.poseurMedias || []).map((m, i) => (
-                      <div key={i} style={{ position: "relative", width: 70, height: 70, borderRadius: 8, overflow: "hidden", border: "1px solid rgba(236,72,153,0.2)", cursor: "pointer" }} onClick={() => setViewMedia(m)}>
-                        {m.type === "video" ? <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
-                        {m.type === "video" && <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, textShadow: "0 2px 6px rgba(0,0,0,0.6)" }}>▶️</div>}
+                      <div key={i} className="relative w-[70px] h-[70px] rounded-lg overflow-hidden border border-pink-200 cursor-pointer" onClick={() => setViewMedia(m)}>
+                        {m.type === "video" ? <video src={m.url} className="w-full h-full object-cover" /> : <img src={m.url} alt="" className="w-full h-full object-cover" />}
+                        {m.type === "video" && <div className="absolute inset-0 flex items-center justify-center text-xl drop-shadow-md">▶️</div>}
                       </div>
                     ))}
                   </div>
@@ -1235,11 +1224,11 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
               )}
 
               {/* Actions */}
-              <div style={{ display: "flex", gap: 8, marginTop: 4, flexWrap: "wrap" }}>
-                <button className="wa-btn" onClick={() => sendWhatsApp(inter.tel, waMessageClient(inter))} style={{ padding: "10px 14px", fontSize: 12, flex: 1 }}><WaIcon size={14} /> Client</button>
-                {(() => { const t = techs.find(tc => tc.name === inter.tech); return t ? <button className="wa-btn" onClick={() => sendWhatsApp(t.tel, waMessageTech(inter, t.name))} style={{ padding: "10px 14px", fontSize: 12, flex: 1 }}><WaIcon size={14} /> Tech</button> : null; })()}
-                <Btn onClick={() => setEditModal(null)} variant="ghost" style={{ flex: 1 }}>Fermer</Btn>
-                {inter.statut === "Terminée" && <Btn onClick={() => { validerIntervention(inter.ref); setEditModal(null); }} style={{ flex: 1 }}>✅ Valider</Btn>}
+              <div className="flex gap-2 mt-1 flex-wrap">
+                <button className="wa-btn px-3.5 py-2.5 text-xs flex-1"><WaIcon size={14} /> Client</button>
+                {(() => { const t = techs.find(tc => tc.name === inter.tech); return t ? <button className="wa-btn px-3.5 py-2.5 text-xs flex-1" onClick={() => sendWhatsApp(t.tel, waMessageTech(inter, t.name))}><WaIcon size={14} /> Tech</button> : null; })()}
+                <Btn onClick={() => setEditModal(null)} variant="ghost" className="flex-1">Fermer</Btn>
+                {inter.statut === "Terminée" && <Btn onClick={() => { validerIntervention(inter.ref); setEditModal(null); }} className="flex-1">✅ Valider</Btn>}
               </div>
             </div>
           );
@@ -1252,14 +1241,14 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
         {commModal && (() => {
           const tech = techs.find(t => t.id === commModal);
           return (
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div style={{ fontSize: 14, color: "#fff", fontWeight: 600 }}>{tech?.name}</div>
-              <div style={{ fontSize: 13, color: T.textMuted }}>Taux actuel : <strong style={{ color: T.cyan }}>{(tech?.commission * 100)}%</strong></div>
-              <div><label style={{ fontSize: 12, color: T.textMuted, display: "block", marginBottom: 4 }}>Nouveau taux (%)</label><Inp placeholder="Ex: 25" type="number" value={newRate} onChange={e => setNewRate(e.target.value)} /></div>
-              <div style={{ background: "rgba(67,97,238,0.08)", borderRadius: T.radiusXs, padding: "10px 14px", fontSize: 12, color: T.textSoft, lineHeight: 1.6 }}>⚠️ Le nouveau taux s'appliquera uniquement aux <strong>futures interventions</strong>. Les interventions passées gardent leur taux d'origine.</div>
-              <div style={{ display: "flex", gap: 10 }}>
-                <Btn onClick={() => setCommModal(null)} variant="ghost" style={{ flex: 1 }}>Annuler</Btn>
-                <Btn onClick={() => changeTechRate(commModal)} style={{ flex: 1 }}>Appliquer {newRate}%</Btn>
+            <div className="flex flex-col gap-3.5">
+              <div className="text-sm text-gray-900 font-semibold">{tech?.name}</div>
+              <div className="text-[13px] text-gray-500">Taux actuel : <strong className="text-primary-600">{(tech?.commission * 100)}%</strong></div>
+              <div><label className="text-xs text-gray-500 block mb-1">Nouveau taux (%)</label><Inp placeholder="Ex: 25" type="number" value={newRate} onChange={e => setNewRate(e.target.value)} /></div>
+              <div className="bg-blue-50 rounded-lg px-3.5 py-2.5 text-xs text-gray-600 leading-relaxed">⚠️ Le nouveau taux s'appliquera uniquement aux <strong>futures interventions</strong>. Les interventions passées gardent leur taux d'origine.</div>
+              <div className="flex gap-2.5">
+                <Btn onClick={() => setCommModal(null)} variant="ghost" className="flex-1">Annuler</Btn>
+                <Btn onClick={() => changeTechRate(commModal)} className="flex-1">Appliquer {newRate}%</Btn>
               </div>
             </div>
           );
@@ -1271,13 +1260,13 @@ ${Object.keys(jStats.byTech).length>0?`<table><thead><tr><th style="background:#
         {telModal && (() => {
           const tech = techs.find(t => t.id === telModal);
           return (
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div style={{ fontSize: 14, color: "#fff", fontWeight: 600 }}>{tech?.name}</div>
-              <div style={{ fontSize: 13, color: T.textMuted }}>Numéro actuel : <strong style={{ color: T.cyan }}>{tech?.tel}</strong></div>
-              <div><label style={{ fontSize: 12, color: T.textMuted, display: "block", marginBottom: 4 }}>Nouveau numéro</label><Inp icon="📞" placeholder="+33 6 12 34 56 78" value={newTel} onChange={e => setNewTel(e.target.value)} onKeyDown={e => e.key === "Enter" && changeTechTel(telModal)} /></div>
-              <div style={{ display: "flex", gap: 10 }}>
-                <Btn onClick={() => setTelModal(null)} variant="ghost" style={{ flex: 1 }}>Annuler</Btn>
-                <Btn onClick={() => changeTechTel(telModal)} style={{ flex: 1 }}>✅ Enregistrer</Btn>
+            <div className="flex flex-col gap-3.5">
+              <div className="text-sm text-gray-900 font-semibold">{tech?.name}</div>
+              <div className="text-[13px] text-gray-500">Numéro actuel : <strong className="text-primary-600">{tech?.tel}</strong></div>
+              <div><label className="text-xs text-gray-500 block mb-1">Nouveau numéro</label><Inp icon="📞" placeholder="+33 6 12 34 56 78" value={newTel} onChange={e => setNewTel(e.target.value)} onKeyDown={e => e.key === "Enter" && changeTechTel(telModal)} /></div>
+              <div className="flex gap-2.5">
+                <Btn onClick={() => setTelModal(null)} variant="ghost" className="flex-1">Annuler</Btn>
+                <Btn onClick={() => changeTechTel(telModal)} className="flex-1">✅ Enregistrer</Btn>
               </div>
             </div>
           );
@@ -1323,7 +1312,6 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
   const totalComm = validees.reduce((s, i) => s + calcCommission(i), 0);
   const activeFilters = [search.trim(), filterType !== "all", dateFrom, dateTo].filter(Boolean).length;
   const types = [...new Set([...specialties, ...myInter.map(i => i.type)])];
-  const dateStyle = { padding: "9px 12px", fontSize: 13, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#fff", outline: "none", fontFamily: T.fontBody };
 
   const saveTTC = (ref) => {
     const val = parseFloat(editTTC);
@@ -1334,17 +1322,19 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
     setEditRef(null); setEditTTC("");
   };
 
+  const getTypeColor = (type) => type === "Plomberie" ? "#06B6D4" : type === "Serrurerie" ? "#8B5CF6" : "#F59E0B";
+
   return (
-    <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, minHeight: "100vh" }}>
+    <div className="bg-gray-50 min-h-screen">
       <Header account={account} onLogout={onLogout} />
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "24px 16px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
-          <div><h1 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 700, color: "#fff" }}>Bonjour {tech?.name.split(" ")[0]} 👋</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted }}>Votre activité</p></div>
-          <div style={{ textAlign: "right" }}><div style={{ fontSize: 20, fontWeight: 700, background: "#06B6D4", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div></div>
+      <div className="max-w-[1000px] mx-auto px-4 py-6">
+        <div className="flex justify-between items-end mb-6 flex-wrap gap-3">
+          <div><h1 className="m-0 mb-1 text-2xl font-bold text-gray-900">Bonjour {tech?.name.split(" ")[0]} 👋</h1><p className="m-0 text-sm text-gray-500">Votre activité</p></div>
+          <div className="text-right"><div className="text-xl font-bold gradient-text">{time.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div></div>
         </div>
 
         <div className="aurenis-kpis">
-          <KPI label="Interventions" value={myInter.length} color={T.cyan} icon="📋" />
+          <KPI label="Interventions" value={myInter.length} color="#06B6D4" icon="📋" />
           <KPI label="Validées" value={validees.length} color="#06D6A0" icon="✅" />
           <KPI label="Mon CA" value={`${totalCA.toLocaleString("fr-FR")} €`} color="#10B981" icon="💰" />
           <KPI label="Mes commissions" value={`${totalComm.toLocaleString("fr-FR")} €`} color="#EF4444" icon="💸" />
@@ -1352,29 +1342,29 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
         </div>
 
         {/* FILTERS */}
-        <Card style={{ padding: 16, marginBottom: 16 }}>
-          <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-            <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
-              <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 14, opacity: 0.4, pointerEvents: "none" }}>🔍</div>
-              <input type="text" placeholder="Rechercher..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: "100%", padding: "10px 14px 10px 38px", fontSize: 13, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, color: "#fff", outline: "none", fontFamily: T.fontBody, boxSizing: "border-box" }} />
+        <Card className="p-4 mb-4">
+          <div className="flex gap-3 items-center flex-wrap">
+            <div className="relative flex-1 min-w-[200px]">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-sm opacity-40 pointer-events-none">🔍</div>
+              <input type="text" placeholder="Rechercher..." value={search} onChange={e => setSearch(e.target.value)} className="w-full py-2.5 px-3.5 pl-10 text-sm bg-white border border-gray-300 rounded-xl text-gray-900 outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
-            <button onClick={() => setShowFilters(!showFilters)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 16px", borderRadius: 12, background: showFilters ? "rgba(6,182,212,0.15)" : "rgba(255,255,255,0.06)", border: showFilters ? "1px solid rgba(6,182,212,0.2)" : "1px solid rgba(255,255,255,0.08)", color: showFilters ? T.cyan : T.textSoft, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: T.fontBody }}>⚙️ Filtres {activeFilters > 0 && <span style={{ background: T.cyan, color: T.dark, width: 18, height: 18, borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700 }}>{activeFilters}</span>}</button>
-            {activeFilters > 0 && <button onClick={() => { setSearch(""); setFilterType("all"); setDateFrom(""); setDateTo(""); }} style={{ padding: "10px 14px", borderRadius: 12, border: "1px solid rgba(239,71,111,0.2)", background: "rgba(239,71,111,0.08)", color: "#EF4444", cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: T.fontBody }}>✕ Effacer</button>}
+            <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl ${showFilters ? "bg-primary-100 border-primary-200 text-primary-600" : "bg-gray-100 border-gray-200 text-gray-600"} border cursor-pointer text-sm font-semibold transition-colors`}>⚙️ Filtres {activeFilters > 0 && <span className="bg-primary-600 text-white w-[18px] h-[18px] rounded-full flex items-center justify-center text-[10px] font-bold">{activeFilters}</span>}</button>
+            {activeFilters > 0 && <button onClick={() => { setSearch(""); setFilterType("all"); setDateFrom(""); setDateTo(""); }} className="px-3.5 py-2.5 rounded-xl border border-danger-200 bg-danger-50 text-danger-600 cursor-pointer text-xs font-semibold hover:bg-danger-100">✕ Effacer</button>}
           </div>
           {showFilters && (
-            <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", gap: 14 }}>
+            <div className="mt-3.5 pt-3.5 border-t border-gray-200 flex flex-col gap-3.5">
               <div>
-                <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>🔧 Spécialité</div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <button onClick={() => setFilterType("all")} style={{ padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: T.fontBody, background: filterType === "all" ? "rgba(6,182,212,0.15)" : "rgba(255,255,255,0.04)", color: filterType === "all" ? T.cyan : T.textMuted }}>Toutes</button>
-                  {types.map(t => <button key={t} onClick={() => setFilterType(filterType === t ? "all" : t)} style={{ padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: T.fontBody, background: filterType === t ? `${typeColors[t]}33` : "rgba(255,255,255,0.04)", color: filterType === t ? typeColors[t] : T.textMuted, display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 8, height: 8, borderRadius: 4, background: typeColors[t], opacity: filterType === t ? 1 : 0.4 }} />{t}</button>)}
+                <div className="text-xs text-gray-500 font-bold uppercase tracking-wide mb-2">🔧 Spécialité</div>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={() => setFilterType("all")} className={`px-4 py-1.5 rounded-full border-none cursor-pointer text-xs font-bold ${filterType === "all" ? "bg-primary-100 text-primary-600" : "bg-gray-100 text-gray-600"}`}>Toutes</button>
+                  {types.map(t => <button key={t} onClick={() => setFilterType(filterType === t ? "all" : t)} className={`px-4 py-1.5 rounded-full border-none cursor-pointer text-xs font-bold flex items-center gap-1.5`} style={{ background: filterType === t ? `${getTypeColor(t)}33` : "#F3F4F6", color: filterType === t ? getTypeColor(t) : "#6B7280" }}><span className="w-2 h-2 rounded" style={{ background: getTypeColor(t), opacity: filterType === t ? 1 : 0.4 }} />{t}</button>)}
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>📅 Période</div>
-                <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontSize: 12, color: T.textMuted }}>Du</span><input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={dateStyle} /></div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontSize: 12, color: T.textMuted }}>Au</span><input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={dateStyle} /></div>
+                <div className="text-xs text-gray-500 font-bold uppercase tracking-wide mb-2">📅 Période</div>
+                <div className="flex gap-3 items-center flex-wrap">
+                  <div className="flex items-center gap-1.5"><span className="text-xs text-gray-500">Du</span><input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="input" /></div>
+                  <div className="flex items-center gap-1.5"><span className="text-xs text-gray-500">Au</span><input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="input" /></div>
                 </div>
               </div>
             </div>
@@ -1382,75 +1372,75 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
         </Card>
 
         {/* STATUS TABS */}
-        <div style={{ display: "flex", gap: 4, background: "rgba(255,255,255,0.04)", borderRadius: 12, padding: 4, marginBottom: 14, border: "1px solid rgba(255,255,255,0.06)", flexWrap: "wrap" }}>
+        <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-3.5 border border-gray-200 flex-wrap">
           {[{ id: "all", l: "Toutes" }, { id: "validees", l: "Validées" }, { id: "terminees", l: "En attente" }, { id: "encours", l: "En cours" }, { id: "planifiees", l: "Planifiées" }].map(t => (
-            <button key={t.id} onClick={() => setStatusTab(t.id)} style={{ flex: 1, padding: "8px 14px", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: T.fontBody, background: statusTab === t.id ? "rgba(255,255,255,0.1)" : "transparent", color: statusTab === t.id ? "#fff" : T.textMuted, minWidth: 80 }}>{t.l}</button>
+            <button key={t.id} onClick={() => setStatusTab(t.id)} className={`flex-1 px-3.5 py-2 border-none rounded-lg cursor-pointer text-xs font-semibold min-w-[80px] ${statusTab === t.id ? "bg-white text-gray-900 shadow-sm" : "bg-transparent text-gray-600"}`}>{t.l}</button>
           ))}
         </div>
 
         {/* LIST */}
-        <Card style={{ padding: 0, overflow: "hidden" }}>
+        <Card className="p-0 overflow-hidden">
           {filtered.length === 0 ? (
-            <div style={{ padding: 48, textAlign: "center" }}><div style={{ fontSize: 40, opacity: 0.3, marginBottom: 8 }}>🔍</div><div style={{ fontSize: 14, color: T.textSoft }}>Aucune intervention</div></div>
+            <div className="p-12 text-center"><div className="text-4xl opacity-30 mb-2">🔍</div><div className="text-sm text-gray-600">Aucune intervention</div></div>
           ) : filtered.map((inter, idx) => {
             const commBrute = inter.ttc * inter.commRate;
             const commNette = calcCommission(inter);
             const isEditing = editRef === inter.ref;
             const canEdit = inter.statut !== "Validée";
             return (
-              <div key={inter.ref} style={{ padding: "14px 14px", borderBottom: "1px solid rgba(255,255,255,0.04)", background: idx % 2 ? "rgba(255,255,255,0.02)" : "transparent" }}>
+              <div key={inter.ref} className={`px-3.5 py-3.5 border-b border-gray-100 ${idx % 2 ? "bg-gray-50/50" : "bg-white"}`}>
                 {/* Row 1: main info */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: inter.poseur ? 10 : 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", flex: 1, minWidth: 0 }}>
-                    <span style={{ fontWeight: 700, color: T.cyan, fontSize: 13 }}>{inter.ref}</span>
-                    <span style={{ color: T.textSoft, fontSize: 11 }}>{inter.date} {inter.heure}</span>
+                <div className={`flex justify-between items-start flex-wrap gap-2 ${inter.poseur ? "mb-2.5" : ""}`}>
+                  <div className="flex items-center gap-1.5 flex-wrap flex-1 min-w-0">
+                    <span className="font-bold text-primary-600 text-sm">{inter.ref}</span>
+                    <span className="text-gray-600 text-xs">{inter.date} {inter.heure}</span>
                     <TypeBadge type={inter.type} />
                     <ModeBadge mode={inter.mode} />
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     <Badge status={inter.statut} />
                     {isEditing ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <input type="number" inputMode="decimal" value={editTTC} onChange={e => setEditTTC(e.target.value)} onKeyDown={e => e.key === "Enter" && saveTTC(inter.ref)} style={{ width: 90, padding: "8px 10px", fontSize: 16, fontWeight: 700, background: "rgba(255,255,255,0.1)", border: "1px solid " + T.cyan, borderRadius: 8, color: "#06D6A0", outline: "none", fontFamily: T.fontBody, textAlign: "right" }} autoFocus />
-                        <span style={{ color: T.textMuted, fontSize: 14 }}>€</span>
-                        <Btn onClick={() => saveTTC(inter.ref)} style={{ padding: "6px 12px", fontSize: 13, minHeight: 36 }}>✓</Btn>
-                        <button onClick={() => { setEditRef(null); setEditTTC(""); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, color: T.textMuted, padding: 6, minWidth: 30, minHeight: 30 }}>✕</button>
+                      <div className="flex items-center gap-1.5">
+                        <input type="number" inputMode="decimal" value={editTTC} onChange={e => setEditTTC(e.target.value)} onKeyDown={e => e.key === "Enter" && saveTTC(inter.ref)} className="w-[90px] px-2.5 py-2 text-base font-bold bg-white border border-primary-500 rounded-lg text-success-600 outline-none text-right focus:ring-2 focus:ring-primary-500" autoFocus />
+                        <span className="text-gray-500 text-sm">€</span>
+                        <Btn onClick={() => saveTTC(inter.ref)} className="btn-sm !min-h-9">✓</Btn>
+                        <button onClick={() => { setEditRef(null); setEditTTC(""); }} className="bg-transparent border-none cursor-pointer text-base text-gray-500 p-1.5 min-w-[30px] min-h-[30px] hover:text-gray-700">✕</button>
                       </div>
                     ) : (
-                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <span style={{ fontWeight: 700, fontSize: 15, color: inter.ttc > 0 ? "#06D6A0" : "rgba(255,255,255,0.15)" }}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
-                        {canEdit && <button onClick={() => { setEditRef(inter.ref); setEditTTC(String(inter.ttc || "")); }} style={{ background: "rgba(255,255,255,0.04)", border: "none", borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 13, color: T.textMuted, minWidth: 36, minHeight: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>✏️</button>}
-                        {inter.statut === "Validée" && <span style={{ fontSize: 10, color: "#06D6A0" }}>🔒</span>}
+                      <div className="flex items-center gap-1.5">
+                        <span className={`font-bold text-base ${inter.ttc > 0 ? "text-success-600" : "text-gray-300"}`}>{inter.ttc > 0 ? `${inter.ttc} €` : "—"}</span>
+                        {canEdit && <button onClick={() => { setEditRef(inter.ref); setEditTTC(String(inter.ttc || "")); }} className="bg-gray-100 border-none rounded-lg px-2.5 py-1.5 cursor-pointer text-sm text-gray-600 min-w-9 min-h-9 flex items-center justify-center hover:bg-gray-200">✏️</button>}
+                        {inter.statut === "Validée" && <span className="text-xs text-success-600">🔒</span>}
                       </div>
                     )}
                   </div>
                 </div>
                 {/* Client info line */}
-                <div style={{ fontSize: 12, color: T.textMuted, marginTop: 4, marginBottom: 4, display: "flex", flexWrap: "wrap", gap: 4 }}>
+                <div className="text-xs text-gray-500 mt-1 mb-1 flex flex-wrap gap-1">
                   <span>👤 {inter.clientNom} {inter.clientPrenom}</span>
-                  <span style={{ color: "rgba(255,255,255,0.15)" }}>·</span>
-                  <span style={{ fontSize: 11 }}>{inter.adresse}</span>
+                  <span className="text-gray-300">·</span>
+                  <span className="text-xs">{inter.adresse}</span>
                 </div>
 
                 {/* Row 2: commission breakdown if poseur */}
                 {inter.poseur && inter.ttc > 0 && (
-                  <div style={{ background: "rgba(236,72,153,0.05)", borderRadius: 10, padding: "10px 14px", border: "1px solid rgba(236,72,153,0.1)" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                      <span style={{ fontSize: 12, color: "#EC4899", fontWeight: 700 }}>👷 Poseur : {inter.poseur} ({inter.poseurCost} €)</span>
-                      <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 6, background: inter.poseurMode === "divise2" ? "rgba(251,191,36,0.12)" : "rgba(6,214,160,0.15)", color: inter.poseurMode === "divise2" ? "#FBBF24" : "#06D6A0", fontWeight: 600 }}>
+                  <div className="bg-pink-50 rounded-lg px-3.5 py-2.5 border border-pink-100">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="text-xs text-pink-600 font-bold">👷 Poseur : {inter.poseur} ({inter.poseurCost} €)</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-md font-semibold ${inter.poseurMode === "divise2" ? "bg-warning-100 text-warning-600" : "bg-success-100 text-success-600"}`}>
                         {inter.poseurMode === "divise2" ? "÷ 2" : "Gratuit"}
                       </span>
                     </div>
-                    <div style={{ display: "flex", gap: 20, flexWrap: "wrap", fontSize: 13 }}>
-                      <span style={{ color: T.textSoft }}>Commission brute ({(inter.commRate * 100)}%) : <strong style={{ color: "#fff" }}>{commBrute.toLocaleString("fr-FR")} €</strong></span>
-                      {inter.poseurMode === "divise2" && <span style={{ color: "#EF4444" }}>Part poseur : <strong>-{(inter.poseurCost / 2).toLocaleString("fr-FR")} €</strong></span>}
-                      <span style={{ color: "#06D6A0", fontWeight: 700 }}>Commission nette : <strong>{commNette.toLocaleString("fr-FR")} €</strong></span>
+                    <div className="flex gap-5 flex-wrap text-sm">
+                      <span className="text-gray-600">Commission brute ({(inter.commRate * 100)}%) : <strong className="text-gray-900">{commBrute.toLocaleString("fr-FR")} €</strong></span>
+                      {inter.poseurMode === "divise2" && <span className="text-danger-600">Part poseur : <strong>-{(inter.poseurCost / 2).toLocaleString("fr-FR")} €</strong></span>}
+                      <span className="text-success-600 font-bold">Commission nette : <strong>{commNette.toLocaleString("fr-FR")} €</strong></span>
                     </div>
                   </div>
                 )}
                 {/* Simple commission display if no poseur */}
                 {!inter.poseur && inter.ttc > 0 && inter.statut === "Validée" && (
-                  <div style={{ marginTop: 6, fontSize: 12, color: "#06D6A0" }}>💰 Commission ({(inter.commRate * 100)}%) : <strong>{commNette.toLocaleString("fr-FR")} €</strong></div>
+                  <div className="mt-1.5 text-xs text-success-600">💰 Commission ({(inter.commRate * 100)}%) : <strong>{commNette.toLocaleString("fr-FR")} €</strong></div>
                 )}
                 {/* Media upload section */}
                 <MediaUpload
@@ -1464,11 +1454,11 @@ const TechDash = ({ account, onLogout, interventions, setInterventions, techs, s
             );
           })}
           {filtered.filter(i => i.statut === "Validée").length > 0 && (
-            <div style={{ padding: "14px 20px", background: "rgba(6,182,212,0.06)", borderTop: "1px solid rgba(6,182,212,0.15)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-              <span style={{ fontWeight: 700, color: T.cyan, fontSize: 13 }}>TOTAL VALIDÉ</span>
-              <div style={{ display: "flex", gap: 20 }}>
-                <span><span style={{ fontSize: 11, color: T.textMuted }}>CA </span><span style={{ fontWeight: 700, color: "#06D6A0", fontSize: 15 }}>{filtered.filter(i => i.statut === "Validée").reduce((s, i) => s + i.ttc, 0).toLocaleString("fr-FR")} €</span></span>
-                <span><span style={{ fontSize: 11, color: T.textMuted }}>Commission </span><span style={{ fontWeight: 700, color: T.cyan, fontSize: 15 }}>{filtered.filter(i => i.statut === "Validée").reduce((s, i) => s + calcCommission(i), 0).toLocaleString("fr-FR")} €</span></span>
+            <div className="px-5 py-3.5 bg-primary-50 border-t border-primary-200 flex justify-between items-center flex-wrap gap-3">
+              <span className="font-bold text-primary-600 text-[13px]">TOTAL VALIDÉ</span>
+              <div className="flex gap-5">
+                <span><span className="text-[11px] text-gray-500">CA </span><span className="font-bold text-success-600 text-[15px]">{filtered.filter(i => i.statut === "Validée").reduce((s, i) => s + i.ttc, 0).toLocaleString("fr-FR")} €</span></span>
+                <span><span className="text-[11px] text-gray-500">Commission </span><span className="font-bold text-primary-600 text-[15px]">{filtered.filter(i => i.statut === "Validée").reduce((s, i) => s + calcCommission(i), 0).toLocaleString("fr-FR")} €</span></span>
               </div>
             </div>
           )}
@@ -1497,13 +1487,11 @@ const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
     setInterventions(prev => prev.map(i => i.ref === ref ? { ...i, ...updates } : i));
   };
 
-  const inputStyle = { padding: "10px 12px", fontSize: 14, fontWeight: 700, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#fff", outline: "none", fontFamily: T.fontBody, width: "100%", boxSizing: "border-box" };
-
   return (
-    <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", background: `linear-gradient(160deg, ${T.dark} 0%, ${T.bg} 40%, ${T.dark} 100%)`, minHeight: "100vh" }}>
+    <div className="font-body bg-gray-50 min-h-screen">
       <Header account={account} onLogout={onLogout} />
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 16px" }}>
-        <div style={{ marginBottom: 24 }}><h1 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 700, color: "#fff" }}>Bonjour {poseur?.name.split(" ")[0]} 👋</h1><p style={{ margin: 0, fontSize: 13, color: T.textMuted }}>Vos interventions en tant que poseur</p></div>
+      <div className="max-w-[900px] mx-auto px-4 py-6">
+        <div className="mb-6"><h1 className="m-0 mb-1 text-2xl font-bold text-gray-900">Bonjour {poseur?.name.split(" ")[0]} 👋</h1><p className="m-0 text-[13px] text-gray-500">Vos interventions en tant que poseur</p></div>
 
         <div className="aurenis-kpis">
           <KPI label="Mes poses" value={myInter.length} color="#EC4899" icon="👷" />
@@ -1513,40 +1501,39 @@ const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
         </div>
 
         {viewMedia && <MediaLightbox media={viewMedia} onClose={() => setViewMedia(null)} />}
-        <Card style={{ padding: 0, overflow: "hidden" }}>
+        <Card className="p-0 overflow-hidden">
           {myInter.length === 0 ? (
-            <div style={{ padding: 48, textAlign: "center" }}><div style={{ fontSize: 40, opacity: 0.3, marginBottom: 8 }}>👷</div><div style={{ fontSize: 14, color: T.textSoft }}>Aucune intervention assignée</div></div>
+            <div className="p-12 text-center"><div className="text-[40px] opacity-30 mb-2">👷</div><div className="text-sm text-gray-600">Aucune intervention assignée</div></div>
           ) : myInter.map((inter, idx) => {
             const isExpanded = expandedRef === inter.ref;
             const isLocked = inter.statut === "Validée";
             return (
-              <div key={inter.ref} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", background: idx % 2 ? "rgba(255,255,255,0.02)" : "transparent" }}>
+              <div key={inter.ref} className={`border-b border-gray-100 ${idx % 2 ? "bg-gray-50" : "bg-white"}`}>
                 {/* Header row — click to expand */}
-                <div onClick={() => setExpandedRef(isExpanded ? null : inter.ref)} style={{ padding: "14px 14px", cursor: "pointer", transition: "background 0.15s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(6,182,212,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                      <span style={{ fontWeight: 700, color: "#EC4899", fontSize: 13 }}>{inter.ref}</span>
-                      <span style={{ color: T.textSoft, fontSize: 12 }}>{inter.date} {inter.heure}</span>
+                <div onClick={() => setExpandedRef(isExpanded ? null : inter.ref)} className="px-3.5 py-3.5 cursor-pointer transition-colors hover:bg-primary-50">
+                  <div className="flex justify-between items-center flex-wrap gap-2">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <span className="font-bold text-pink-600 text-[13px]">{inter.ref}</span>
+                      <span className="text-gray-600 text-xs">{inter.date} {inter.heure}</span>
                       <TypeBadge type={inter.type} />
                       <ModeBadge mode={inter.mode} />
-                      <span style={{ fontSize: 12, color: isExpanded ? T.cyan : T.textMuted }}>{isExpanded ? "▾" : "▸"}</span>
+                      <span className={`text-xs ${isExpanded ? "text-primary-600" : "text-gray-400"}`}>{isExpanded ? "▾" : "▸"}</span>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div className="flex items-center gap-2.5">
                       <Badge status={inter.statut} />
-                      <span style={{ fontWeight: 700, color: "#EC4899", fontSize: 15 }}>{(inter.poseurPrixPose || inter.poseurCost || 0)} €</span>
-                      {(inter.poseurMedias || []).length > 0 && <span style={{ fontSize: 11, color: "#06D6A0" }}>📸 {(inter.poseurMedias || []).length}</span>}
+                      <span className="font-bold text-pink-600 text-[15px]">{(inter.poseurPrixPose || inter.poseurCost || 0)} €</span>
+                      {(inter.poseurMedias || []).length > 0 && <span className="text-[11px] text-success-600">📸 {(inter.poseurMedias || []).length}</span>}
                     </div>
                   </div>
-                  <div style={{ marginTop: 6, fontSize: 12, color: T.textMuted, display: "flex", flexWrap: "wrap", gap: 4 }}>
-                    <span>Dépanneur : <strong style={{ color: "#fff" }}>{inter.tech}</strong></span>
-                    <span style={{ margin: "0 6px" }}>·</span>
+                  <div className="mt-1.5 text-xs text-gray-500 flex flex-wrap gap-1">
+                    <span>Dépanneur : <strong className="text-gray-900">{inter.tech}</strong></span>
+                    <span className="mx-1.5">·</span>
                     <span>Client : {inter.clientNom} {inter.clientPrenom}</span>
-                    <span style={{ margin: "0 6px" }}>·</span>
+                    <span className="mx-1.5">·</span>
                     <span>{inter.adresse}</span>
                   </div>
-                  <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 6, background: inter.poseurMode === "divise2" ? "rgba(255,210,80,0.12)" : "rgba(6,214,160,0.12)", color: inter.poseurMode === "divise2" ? "#FBBF24" : "#06D6A0", fontWeight: 600 }}>
+                  <div className="mt-1.5 flex items-center gap-2">
+                    <span className={`text-[11px] px-2.5 py-0.5 rounded-md font-semibold ${inter.poseurMode === "divise2" ? "bg-yellow-100 text-yellow-600" : "bg-success-100 text-success-600"}`}>
                       {inter.poseurMode === "divise2" ? "Mode ÷ 2 (partagé)" : "Mode gratuit"}
                     </span>
                   </div>
@@ -1554,20 +1541,20 @@ const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
 
                 {/* Expanded details */}
                 {isExpanded && (
-                  <div style={{ padding: "0 14px 16px", borderTop: "1px solid rgba(6,182,212,0.08)" }}>
+                  <div className="px-3.5 pb-4 border-t border-primary-100">
                     {/* Vidéo/photos du technicien */}
                     {(inter.techMedias || []).length > 0 && (
-                      <div style={{ background: "rgba(6,182,212,0.06)", borderRadius: 12, padding: 14, marginTop: 14, border: "1px solid rgba(6,182,212,0.12)" }}>
-                        <div style={{ fontSize: 11, color: T.cyan, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>🎬 Médias du technicien — À faire</div>
-                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      <div className="bg-primary-50 rounded-xl p-3.5 mt-3.5 border border-primary-200">
+                        <div className="text-[11px] text-primary-600 font-bold uppercase tracking-wider mb-2.5">🎬 Médias du technicien — À faire</div>
+                        <div className="flex gap-2 flex-wrap">
                           {(inter.techMedias || []).map((m, i) => (
-                            <div key={i} style={{ position: "relative", width: 110, height: 110, borderRadius: 10, overflow: "hidden", border: "1px solid rgba(6,182,212,0.15)" }}>
+                            <div key={i} className="relative w-[110px] h-[110px] rounded-lg overflow-hidden border border-primary-200">
                               {m.type === "video" ? (
-                                <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => setViewMedia(m)} />
+                                <video src={m.url} className="w-full h-full object-cover cursor-pointer" onClick={() => setViewMedia(m)} />
                               ) : (
-                                <img src={m.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} onClick={() => setViewMedia(m)} />
+                                <img src={m.url} alt="" className="w-full h-full object-cover cursor-pointer" onClick={() => setViewMedia(m)} />
                               )}
-                              {m.type === "video" && <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 28, pointerEvents: "none", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}>▶️</div>}
+                              {m.type === "video" && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[28px] pointer-events-none drop-shadow-lg">▶️</div>}
                             </div>
                           ))}
                         </div>
@@ -1575,27 +1562,27 @@ const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
                     )}
 
                     {/* Prix de la pose */}
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 12, marginTop: 14 }}>
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-3 mt-3.5">
                       <div>
-                        <label style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, display: "block", marginBottom: 6 }}>💰 Prix de ma pose (€)</label>
+                        <label className="text-[11px] text-gray-500 font-bold uppercase tracking-wider block mb-1.5">💰 Prix de ma pose (€)</label>
                         <input type="number" value={inter.poseurPrixPose || ""} placeholder="0" disabled={isLocked}
                           onChange={e => updateInter(inter.ref, { poseurPrixPose: parseFloat(e.target.value) || 0 })}
-                          style={{ ...inputStyle, color: "#EC4899", opacity: isLocked ? 0.5 : 1 }} />
+                          className={`input text-pink-600 ${isLocked ? "opacity-50" : ""}`} />
                       </div>
                       <div>
-                        <label style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, display: "block", marginBottom: 6 }}>🧾 Achats avancés (€)</label>
+                        <label className="text-[11px] text-gray-500 font-bold uppercase tracking-wider block mb-1.5">🧾 Achats avancés (€)</label>
                         <input type="number" value={inter.poseurAchats || ""} placeholder="0" disabled={isLocked}
                           onChange={e => updateInter(inter.ref, { poseurAchats: parseFloat(e.target.value) || 0 })}
-                          style={{ ...inputStyle, color: "#F97316", opacity: isLocked ? 0.5 : 1 }} />
+                          className={`input text-orange-600 ${isLocked ? "opacity-50" : ""}`} />
                       </div>
                     </div>
 
                     {/* Note */}
-                    <div style={{ marginTop: 12 }}>
-                      <label style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, display: "block", marginBottom: 6 }}>📝 Note / commentaire</label>
+                    <div className="mt-3">
+                      <label className="text-[11px] text-gray-500 font-bold uppercase tracking-wider block mb-1.5">📝 Note / commentaire</label>
                       <textarea value={inter.poseurNote || ""} placeholder="Détails sur le chantier..." disabled={isLocked}
                         onChange={e => updateInter(inter.ref, { poseurNote: e.target.value })}
-                        style={{ ...inputStyle, minHeight: 60, resize: "vertical", opacity: isLocked ? 0.5 : 1 }} />
+                        className={`input min-h-[60px] resize-y ${isLocked ? "opacity-50" : ""}`} />
                     </div>
 
                     {/* Photos/vidéos chantier fini */}
@@ -1610,11 +1597,11 @@ const PoseurDash = ({ account, onLogout, interventions, setInterventions }) => {
 
                     {/* Récapitulatif */}
                     {(inter.poseurPrixPose > 0 || inter.poseurAchats > 0) && (
-                      <div style={{ background: "rgba(236,72,153,0.06)", borderRadius: 12, padding: 14, marginTop: 14, border: "1px solid rgba(236,72,153,0.12)" }}>
-                        <div style={{ fontSize: 11, color: "#EC4899", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>📊 Récapitulatif</div>
-                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Prix de la pose</span><span style={{ fontWeight: 700, color: "#EC4899" }}>{(inter.poseurPrixPose || 0).toLocaleString("fr-FR")} €</span></div>
-                        {inter.poseurAchats > 0 && <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: T.textSoft, marginBottom: 4 }}><span>Achats avancés</span><span style={{ fontWeight: 700, color: "#F97316" }}>{inter.poseurAchats.toLocaleString("fr-FR")} €</span></div>}
-                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, fontWeight: 700, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 6, marginTop: 4 }}><span style={{ color: "#fff" }}>Total à percevoir</span><span style={{ color: "#EC4899" }}>{((inter.poseurPrixPose || 0) + (inter.poseurAchats || 0)).toLocaleString("fr-FR")} €</span></div>
+                      <div className="bg-pink-50 rounded-xl p-3.5 mt-3.5 border border-pink-200">
+                        <div className="text-[11px] text-pink-600 font-bold uppercase tracking-wider mb-2">📊 Récapitulatif</div>
+                        <div className="flex justify-between text-[13px] text-gray-600 mb-1"><span>Prix de la pose</span><span className="font-bold text-pink-600">{(inter.poseurPrixPose || 0).toLocaleString("fr-FR")} €</span></div>
+                        {inter.poseurAchats > 0 && <div className="flex justify-between text-[13px] text-gray-600 mb-1"><span>Achats avancés</span><span className="font-bold text-orange-600">{inter.poseurAchats.toLocaleString("fr-FR")} €</span></div>}
+                        <div className="flex justify-between text-sm font-bold border-t border-gray-200 pt-1.5 mt-1"><span className="text-gray-900">Total à percevoir</span><span className="text-pink-600">{((inter.poseurPrixPose || 0) + (inter.poseurAchats || 0)).toLocaleString("fr-FR")} €</span></div>
                       </div>
                     )}
                   </div>
@@ -1678,74 +1665,17 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{ fontFamily: T.fontBody }}>
-      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
-
+    <>
       {/* Loading screen */}
       {loading && (
-        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: T.dark }}>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
           <AurenisLogo />
-          <div style={{ marginTop: 32, display: "flex", gap: 6 }}>
-            {[0,1,2].map(i => <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: T.cyan, animation: `pulseUrgent 1.2s infinite ${i * 0.2}s`, opacity: 0.6 }} />)}
+          <div className="mt-8 flex gap-1.5">
+            {[0,1,2].map(i => <div key={i} className="w-2 h-2 rounded-full bg-primary-600 animate-pulse opacity-60" style={{ animationDelay: `${i * 0.2}s`, animationDuration: "1.2s" }} />)}
           </div>
-          <div style={{ marginTop: 14, fontSize: 13, color: T.textMuted, fontFamily: T.fontBody }}>Chargement des données...</div>
+          <div className="mt-3.5 text-sm text-gray-500">Chargement des données...</div>
         </div>
       )}
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}@keyframes pulseUrgent{0%,100%{opacity:1}50%{opacity:0.4}}@keyframes shimmer{from{background-position:-200% 0}to{background-position:200% 0}}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}::placeholder{color:rgba(255,255,255,0.2)}html{-webkit-text-size-adjust:100%}body{overscroll-behavior:none;background:#0A0F1C}body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}input,textarea,select,button{font-size:16px!important}input[type="date"]{color-scheme:dark}input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer;padding:4px}input[type="time"]{color-scheme:dark}input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer;padding:4px}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
-.aurenis-auth-bg{background-image:linear-gradient(rgba(6,182,212,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(6,182,212,0.03) 1px,transparent 1px)!important;background-size:40px 40px!important}
-.aurenis-reveal{opacity:0;transform:translateY(12px);transition:opacity 0.5s ease,transform 0.5s ease}.aurenis-visible{opacity:1;transform:translateY(0)}
-
-/* ═══ RESPONSIVE BASE ═══ */
-.aurenis-tabs{display:flex;gap:3px;background:rgba(255,255,255,0.03);border-radius:8px;padding:3px;border:1px solid rgba(255,255,255,0.06);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.aurenis-tabs::-webkit-scrollbar{display:none}
-.aurenis-tabs button{padding:8px 18px;border:none;border-radius:6px;cursor:pointer;font-size:13px!important;font-weight:600;font-family:'Outfit',sans-serif;background:transparent;color:#6B7280;transition:all 0.15s;white-space:nowrap;flex-shrink:0;min-height:38px}
-.aurenis-tabs button.active{background:rgba(6,182,212,0.1);color:#22D3EE}
-.aurenis-kpis{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
-.aurenis-kpis>div{flex:1;min-width:150px}
-.aurenis-header-inner{display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
-.aurenis-header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.aurenis-inter-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);flex-wrap:wrap;gap:8px;transition:background 0.15s}
-.aurenis-inter-row:hover{background:rgba(6,182,212,0.02)}
-.aurenis-journal-grid{display:grid;grid-template-columns:80px 85px 1fr 75px 85px 80px 100px 90px;padding:10px 14px;font-size:13px!important;align-items:center}
-.aurenis-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.aurenis-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
-.wa-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.2);color:#25D366;border-radius:8px;padding:8px 10px;cursor:pointer;font-size:12px!important;font-weight:600;font-family:'Outfit',sans-serif;white-space:nowrap;transition:all 0.15s;line-height:1;min-height:44px}
-.wa-btn:hover{background:rgba(37,211,102,0.2);transform:translateY(-1px)}
-
-/* ═══ TABLET (768px) ═══ */
-@media(max-width:768px){
-  .aurenis-header-inner{flex-direction:column;gap:8px;padding:10px 12px!important}
-  .aurenis-header-right{justify-content:center;gap:8px}
-  .aurenis-header-right>span{font-size:10px!important}
-  .aurenis-header-right>div>div{font-size:12px!important}
-  .aurenis-tabs{padding:3px}
-  .aurenis-tabs button{padding:8px 14px;font-size:12px!important;min-height:36px}
-  .aurenis-kpis>div{min-width:calc(50% - 7px);flex:unset}
-  .aurenis-inter-row{flex-direction:column;align-items:flex-start;gap:10px}
-  .aurenis-journal-grid{grid-template-columns:1fr 1fr!important;gap:6px 10px;font-size:12px!important}
-  .aurenis-journal-grid>div:nth-child(3){grid-column:span 2}
-  .aurenis-journal-grid>div:nth-child(4){display:none}
-  .aurenis-journal-head{display:none!important}
-  .aurenis-stats-grid{grid-template-columns:1fr}
-  .aurenis-filter-row>div{flex:1 1 100%!important;min-width:0!important}
-  .aurenis-filter-row>div:nth-child(2),.aurenis-filter-row>div:nth-child(3){flex:1 1 calc(50% - 5px)!important}
-}
-
-/* ═══ MOBILE (480px) ═══ */
-@media(max-width:480px){
-  .aurenis-kpis{gap:8px}
-  .aurenis-kpis>div{min-width:calc(50% - 4px)}
-  .aurenis-journal-grid{grid-template-columns:1fr!important;gap:4px}
-  .aurenis-journal-grid>div:nth-child(3){grid-column:span 1}
-  .aurenis-journal-grid>div{text-align:left!important}
-  .aurenis-tabs button{padding:8px 10px;font-size:11px!important}
-}
-
-/* ═══ MOBILE SMALL (380px) ═══ */
-@media(max-width:380px){
-  .aurenis-kpis>div{min-width:100%}
-}
-`}</style>
 
       {!loading && page === "login" && <LoginPage onLogin={a => { setAccount(a); setPage("dashboard"); }} onGoRegister={() => setPage("register")} onGoForgot={() => setPage("forgot")} />}
       {!loading && page === "register" && <RegisterPage onGoLogin={() => setPage("login")} onRegistered={(e, c) => { setVerifyEmail(e); setVerifyCode(c); setPage("verify"); }} />}
@@ -1755,6 +1685,6 @@ export default function App() {
       {!loading && page === "dashboard" && account?.role === "admin" && <AdminDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} setTechs={setTechs} specialties={specialties} setSpecialties={setSpecialties} statuts={statuts} setStatuts={setStatuts} />}
       {!loading && page === "dashboard" && account?.role === "tech" && <TechDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} specialties={specialties} />}
       {!loading && page === "dashboard" && account?.role === "poseur" && <PoseurDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} />}
-    </div>
+    </>
   );
 }
