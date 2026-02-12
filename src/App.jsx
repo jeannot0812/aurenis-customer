@@ -390,28 +390,38 @@ const LoginPage = ({ onLogin, onGoRegister, onGoForgot }) => {
 
 /* ═══ REGISTER ═══ */
 const RegisterPage = ({ onGoLogin, onRegistered }) => {
-  const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [confirm, setConfirm] = useState(""); const [errors, setErrors] = useState({}); const [loading, setLoading] = useState(false);
+  const [name, setName] = useState(""); const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [confirm, setConfirm] = useState(""); const [role, setRole] = useState("tech"); const [errors, setErrors] = useState({}); const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false); const [showCf, setShowCf] = useState(false);
-  const allMembers = [...INIT_TECHS, ...INIT_POSEURS];
   const validate = () => {
     const e = {}; const em = email.toLowerCase().trim();
-    if (!em) e.email = "Requis"; else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) e.email = "Format invalide"; else if (!allMembers.find(t => t.email === em)) e.email = "Email non autorisé";
+    if (!name.trim()) e.name = "Requis";
+    if (!em) e.email = "Requis"; else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) e.email = "Format invalide";
     if (!password) e.password = "Requis"; else if (password.length < 6) e.password = "Min. 6 car."; else if (!/[A-Z]/.test(password)) e.password = "1 majuscule"; else if (!/[0-9]/.test(password)) e.password = "1 chiffre";
     if (password !== confirm) e.confirm = "Non identiques"; setErrors(e); return Object.keys(e).length === 0;
   };
   const handle = async () => {
     if (!validate()) return; setLoading(true); await new Promise(r => setTimeout(r, 800));
     const em = email.toLowerCase().trim(); const ex = await ST.get(`account:${em}`); if (ex) { setLoading(false); return setErrors({ email: "Compte existant" }); }
-    const member = allMembers.find(t => t.email === em); const code = String(Math.floor(100000 + Math.random() * 900000));
-    await ST.set(`account:${em}`, { email: em, password, name: member.name, memberId: member.id, role: member.role, verified: false, verifyCode: code });
+    const memberId = role === "admin" ? "A" + Date.now() : (role === "tech" ? "T" + Date.now() : "P" + Date.now());
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    await ST.set(`account:${em}`, { email: em, password, name: name.trim(), memberId, role, verified: false, verifyCode: code });
     setLoading(false); onRegistered(em, code);
   };
   const strength = (() => { if (!password) return { pct: 0, label: "", color: "#333" }; let s = 0; if (password.length >= 6) s++; if (password.length >= 10) s++; if (/[A-Z]/.test(password)) s++; if (/[0-9]/.test(password)) s++; if (/[^a-zA-Z0-9]/.test(password)) s++; return [{ pct: 20, label: "Très faible", color: "#EF4444" }, { pct: 40, label: "Faible", color: "#F97316" }, { pct: 60, label: "Moyen", color: "#FBBF24" }, { pct: 80, label: "Fort", color: "#06D6A0" }, { pct: 100, label: "Excellent", color: "#10B981" }][Math.min(s, 4)]; })();
   const eyeBtn = (visible, toggle) => <button onClick={toggle} className="absolute right-3.5 top-3.5 bg-transparent border-none cursor-pointer text-sm text-gray-400 hover:text-gray-600">{visible ? "🙈" : "👁️"}</button>;
   return (
-    <AuthShell><AuthCard title="Créer un compte" subtitle="Email professionnel fourni par l'entreprise">
+    <AuthShell><AuthCard title="Créer un compte" subtitle="Inscription libre - Tous les rôles disponibles">
       <div className="flex flex-col gap-3.5">
-        <Inp icon="✉️" type="email" placeholder="Email professionnel" value={email} onChange={e => setEmail(e.target.value)} error={errors.email} />
+        <Inp icon="👤" type="text" placeholder="Nom complet" value={name} onChange={e => setName(e.target.value)} error={errors.name} />
+        <Inp icon="✉️" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} error={errors.email} />
+        <div>
+          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2 ml-1">🎭 Rôle</label>
+          <div className="flex gap-2">
+            <button onClick={() => setRole("admin")} className={`flex-1 py-2.5 px-3 rounded-lg border-2 text-sm font-semibold transition-all ${role === "admin" ? "bg-primary-50 border-primary-600 text-primary-700" : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"}`}>👑 Admin</button>
+            <button onClick={() => setRole("tech")} className={`flex-1 py-2.5 px-3 rounded-lg border-2 text-sm font-semibold transition-all ${role === "tech" ? "bg-primary-50 border-primary-600 text-primary-700" : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"}`}>🔧 Tech</button>
+            <button onClick={() => setRole("poseur")} className={`flex-1 py-2.5 px-3 rounded-lg border-2 text-sm font-semibold transition-all ${role === "poseur" ? "bg-primary-50 border-primary-600 text-primary-700" : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"}`}>👷 Poseur</button>
+          </div>
+        </div>
         <div><div className="relative"><Inp icon="🔒" type={showPw ? "text" : "password"} placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} error={errors.password} />{eyeBtn(showPw, () => setShowPw(!showPw))}</div>{password && <div className="mt-2"><div className="flex gap-1 mb-1">{[0,1,2,3,4].map(i => <div key={i} className="flex-1 h-1 rounded" style={{ background: i < strength.pct / 20 ? strength.color : "#E5E7EB" }} />)}</div><span className="text-xs font-semibold" style={{ color: strength.color }}>{strength.label}</span></div>}</div>
         <div className="relative"><Inp icon="🔒" type={showCf ? "text" : "password"} placeholder="Confirmer" value={confirm} onChange={e => setConfirm(e.target.value)} error={errors.confirm} />{eyeBtn(showCf, () => setShowCf(!showCf))}</div>
         <Btn onClick={handle} loading={loading} style={{ width: "100%" }}>Créer mon compte</Btn>
