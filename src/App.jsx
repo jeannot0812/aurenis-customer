@@ -742,11 +742,37 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
   const [migrationStatus, setMigrationStatus] = useState("");
   const [isMigrating, setIsMigrating] = useState(false);
 
-  // Load all accounts on mount
+  // Load all accounts on mount (Supabase + localStorage)
   useEffect(() => {
     const loadAccounts = async () => {
-      const accounts = await supaGetAllAccounts();
-      setAllAccounts(accounts);
+      // 1. Load from Supabase
+      const supaAccounts = await supaLoad("accounts") || {};
+
+      // 2. Also load from localStorage
+      const localAccounts = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key?.startsWith("account:")) {
+          const email = key.replace("account:", "");
+          const localAccount = await ST.get(key);
+          if (localAccount) {
+            localAccounts[email] = localAccount;
+          }
+        }
+      }
+
+      // 3. Merge: Supabase accounts + localStorage accounts
+      const mergedAccounts = { ...localAccounts, ...supaAccounts };
+
+      // 4. Auto-sync: Save merged accounts to Supabase if there are new ones
+      const newAccountsCount = Object.keys(localAccounts).filter(email => !supaAccounts[email]).length;
+      if (newAccountsCount > 0) {
+        await supaSave("accounts", mergedAccounts);
+        console.log(`✅ Auto-synced ${newAccountsCount} account(s) to Supabase`);
+      }
+
+      // 5. Display all accounts
+      setAllAccounts(Object.values(mergedAccounts));
     };
     loadAccounts();
   }, []);
