@@ -839,7 +839,14 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
     await supaSaveAccount(email, account);
     const updatedAccounts = await supaGetAllAccounts();
     setAllAccounts(updatedAccounts);
+
+    // Reset filters to show all accounts after approval
+    setFilterOrg("all");
+    setFilterRole("all");
+    setFilterStatus("all");
+
     playKaching();
+    alert(`✅ Compte admin ${account.name} (${email}) approuvé avec succès!\n\nLe compte est maintenant visible dans la liste complète.`);
   };
 
   const updateAccountStatus = async (email, newStatus) => {
@@ -860,7 +867,13 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
     await supaSaveAccount(email, account);
     const updatedAccounts = await supaGetAllAccounts();
     setAllAccounts(updatedAccounts);
-    alert(`Compte ${messages[newStatus]} avec succès`);
+
+    // Reset filters to show all accounts
+    setFilterOrg("all");
+    setFilterRole("all");
+    setFilterStatus("all");
+
+    alert(`✅ Compte ${messages[newStatus]} avec succès!\n\nLe compte ${account.name} est maintenant visible dans la liste complète.`);
   };
 
   const syncLocalStorageToSupabase = async () => {
@@ -1069,7 +1082,11 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
             <div className="flex justify-between items-center mb-5 flex-wrap gap-3">
               <h2 className="text-xl font-bold text-gray-900">
                 Tous les comptes
-                {allAccounts.length > 0 && <span className="text-sm font-normal text-gray-500 ml-2">({allAccounts.length} total)</span>}
+                {allAccounts.length > 0 && (
+                  <span className="text-sm font-normal text-gray-500 ml-2">
+                    ({filteredAccounts.length} affichés / {allAccounts.length} total)
+                  </span>
+                )}
               </h2>
               <div className="flex gap-2">
                 <button
@@ -1158,12 +1175,18 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
                           <td>{org?.name || "-"}</td>
                           <td>
                             <div className="flex gap-2 flex-wrap">
+                              {/* Email status */}
                               {!acc.verified && <span className="badge badge-warning">📧 Non vérifié</span>}
+                              {acc.verified && <span className="badge badge-success">📧 Vérifié</span>}
+
+                              {/* Admin approval status */}
                               {acc.role === "admin" && !acc.approved && <span className="badge badge-danger">⏳ En attente</span>}
+                              {acc.role === "admin" && acc.approved && <span className="badge badge-success">✅ Approuvé</span>}
+
+                              {/* Account access status */}
                               {acc.accountStatus === "suspended" && <span className="badge badge-warning">⏸️ Suspendu</span>}
                               {acc.accountStatus === "revoked" && <span className="badge badge-danger">🚫 Révoqué</span>}
-                              {acc.verified && (acc.role !== "admin" || acc.approved) && !acc.accountStatus && <span className="badge badge-success">✅ Actif</span>}
-                              {acc.verified && (acc.role !== "admin" || acc.approved) && acc.accountStatus === "active" && <span className="badge badge-success">✅ Actif</span>}
+                              {(!acc.accountStatus || acc.accountStatus === "active") && acc.verified && (acc.role !== "admin" || acc.approved) && <span className="badge badge-success">🟢 Actif</span>}
                             </div>
                           </td>
                           <td>
@@ -1207,6 +1230,32 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
                         </tr>
                       );
                     })}
+                    {filteredAccounts.length === 0 && (
+                      <tr>
+                        <td colSpan="6" className="text-center py-8">
+                          <div className="text-gray-400">
+                            <div className="text-3xl mb-2">🔍</div>
+                            <div className="font-medium">Aucun compte ne correspond aux filtres</div>
+                            <div className="text-sm mt-2">
+                              {allAccounts.length > 0 ? (
+                                <button
+                                  onClick={() => {
+                                    setFilterOrg("all");
+                                    setFilterRole("all");
+                                    setFilterStatus("all");
+                                  }}
+                                  className="btn btn-sm btn-primary mt-2"
+                                >
+                                  🔄 Réinitialiser les filtres
+                                </button>
+                              ) : (
+                                "Aucun compte enregistré pour le moment"
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
