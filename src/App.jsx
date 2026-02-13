@@ -1048,30 +1048,64 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {organizations.map(org => (
-                <Card key={org.id} className="p-5">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <h3 className="font-bold text-gray-900 mb-1">{org.name}</h3>
-                      <span className="text-xs text-gray-500">{org.slug}</span>
+              {organizations.map(org => {
+                const orgMembers = allAccounts.filter(a => a.organizationId === org.id);
+                const orgAdmins = orgMembers.filter(a => a.role === "admin");
+                const orgTechs = orgMembers.filter(a => a.role === "tech");
+                const orgPoseurs = orgMembers.filter(a => a.role === "poseur");
+
+                return (
+                  <Card key={org.id} className="p-5">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h3 className="font-bold text-gray-900 mb-1">{org.name}</h3>
+                        <span className="text-xs text-gray-500">{org.slug}</span>
+                      </div>
+                      <span className={`badge ${org.status === "active" ? "badge-success" : "badge-danger"}`}>
+                        {org.status === "active" ? "Actif" : "Suspendu"}
+                      </span>
                     </div>
-                    <span className={`badge ${org.status === "active" ? "badge-success" : "badge-danger"}`}>
-                      {org.status === "active" ? "Actif" : "Suspendu"}
-                    </span>
-                  </div>
-                  <div className="space-y-2 text-sm text-gray-600 mb-4">
-                    <div>📧 {org.adminEmail}</div>
-                    <div>📅 Créé le {org.createdAt}</div>
-                    <div>💰 {org.subscription?.price}€/{org.subscription?.plan === "monthly" ? "mois" : "an"}</div>
-                  </div>
-                  <button
-                    onClick={() => toggleOrgStatus(org.id)}
-                    className={`btn btn-sm w-full ${org.status === "active" ? "btn-danger" : "btn-success"}`}
-                  >
-                    {org.status === "active" ? "Suspendre" : "Activer"}
-                  </button>
-                </Card>
-              ))}
+
+                    <div className="space-y-2 text-sm text-gray-600 mb-4">
+                      <div>📧 {org.adminEmail}</div>
+                      <div>📅 Créé le {org.createdAt}</div>
+                      <div>💰 {org.subscription?.price}€/{org.subscription?.plan === "monthly" ? "mois" : "an"}</div>
+                    </div>
+
+                    {/* Membres de l'organisation */}
+                    <div className="border-t border-gray-200 pt-3 mb-4">
+                      <div className="text-xs font-semibold text-gray-500 uppercase mb-2">Membres</div>
+                      <div className="flex gap-2 flex-wrap">
+                        {orgAdmins.length > 0 && (
+                          <span className="badge badge-primary" title={orgAdmins.map(a => a.name).join(", ")}>
+                            👤 {orgAdmins.length} admin{orgAdmins.length > 1 ? "s" : ""}
+                          </span>
+                        )}
+                        {orgTechs.length > 0 && (
+                          <span className="badge badge-success" title={orgTechs.map(a => a.name).join(", ")}>
+                            🔧 {orgTechs.length} tech{orgTechs.length > 1 ? "s" : ""}
+                          </span>
+                        )}
+                        {orgPoseurs.length > 0 && (
+                          <span className="badge badge-warning" title={orgPoseurs.map(a => a.name).join(", ")}>
+                            🛠️ {orgPoseurs.length} poseur{orgPoseurs.length > 1 ? "s" : ""}
+                          </span>
+                        )}
+                        {orgMembers.length === 0 && (
+                          <span className="text-xs text-gray-400">Aucun membre</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => toggleOrgStatus(org.id)}
+                      className={`btn btn-sm w-full ${org.status === "active" ? "btn-danger" : "btn-success"}`}
+                    >
+                      {org.status === "active" ? "Suspendre" : "Activer"}
+                    </button>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         )}
@@ -1190,14 +1224,18 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
                             </div>
                           </td>
                           <td>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 flex-wrap">
+                              {/* Approuver admin non approuvé */}
                               {acc.role === "admin" && !acc.approved && (
                                 <button onClick={() => approveAdmin(acc.email)} className="btn btn-success btn-sm" title={!acc.verified ? "Approuver (email non vérifié)" : "Approuver"}>
                                   {!acc.verified ? "✅ Pré-approuver" : "✅ Approuver"}
                                 </button>
                               )}
-                              {(acc.role === "tech" || acc.role === "poseur") && (
+
+                              {/* Gestion accès pour tous les rôles (sauf admin non approuvé) */}
+                              {(acc.role !== "admin" || acc.approved) && (
                                 <>
+                                  {/* Compte actif → peut suspendre ou révoquer */}
                                   {(!acc.accountStatus || acc.accountStatus === "active") && (
                                     <>
                                       <button onClick={() => updateAccountStatus(acc.email, "suspended")} className="btn btn-sm" style={{ backgroundColor: "#F59E0B", color: "white" }}>
@@ -1208,6 +1246,7 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
                                       </button>
                                     </>
                                   )}
+                                  {/* Compte suspendu → peut réactiver ou révoquer */}
                                   {acc.accountStatus === "suspended" && (
                                     <>
                                       <button onClick={() => updateAccountStatus(acc.email, "active")} className="btn btn-success btn-sm">
@@ -1218,6 +1257,7 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
                                       </button>
                                     </>
                                   )}
+                                  {/* Compte révoqué → peut seulement réactiver */}
                                   {acc.accountStatus === "revoked" && (
                                     <button onClick={() => updateAccountStatus(acc.email, "active")} className="btn btn-success btn-sm">
                                       ✅ Réactiver
