@@ -21,6 +21,22 @@ const INIT_POSEURS = [
 
 const SUPER_ADMIN_EMAIL = "aurenis.contact@gmail.com";
 
+/* ═══ HELPER — Super Admin Check ═══ */
+const isSuperAdmin = (user) => user && user.email === SUPER_ADMIN_EMAIL && user.role === "super_admin";
+
+/* ═══ INITIAL ORGANIZATIONS ═══ */
+const INIT_ORGS = [
+  {
+    id: "ORG-AURENIS",
+    name: "Aurenis (Organisation Principale)",
+    slug: "aurenis",
+    adminEmail: "aurenis.contact@gmail.com",
+    status: "active",
+    createdAt: "2026-02-12",
+    subscription: { plan: "owner", price: 0, nextBilling: null }
+  }
+];
+
 const INIT_INTERVENTIONS = [
   { ref: "INT-001", date: "2026-02-11", heure: "09:00", type: "Plomberie", mode: "Urgence", clientNom: "Dupont", clientPrenom: "Marie", tel: "+33 6 11 22 33 44", adresse: "12 rue de la Paix, 75002", tech: "Ahmed Benali", statut: "Validée", ttc: 350, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
   { ref: "INT-002", date: "2026-02-11", heure: "10:30", type: "Serrurerie", mode: "RDV", clientNom: "Martin", clientPrenom: "Pierre", tel: "+33 6 22 33 44 55", adresse: "5 av. des Champs, 75008", tech: "Lucas Martin", statut: "Validée", ttc: 280, commRate: 0.20, poseur: null, poseurCost: 0, poseurMode: null, techMedias: [], poseurMedias: [], poseurPrixPose: 0, poseurAchats: 0, poseurNote: "" },
@@ -126,6 +142,34 @@ const supaSave = async (key, value) => {
       body: JSON.stringify({ key, value, updated_at: new Date().toISOString() })
     });
   } catch (e) { console.log("Supabase save error:", e); }
+};
+
+/* ═══ SUPABASE HELPERS — NAMESPACED BY ORGANIZATION ═══ */
+const supaLoadOrg = async (orgId, key) => {
+  return supaLoad(`${orgId}:${key}`);
+};
+
+const supaSaveOrg = async (orgId, key, data) => {
+  return supaSave(`${orgId}:${key}`, data);
+};
+
+/* ═══ SUPABASE HELPERS — ACCOUNT MANAGEMENT ═══ */
+const supaGetAccount = async (email) => {
+  const accounts = await supaLoad("accounts") || {};
+  return accounts[email];
+};
+
+const supaSaveAccount = async (email, accountData) => {
+  const accounts = await supaLoad("accounts") || {};
+  accounts[email] = accountData;
+  await supaSave("accounts", accounts);
+  // Also save to localStorage for backward compatibility
+  await ST.set(`account:${email}`, accountData);
+};
+
+const supaGetAllAccounts = async () => {
+  const accounts = await supaLoad("accounts") || {};
+  return Object.values(accounts);
 };
 
 /* ═══ SUPABASE STORAGE (photos/vidéos) ═══ */
@@ -363,11 +407,41 @@ const LoginPage = ({ onLogin, onGoRegister, onGoForgot }) => {
     setError(""); if (!email.trim()) return setError("Email requis"); if (!password) return setError("Mot de passe requis");
     setLoading(true); await new Promise(r => setTimeout(r, 600));
     const em = email.toLowerCase().trim();
-    if (em === SUPER_ADMIN_EMAIL) { if (password === "Admin123") { setLoading(false); return onLogin({ email: em, name: "Super Admin", role: "admin", approved: true }); } else { setLoading(false); return setError("Mot de passe incorrect"); } }
-    const a = await ST.get(`account:${em}`); if (!a) { setLoading(false); return setError("Aucun compte trouvé"); }
+
+    // Super admin check
+    if (em === SUPER_ADMIN_EMAIL) {
+      if (password === "Admin123") {
+        setLoading(false);
+        return onLogin({
+          email: em,
+          name: "Super Admin",
+          role: "super_admin",
+          organizationId: "ORG-AURENIS",
+          approved: true,
+          verified: true
+        });
+      } else {
+        setLoading(false);
+        return setError("Mot de passe incorrect");
+      }
+    }
+
+    // Load account from Supabase first, fallback to localStorage
+    let a = await supaGetAccount(em);
+    if (!a) a = await ST.get(`account:${em}`);
+    if (!a) { setLoading(false); return setError("Aucun compte trouvé"); }
     if (!a.verified) { setLoading(false); return setError("Email non vérifié"); }
+    if (a.accountStatus === "revoked") { setLoading(false); return setError("⛔ Accès révoqué définitivement. Contactez l'administrateur."); }
+    if (a.accountStatus === "suspended") { setLoading(false); return setError("⏸️ Compte suspendu temporairement. Contactez l'administrateur."); }
     if (a.role === "admin" && !a.approved) { setLoading(false); return setError("Compte en attente de validation par le super admin"); }
     if (a.password !== password) { setLoading(false); return setError("Mot de passe incorrect"); }
+
+    // Ensure organizationId is set (default to ORG-AURENIS for existing accounts)
+    if (!a.organizationId) {
+      a.organizationId = "ORG-AURENIS";
+      await supaSaveAccount(em, a);
+    }
+
     setLoading(false); onLogin(a);
   };
   return (
@@ -402,11 +476,38 @@ const RegisterPage = ({ onGoLogin, onRegistered }) => {
   };
   const handle = async () => {
     if (!validate()) return; setLoading(true); await new Promise(r => setTimeout(r, 800));
-    const em = email.toLowerCase().trim(); const ex = await ST.get(`account:${em}`); if (ex) { setLoading(false); return setErrors({ email: "Compte existant" }); }
+    const em = email.toLowerCase().trim();
+
+    // Block super admin email
+    if (em === SUPER_ADMIN_EMAIL) {
+      setLoading(false);
+      return setErrors({ email: "⛔ Email du Super Admin réservé. Utilisez un autre email." });
+    }
+
+    // Check if account exists in Supabase or localStorage
+    let ex = await supaGetAccount(em);
+    if (!ex) ex = await ST.get(`account:${em}`);
+    if (ex) { setLoading(false); return setErrors({ email: "Compte existant" }); }
+
     const memberId = role === "admin" ? "A" + Date.now() : (role === "tech" ? "T" + Date.now() : "P" + Date.now());
     const code = String(Math.floor(100000 + Math.random() * 900000));
     const approved = role !== "admin";
-    await ST.set(`account:${em}`, { email: em, password, name: name.trim(), memberId, role, verified: false, verifyCode: code, approved });
+
+    // All new accounts are assigned to ORG-AURENIS by default
+    // Super admin can reassign them to other organizations later
+    const accountData = {
+      email: em,
+      password,
+      name: name.trim(),
+      memberId,
+      role,
+      organizationId: "ORG-AURENIS",
+      verified: false,
+      verifyCode: code,
+      approved
+    };
+
+    await supaSaveAccount(em, accountData);
     setLoading(false); onRegistered(em, code);
   };
   const strength = (() => { if (!password) return { pct: 0, label: "", color: "#333" }; let s = 0; if (password.length >= 6) s++; if (password.length >= 10) s++; if (/[A-Z]/.test(password)) s++; if (/[0-9]/.test(password)) s++; if (/[^a-zA-Z0-9]/.test(password)) s++; return [{ pct: 20, label: "Très faible", color: "#EF4444" }, { pct: 40, label: "Faible", color: "#F97316" }, { pct: 60, label: "Moyen", color: "#FBBF24" }, { pct: 80, label: "Fort", color: "#06D6A0" }, { pct: 100, label: "Excellent", color: "#10B981" }][Math.min(s, 4)]; })();
@@ -628,9 +729,547 @@ const ConfigList = ({ items, onAdd, onRemove, label, icon, color }) => {
 };
 
 /* ═══════════════════════════════════════════════════════════
+   SUPER ADMIN DASHBOARD
+   ═══════════════════════════════════════════════════════════ */
+const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => {
+  const [tab, setTab] = useState("organizations");
+  const [showCreateOrg, setShowCreateOrg] = useState(false);
+  const [orgForm, setOrgForm] = useState({ name: "", adminEmail: "", adminName: "", tempPassword: "", plan: "monthly", price: "99.99" });
+  const [allAccounts, setAllAccounts] = useState([]);
+  const [filterOrg, setFilterOrg] = useState("all");
+  const [filterRole, setFilterRole] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [migrationStatus, setMigrationStatus] = useState("");
+  const [isMigrating, setIsMigrating] = useState(false);
+
+  // Load all accounts on mount
+  useEffect(() => {
+    const loadAccounts = async () => {
+      const accounts = await supaGetAllAccounts();
+      setAllAccounts(accounts);
+    };
+    loadAccounts();
+  }, []);
+
+  const createOrganization = async () => {
+    if (!orgForm.name.trim() || !orgForm.adminEmail.trim() || !orgForm.adminName.trim() || !orgForm.tempPassword.trim()) {
+      alert("Tous les champs sont requis");
+      return;
+    }
+
+    const newOrg = {
+      id: "ORG-" + Date.now(),
+      name: orgForm.name.trim(),
+      slug: orgForm.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+      adminEmail: orgForm.adminEmail.trim().toLowerCase(),
+      status: "active",
+      createdAt: new Date().toISOString().split('T')[0],
+      subscription: {
+        plan: orgForm.plan || "monthly",
+        price: parseFloat(orgForm.price) || 99.99,
+        nextBilling: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      }
+    };
+
+    const updatedOrgs = [...organizations, newOrg];
+    setOrganizations(updatedOrgs);
+    await supaSave("organizations", updatedOrgs);
+
+    // Create admin account
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    await supaSaveAccount(orgForm.adminEmail.trim().toLowerCase(), {
+      email: orgForm.adminEmail.trim().toLowerCase(),
+      password: orgForm.tempPassword,
+      name: orgForm.adminName.trim(),
+      memberId: "A" + Date.now(),
+      role: "admin",
+      organizationId: newOrg.id,
+      verified: false,
+      approved: true,
+      verifyCode: code
+    });
+
+    setShowCreateOrg(false);
+    setOrgForm({ name: "", adminEmail: "", adminName: "", tempPassword: "", plan: "monthly", price: "99.99" });
+    playKaching();
+
+    // Reload accounts
+    const accounts = await supaGetAllAccounts();
+    setAllAccounts(accounts);
+  };
+
+  const toggleOrgStatus = async (orgId) => {
+    const updatedOrgs = organizations.map(o =>
+      o.id === orgId ? { ...o, status: o.status === "active" ? "suspended" : "active" } : o
+    );
+    setOrganizations(updatedOrgs);
+    await supaSave("organizations", updatedOrgs);
+  };
+
+  const approveAdmin = async (email) => {
+    const account = allAccounts.find(a => a.email === email);
+    if (!account) return;
+    account.approved = true;
+    await supaSaveAccount(email, account);
+    const updatedAccounts = await supaGetAllAccounts();
+    setAllAccounts(updatedAccounts);
+    playKaching();
+  };
+
+  const updateAccountStatus = async (email, newStatus) => {
+    const account = allAccounts.find(a => a.email === email);
+    if (!account) return;
+
+    const messages = {
+      suspended: "suspendu temporairement",
+      revoked: "révoqué définitivement",
+      active: "réactivé"
+    };
+
+    if (!confirm(`Voulez-vous vraiment ${newStatus === "revoked" ? "RÉVOQUER DÉFINITIVEMENT" : newStatus === "suspended" ? "SUSPENDRE" : "RÉACTIVER"} l'accès de ${account.name} (${account.email}) ?`)) {
+      return;
+    }
+
+    account.accountStatus = newStatus;
+    await supaSaveAccount(email, account);
+    const updatedAccounts = await supaGetAllAccounts();
+    setAllAccounts(updatedAccounts);
+    alert(`Compte ${messages[newStatus]} avec succès`);
+  };
+
+  const syncLocalStorageToSupabase = async () => {
+    try {
+      // Get all accounts from Supabase
+      const supaAccounts = await supaLoad("accounts") || {};
+      let syncedCount = 0;
+
+      // Scan localStorage for accounts
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key?.startsWith("account:")) {
+          const email = key.replace("account:", "");
+          const localAccount = await ST.get(key);
+
+          if (localAccount && !supaAccounts[email]) {
+            // Account exists in localStorage but not in Supabase
+            supaAccounts[email] = localAccount;
+            syncedCount++;
+          }
+        }
+      }
+
+      if (syncedCount > 0) {
+        // Save all accounts to Supabase
+        await supaSave("accounts", supaAccounts);
+        alert(`✅ ${syncedCount} compte(s) synchronisé(s) vers Supabase`);
+      } else {
+        alert("✅ Tous les comptes sont déjà synchronisés");
+      }
+
+      // Reload accounts
+      const updatedAccounts = await supaGetAllAccounts();
+      setAllAccounts(updatedAccounts);
+    } catch (error) {
+      console.error("Sync error:", error);
+      alert("❌ Erreur lors de la synchronisation : " + error.message);
+    }
+  };
+
+  const migrateToMultiTenant = async () => {
+    if (!confirm("Attention : Cette migration va transformer toutes les données existantes pour le multi-tenant. Continuer ?")) {
+      return;
+    }
+
+    setIsMigrating(true);
+    setMigrationStatus("Démarrage de la migration...");
+
+    try {
+      const aurenisOrg = INIT_ORGS[0];
+
+      // 1. Ensure organizations exist
+      setMigrationStatus("Création de l'organisation principale...");
+      const existingOrgs = await supaLoad("organizations");
+      if (!existingOrgs || existingOrgs.length === 0) {
+        await supaSave("organizations", [aurenisOrg]);
+        setOrganizations([aurenisOrg]);
+      }
+
+      // 2. Migrate interventions
+      setMigrationStatus("Migration des interventions...");
+      const oldInterventions = await supaLoad("interventions") || [];
+      const migratedInterventions = oldInterventions.map(i => ({
+        ...i,
+        organizationId: aurenisOrg.id
+      }));
+      await supaSaveOrg(aurenisOrg.id, "interventions", migratedInterventions);
+      setMigrationStatus(`✓ ${migratedInterventions.length} interventions migrées`);
+
+      // 3. Migrate techs
+      setMigrationStatus("Migration des techniciens...");
+      const oldTechs = await supaLoad("techs") || [];
+      const migratedTechs = oldTechs.map(t => ({
+        ...t,
+        organizationId: aurenisOrg.id
+      }));
+      await supaSaveOrg(aurenisOrg.id, "techs", migratedTechs);
+      setMigrationStatus(`✓ ${migratedTechs.length} techniciens migrés`);
+
+      // 4. Migrate poseurs
+      setMigrationStatus("Migration des poseurs...");
+      const oldPoseurs = await supaLoad("poseurs") || [];
+      const migratedPoseurs = oldPoseurs.map(p => ({
+        ...p,
+        organizationId: aurenisOrg.id
+      }));
+      await supaSaveOrg(aurenisOrg.id, "poseurs", migratedPoseurs);
+      setMigrationStatus(`✓ ${migratedPoseurs.length} poseurs migrés`);
+
+      // 5. Migrate super admin account
+      setMigrationStatus("Migration du compte super admin...");
+      await supaSaveAccount("aurenis.contact@gmail.com", {
+        email: "aurenis.contact@gmail.com",
+        password: "Admin123",
+        name: "Super Admin",
+        memberId: "SA-001",
+        role: "super_admin",
+        organizationId: aurenisOrg.id,
+        verified: true,
+        approved: true
+      });
+
+      setMigrationStatus("✅ Migration terminée avec succès !");
+      playKaching();
+
+      setTimeout(() => {
+        setIsMigrating(false);
+        setMigrationStatus("");
+      }, 3000);
+    } catch (error) {
+      console.error("Migration error:", error);
+      setMigrationStatus("❌ Erreur lors de la migration : " + error.message);
+      setIsMigrating(false);
+    }
+  };
+
+  const filteredAccounts = allAccounts.filter(a => {
+    if (filterOrg !== "all" && a.organizationId !== filterOrg) return false;
+    if (filterRole !== "all" && a.role !== filterRole) return false;
+    if (filterStatus === "pending" && (a.role !== "admin" || a.approved)) return false;
+    if (filterStatus === "active" && (!a.verified || (a.role === "admin" && !a.approved))) return false;
+    if (filterStatus === "unverified" && a.verified) return false;
+    return true;
+  });
+
+  const pendingAdmins = allAccounts.filter(a => a.role === "admin" && !a.approved).length;
+
+  const activeOrgs = organizations.filter(o => o.status === "active").length;
+  const totalRevenue = organizations.reduce((sum, o) => sum + (o.subscription?.price || 0), 0);
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="aurenis-header-inner px-5 py-4">
+          <div className="flex items-center gap-3">
+            <AurenisLogo />
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500 font-medium">Super Admin</span>
+              <span className="text-sm font-bold text-gray-900">{user.name}</span>
+            </div>
+          </div>
+          <button onClick={onLogout} className="btn btn-ghost btn-sm">
+            <span>Déconnexion</span>
+            <span>🚪</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Tabs */}
+      <div className="max-w-[1200px] mx-auto px-5 py-5">
+        <div className="aurenis-tabs">
+          <button className={tab === "organizations" ? "active" : ""} onClick={() => setTab("organizations")}>
+            🏢 Organisations
+          </button>
+          <button className={tab === "accounts" ? "active" : ""} onClick={() => setTab("accounts")}>
+            👥 Comptes
+          </button>
+          <button className={tab === "stats" ? "active" : ""} onClick={() => setTab("stats")}>
+            📊 Statistiques
+          </button>
+        </div>
+
+        {/* Organizations Tab */}
+        {tab === "organizations" && (
+          <div className="mt-6">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-xl font-bold text-gray-900">Gestion des organisations</h2>
+              <button onClick={() => setShowCreateOrg(true)} className="btn btn-primary">
+                + Créer une organisation
+              </button>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {organizations.map(org => (
+                <Card key={org.id} className="p-5">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="font-bold text-gray-900 mb-1">{org.name}</h3>
+                      <span className="text-xs text-gray-500">{org.slug}</span>
+                    </div>
+                    <span className={`badge ${org.status === "active" ? "badge-success" : "badge-danger"}`}>
+                      {org.status === "active" ? "Actif" : "Suspendu"}
+                    </span>
+                  </div>
+                  <div className="space-y-2 text-sm text-gray-600 mb-4">
+                    <div>📧 {org.adminEmail}</div>
+                    <div>📅 Créé le {org.createdAt}</div>
+                    <div>💰 {org.subscription?.price}€/{org.subscription?.plan === "monthly" ? "mois" : "an"}</div>
+                  </div>
+                  <button
+                    onClick={() => toggleOrgStatus(org.id)}
+                    className={`btn btn-sm w-full ${org.status === "active" ? "btn-danger" : "btn-success"}`}
+                  >
+                    {org.status === "active" ? "Suspendre" : "Activer"}
+                  </button>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Accounts Tab */}
+        {tab === "accounts" && (
+          <div className="mt-6">
+            <div className="flex justify-between items-center mb-5 flex-wrap gap-3">
+              <h2 className="text-xl font-bold text-gray-900">
+                Tous les comptes
+                {allAccounts.length > 0 && <span className="text-sm font-normal text-gray-500 ml-2">({allAccounts.length} total)</span>}
+              </h2>
+              <div className="flex gap-2">
+                <button
+                  onClick={syncLocalStorageToSupabase}
+                  className="btn btn-sm"
+                  style={{ backgroundColor: "#8B5CF6", color: "white" }}
+                  title="Synchroniser les comptes de localStorage vers Supabase"
+                >
+                  🔄 Synchroniser localStorage
+                </button>
+                <button
+                  onClick={async () => {
+                    const accounts = await supaGetAllAccounts();
+                    setAllAccounts(accounts);
+                    alert(`✅ ${accounts.length} compte(s) chargé(s) depuis Supabase`);
+                  }}
+                  className="btn btn-primary btn-sm"
+                >
+                  🔄 Rafraîchir
+                </button>
+              </div>
+            </div>
+
+            {pendingAdmins > 0 && (
+              <div className="bg-danger-50 border border-danger-200 rounded-lg p-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">⚠️</span>
+                  <div>
+                    <div className="font-bold text-danger-700">
+                      {pendingAdmins} compte{pendingAdmins > 1 ? "s" : ""} admin en attente d'approbation
+                    </div>
+                    <div className="text-sm text-danger-600">
+                      Cliquez sur "🔄 Rafraîchir" si vous ne voyez pas les nouveaux comptes
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-3 mb-5 flex-wrap">
+              <select value={filterOrg} onChange={e => setFilterOrg(e.target.value)} className="input">
+                <option value="all">Toutes les organisations</option>
+                {organizations.map(o => (
+                  <option key={o.id} value={o.id}>{o.name}</option>
+                ))}
+              </select>
+              <select value={filterRole} onChange={e => setFilterRole(e.target.value)} className="input">
+                <option value="all">Tous les rôles</option>
+                <option value="admin">Admin</option>
+                <option value="tech">Technicien</option>
+                <option value="poseur">Poseur</option>
+              </select>
+              <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="input">
+                <option value="all">Tous les statuts</option>
+                <option value="pending">⏳ En attente d'approbation</option>
+                <option value="active">✅ Actifs</option>
+                <option value="unverified">📧 Non vérifiés</option>
+              </select>
+            </div>
+
+            <Card className="overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Email</th>
+                      <th>Nom</th>
+                      <th>Rôle</th>
+                      <th>Organisation</th>
+                      <th>Statut</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredAccounts.map(acc => {
+                      const org = organizations.find(o => o.id === acc.organizationId);
+                      return (
+                        <tr key={acc.email}>
+                          <td>{acc.email}</td>
+                          <td>{acc.name}</td>
+                          <td>
+                            <span className={`badge ${acc.role === "admin" ? "badge-primary" : acc.role === "tech" ? "badge-success" : "badge-warning"}`}>
+                              {acc.role}
+                            </span>
+                          </td>
+                          <td>{org?.name || "-"}</td>
+                          <td>
+                            <div className="flex gap-2 flex-wrap">
+                              {!acc.verified && <span className="badge badge-warning">📧 Non vérifié</span>}
+                              {acc.role === "admin" && !acc.approved && <span className="badge badge-danger">⏳ En attente</span>}
+                              {acc.accountStatus === "suspended" && <span className="badge badge-warning">⏸️ Suspendu</span>}
+                              {acc.accountStatus === "revoked" && <span className="badge badge-danger">🚫 Révoqué</span>}
+                              {acc.verified && (acc.role !== "admin" || acc.approved) && !acc.accountStatus && <span className="badge badge-success">✅ Actif</span>}
+                              {acc.verified && (acc.role !== "admin" || acc.approved) && acc.accountStatus === "active" && <span className="badge badge-success">✅ Actif</span>}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="flex gap-2">
+                              {acc.role === "admin" && !acc.approved && (
+                                <button onClick={() => approveAdmin(acc.email)} className="btn btn-success btn-sm" title={!acc.verified ? "Approuver (email non vérifié)" : "Approuver"}>
+                                  {!acc.verified ? "✅ Pré-approuver" : "✅ Approuver"}
+                                </button>
+                              )}
+                              {(acc.role === "tech" || acc.role === "poseur") && (
+                                <>
+                                  {(!acc.accountStatus || acc.accountStatus === "active") && (
+                                    <>
+                                      <button onClick={() => updateAccountStatus(acc.email, "suspended")} className="btn btn-sm" style={{ backgroundColor: "#F59E0B", color: "white" }}>
+                                        ⏸️ Suspendre
+                                      </button>
+                                      <button onClick={() => updateAccountStatus(acc.email, "revoked")} className="btn btn-danger btn-sm">
+                                        🚫 Révoquer
+                                      </button>
+                                    </>
+                                  )}
+                                  {acc.accountStatus === "suspended" && (
+                                    <>
+                                      <button onClick={() => updateAccountStatus(acc.email, "active")} className="btn btn-success btn-sm">
+                                        ✅ Réactiver
+                                      </button>
+                                      <button onClick={() => updateAccountStatus(acc.email, "revoked")} className="btn btn-danger btn-sm">
+                                        🚫 Révoquer
+                                      </button>
+                                    </>
+                                  )}
+                                  {acc.accountStatus === "revoked" && (
+                                    <button onClick={() => updateAccountStatus(acc.email, "active")} className="btn btn-success btn-sm">
+                                      ✅ Réactiver
+                                    </button>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* Stats Tab */}
+        {tab === "stats" && (
+          <div className="mt-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-5">Statistiques globales</h2>
+            <div className="aurenis-kpis">
+              <KPI label="Organisations actives" value={activeOrgs} color="#10B981" icon="🏢" />
+              <KPI label="Total organisations" value={organizations.length} color="#3B82F6" icon="📊" />
+              <KPI label="Revenus mensuels" value={`${totalRevenue.toLocaleString("fr-FR")} €`} color="#F59E0B" icon="💰" />
+              <KPI label="Total comptes" value={allAccounts.length} color="#8B5CF6" icon="👥" />
+            </div>
+
+            {/* Migration Tool */}
+            <Card className="mt-6 p-5">
+              <h3 className="text-lg font-bold text-gray-900 mb-3">🔄 Migration Multi-Tenant</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Cet outil migre toutes les données existantes (interventions, techniciens, poseurs) vers l'architecture multi-tenant avec isolation par organisation.
+              </p>
+              {migrationStatus && (
+                <div className={`mb-4 p-3 rounded-lg text-sm ${migrationStatus.startsWith("✅") ? "bg-success-50 text-success-700" : migrationStatus.startsWith("❌") ? "bg-danger-50 text-danger-700" : "bg-primary-50 text-primary-700"}`}>
+                  {migrationStatus}
+                </div>
+              )}
+              <button
+                onClick={migrateToMultiTenant}
+                disabled={isMigrating}
+                className="btn btn-primary"
+              >
+                {isMigrating ? "Migration en cours..." : "Lancer la migration"}
+              </button>
+            </Card>
+          </div>
+        )}
+      </div>
+
+      {/* Create Organization Modal */}
+      {showCreateOrg && (
+        <Modal onClose={() => setShowCreateOrg(false)} title="Créer une organisation">
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nom de l'organisation</label>
+              <input type="text" value={orgForm.name} onChange={e => setOrgForm({ ...orgForm, name: e.target.value })} className="input" placeholder="Ex: AquaTech Services" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email de l'admin</label>
+              <input type="email" value={orgForm.adminEmail} onChange={e => setOrgForm({ ...orgForm, adminEmail: e.target.value })} className="input" placeholder="admin@example.com" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nom de l'admin</label>
+              <input type="text" value={orgForm.adminName} onChange={e => setOrgForm({ ...orgForm, adminName: e.target.value })} className="input" placeholder="Jean Dupont" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe temporaire</label>
+              <input type="text" value={orgForm.tempPassword} onChange={e => setOrgForm({ ...orgForm, tempPassword: e.target.value })} className="input" placeholder="TempPass123" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Plan</label>
+                <select value={orgForm.plan} onChange={e => setOrgForm({ ...orgForm, plan: e.target.value })} className="input">
+                  <option value="monthly">Mensuel</option>
+                  <option value="yearly">Annuel</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Prix (€)</label>
+                <input type="number" value={orgForm.price} onChange={e => setOrgForm({ ...orgForm, price: e.target.value })} className="input" placeholder="99.99" />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-2">
+              <button onClick={() => setShowCreateOrg(false)} className="btn btn-secondary flex-1">Annuler</button>
+              <button onClick={createOrganization} className="btn btn-primary flex-1">Créer</button>
+            </div>
+          </div>
+        </Modal>
+      )}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
    ADMIN DASHBOARD
    ═══════════════════════════════════════════════════════════ */
-const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, setTechs, specialties, setSpecialties, statuts, setStatuts }) => {
+const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, setTechs, poseurs, setPoseurs, specialties, setSpecialties, statuts, setStatuts }) => {
   const [tab, setTab] = useState("dashboard");
   const [editModal, setEditModal] = useState(null);
   const [commModal, setCommModal] = useState(null);
@@ -690,6 +1329,26 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
       await ST.set(`account:${email}`, acc);
       setPendingAccounts(prev => prev.filter(a => a.email !== email));
     }
+  };
+
+  const updateMemberAccountStatus = async (email, newStatus) => {
+    const messages = {
+      suspended: "suspendu temporairement",
+      revoked: "révoqué définitivement",
+      active: "réactivé"
+    };
+
+    if (!confirm(`Voulez-vous vraiment ${newStatus === "revoked" ? "RÉVOQUER DÉFINITIVEMENT" : newStatus === "suspended" ? "SUSPENDRE" : "RÉACTIVER"} l'accès de ce membre ?`)) {
+      return;
+    }
+
+    let acc = await supaGetAccount(email);
+    if (!acc) acc = await ST.get(`account:${email}`);
+    if (!acc) return;
+
+    acc.accountStatus = newStatus;
+    await supaSaveAccount(email, acc);
+    alert(`Compte ${messages[newStatus]} avec succès`);
   };
 
   const rejectAdmin = async (email) => {
@@ -804,9 +1463,21 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
                         </div>
                       </div>
                       {/* Commission */}
-                      <div className="flex justify-between items-center bg-gray-50 rounded-lg px-3.5 py-2.5">
+                      <div className="flex justify-between items-center bg-gray-50 rounded-lg px-3.5 py-2.5 mb-2">
                         <div><span className="text-xs text-gray-500">Taux commission</span><div className="text-xl font-bold text-primary-600">{(tech.commission * 100)}%</div></div>
                         <Btn onClick={() => { setCommModal(tech.id); setNewRate(String(tech.commission * 100)); }} variant="ghost" className="btn-sm">✏️ Modifier</Btn>
+                      </div>
+                      {/* Access Management */}
+                      <div className="pt-3 border-t border-gray-200">
+                        <span className="text-xs text-gray-500 font-semibold block mb-2">Gestion des accès</span>
+                        <div className="flex gap-2">
+                          <button onClick={() => updateMemberAccountStatus(tech.email, "suspended")} className="btn btn-sm flex-1" style={{ backgroundColor: "#F59E0B", color: "white", fontSize: "11px" }}>
+                            ⏸️ Suspendre
+                          </button>
+                          <button onClick={() => updateMemberAccountStatus(tech.email, "revoked")} className="btn btn-danger btn-sm flex-1" style={{ fontSize: "11px" }}>
+                            🚫 Révoquer
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -816,13 +1487,27 @@ const AdminDash = ({ account, onLogout, interventions, setInterventions, techs, 
             <Card>
               <SectionTitle>Poseurs</SectionTitle>
               <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-3.5">
-                {INIT_POSEURS.map(p => {
+                {poseurs.map(p => {
                   const myInter = interventions.filter(i => i.poseur === p.name);
                   return (
                     <div key={p.id} className="bg-white rounded-2xl p-5 border-l-3" style={{ borderLeftColor: p.color }}>
                       <div className="font-bold text-gray-900 text-base">{p.name}</div>
                       <div className="text-xs text-gray-500 mb-2">{p.spe} · {myInter.length} interventions</div>
-                      <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-pink-100 text-pink-600">POSEUR</span>
+                      <div className="mb-3">
+                        <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-pink-100 text-pink-600">POSEUR</span>
+                      </div>
+                      {/* Access Management */}
+                      <div className="pt-3 border-t border-gray-200">
+                        <span className="text-xs text-gray-500 font-semibold block mb-2">Gestion des accès</span>
+                        <div className="flex gap-2">
+                          <button onClick={() => updateMemberAccountStatus(p.email, "suspended")} className="btn btn-sm flex-1" style={{ backgroundColor: "#F59E0B", color: "white", fontSize: "11px" }}>
+                            ⏸️ Suspendre
+                          </button>
+                          <button onClick={() => updateMemberAccountStatus(p.email, "revoked")} className="btn btn-danger btn-sm flex-1" style={{ fontSize: "11px" }}>
+                            🚫 Révoquer
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
@@ -1729,6 +2414,8 @@ export default function App() {
 
   const [interventions, setInterventions] = useState(INIT_INTERVENTIONS);
   const [techs, setTechs] = useState(INIT_TECHS);
+  const [poseurs, setPoseurs] = useState(INIT_POSEURS);
+  const [organizations, setOrganizations] = useState(INIT_ORGS);
   const [specialties, setSpecialties] = useState(["Plomberie", "Serrurerie", "Électricité"]);
   const [statuts, setStatuts] = useState(["Planifiée", "En cours", "Terminée", "Validée"]);
 
@@ -1736,17 +2423,33 @@ export default function App() {
   const dataLoaded = useRef(false);
   useEffect(() => {
     const load = async () => {
-      const [dbTechs, dbInter, dbSpe, dbStat] = await Promise.all([
-        supaLoad("techs"), supaLoad("interventions"), supaLoad("specialties"), supaLoad("statuts")
+      const [dbOrgs, dbTechs, dbPoseurs, dbInter, dbSpe, dbStat] = await Promise.all([
+        supaLoad("organizations"),
+        supaLoad("techs"),
+        supaLoad("poseurs"),
+        supaLoad("interventions"),
+        supaLoad("specialties"),
+        supaLoad("statuts")
       ]);
+
+      if (dbOrgs) setOrganizations(dbOrgs);
+      else supaSave("organizations", INIT_ORGS);
+
       if (dbTechs) setTechs(dbTechs);
       else supaSave("techs", INIT_TECHS);
+
+      if (dbPoseurs) setPoseurs(dbPoseurs);
+      else supaSave("poseurs", INIT_POSEURS);
+
       if (dbInter) setInterventions(dbInter);
       else supaSave("interventions", INIT_INTERVENTIONS);
+
       if (dbSpe) setSpecialties(dbSpe);
       else supaSave("specialties", ["Plomberie", "Serrurerie", "Électricité"]);
+
       if (dbStat) setStatuts(dbStat);
       else supaSave("statuts", ["Planifiée", "En cours", "Terminée", "Validée"]);
+
       dataLoaded.current = true;
       setLoading(false);
     };
@@ -1754,7 +2457,9 @@ export default function App() {
   }, []);
 
   /* ═══ SAUVEGARDE AUTO DANS SUPABASE À CHAQUE CHANGEMENT ═══ */
+  useEffect(() => { if (dataLoaded.current) supaSave("organizations", organizations); }, [organizations]);
   useEffect(() => { if (dataLoaded.current) supaSave("techs", techs); }, [techs]);
+  useEffect(() => { if (dataLoaded.current) supaSave("poseurs", poseurs); }, [poseurs]);
   useEffect(() => { if (dataLoaded.current) supaSave("interventions", interventions); }, [interventions]);
   useEffect(() => { if (dataLoaded.current) supaSave("specialties", specialties); }, [specialties]);
   useEffect(() => { if (dataLoaded.current) supaSave("statuts", statuts); }, [statuts]);
@@ -1784,7 +2489,8 @@ export default function App() {
       {!loading && page === "verify" && <VerifyPage email={verifyEmail} code={verifyCode} onVerified={async () => { const acc = await ST.get(`account:${verifyEmail}`); setIsAdminPending(acc?.role === "admin" && !acc?.approved); setPage("verified"); }} onGoLogin={() => setPage("login")} />}
       {!loading && page === "verified" && <VerifiedPage onGoLogin={() => setPage("login")} isAdminPending={isAdminPending} />}
       {!loading && page === "forgot" && <ForgotPage onGoLogin={() => setPage("login")} />}
-      {!loading && page === "dashboard" && account?.role === "admin" && <AdminDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} setTechs={setTechs} specialties={specialties} setSpecialties={setSpecialties} statuts={statuts} setStatuts={setStatuts} />}
+      {!loading && page === "dashboard" && account?.role === "super_admin" && <SuperAdminDash user={account} organizations={organizations} setOrganizations={setOrganizations} onLogout={() => { setAccount(null); setPage("login"); }} />}
+      {!loading && page === "dashboard" && account?.role === "admin" && <AdminDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} setTechs={setTechs} poseurs={poseurs} setPoseurs={setPoseurs} specialties={specialties} setSpecialties={setSpecialties} statuts={statuts} setStatuts={setStatuts} />}
       {!loading && page === "dashboard" && account?.role === "tech" && <TechDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} techs={techs} specialties={specialties} />}
       {!loading && page === "dashboard" && account?.role === "poseur" && <PoseurDash account={account} onLogout={() => { setAccount(null); setPage("login"); }} interventions={interventions} setInterventions={setInterventions} />}
     </>
