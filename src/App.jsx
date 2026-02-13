@@ -863,15 +863,15 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
       return;
     }
 
+    // IMPORTANT: Reset filters FIRST to prevent accounts from disappearing
+    setFilterOrg("all");
+    setFilterRole("all");
+    setFilterStatus("all");
+
     account.accountStatus = newStatus;
     await supaSaveAccount(email, account);
     const updatedAccounts = await supaGetAllAccounts();
     setAllAccounts(updatedAccounts);
-
-    // Reset filters to show all accounts
-    setFilterOrg("all");
-    setFilterRole("all");
-    setFilterStatus("all");
 
     alert(`✅ Compte ${messages[newStatus]} avec succès!\n\nLe compte ${account.name} est maintenant visible dans la liste complète.`);
   };
@@ -991,11 +991,33 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
   };
 
   const filteredAccounts = allAccounts.filter(a => {
+    // Filter by organization
     if (filterOrg !== "all" && a.organizationId !== filterOrg) return false;
+
+    // Filter by role
     if (filterRole !== "all" && a.role !== filterRole) return false;
-    if (filterStatus === "pending" && (a.role !== "admin" || a.approved)) return false;
-    if (filterStatus === "active" && (!a.verified || (a.role === "admin" && !a.approved))) return false;
-    if (filterStatus === "unverified" && a.verified) return false;
+
+    // Filter by status
+    if (filterStatus === "pending") {
+      // Show only non-approved admins
+      if (a.role !== "admin" || a.approved) return false;
+    } else if (filterStatus === "active") {
+      // Show only truly active accounts (verified, approved if admin, and not suspended/revoked)
+      if (!a.verified) return false;
+      if (a.role === "admin" && !a.approved) return false;
+      if (a.accountStatus === "suspended" || a.accountStatus === "revoked") return false;
+    } else if (filterStatus === "suspended") {
+      // Show only suspended accounts
+      if (a.accountStatus !== "suspended") return false;
+    } else if (filterStatus === "revoked") {
+      // Show only revoked accounts
+      if (a.accountStatus !== "revoked") return false;
+    } else if (filterStatus === "unverified") {
+      // Show only unverified accounts
+      if (a.verified) return false;
+    }
+    // If filterStatus === "all", show everything (no filtering)
+
     return true;
   });
 
@@ -1177,6 +1199,8 @@ const SuperAdminDash = ({ user, organizations, setOrganizations, onLogout }) => 
                 <option value="all">Tous les statuts</option>
                 <option value="pending">⏳ En attente d'approbation</option>
                 <option value="active">✅ Actifs</option>
+                <option value="suspended">⏸️ Suspendus</option>
+                <option value="revoked">🚫 Révoqués</option>
                 <option value="unverified">📧 Non vérifiés</option>
               </select>
             </div>
